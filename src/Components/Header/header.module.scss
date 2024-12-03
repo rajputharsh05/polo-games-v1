@@ -1,0 +1,102 @@
+.header {
+    height: 10vh; 
+    width: 100%;
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 0; 
+    background-color: black; 
+    position: fixed; 
+    top: 0;
+    z-index: 1000;
+    overflow: hidden; 
+  }
+  
+  .logoContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .logo {
+    height: 80%; // Scale logo height proportionally
+    width: auto;
+    object-fit: contain; // Prevent distortion
+  }
+  
+  .searchContainer {
+    flex: 1; // Take up available space
+    margin: 0 1vw; // Add spacing between logo and button
+  }
+  
+  .search {
+    width: 100%; 
+    max-width: 400px; 
+  }
+  
+  .buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin-right: 4vw;
+  }
+  
+  .button {
+    background-color: #d4af37;
+    color: black;
+    font-weight: 600;
+    height: 5vh; 
+    width: auto; 
+    padding: 0 1rem;
+    border: 1px solid white;
+    white-space: nowrap; 
+  }
+  .button:hover{
+    background-color: #d4af37 !important;
+  }
+  
+ 
+  @media (max-width: 1024px) {
+    .search {
+      max-width: 300px; // Reduce search width
+    }
+  
+    .button {
+      padding: 0 0.8rem; 
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .search {
+      max-width: 200px; 
+    }
+  
+    .button {
+      font-size: 12px;
+      margin-right: 5vw;
+      height: 3vh; 
+    }
+    .logo {
+      height: 50%; 
+      width: auto;
+      object-fit: contain;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .logo {
+      height: 60%;
+    }
+  
+    .search {
+      max-width: 150px; 
+    }
+  
+    .button {
+      font-size: 10px; 
+      padding: 0 0.5rem;
+    }
+  }
+  

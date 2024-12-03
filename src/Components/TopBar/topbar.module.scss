@@ -1,0 +1,130 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #fff;
+  border-bottom: 1px solid #dcdcdc;
+  padding: 0 10px;
+  height: 70px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; 
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.topbar_item {
+  position: relative;
+  padding: 7px 10px;
+  margin-right: 16px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+ 
+  &:hover {
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+
+  
+  &.active {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+  }
+
+  
+  &.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black; /* Matches the active background */
+  }
+}
+
+
+.topbar_badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #e63946;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: fadeInOut 2s infinite; 
+}
+
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .topbar {
+    padding: 0 8px; 
+    height: 60px; 
+  }
+  .topbar_item {
+    font-size: 15px; 
+    margin-right: 12px; 
+  }
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 6px;
+    height: 50px; 
+  }
+  .topbar_item {
+    font-size: 14px;
+    margin-right: 10px;
+    padding: 5px 8px; 
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    padding: 0 4px;
+    height: 50px; 
+  }
+  .topbar_item {
+    font-size: 12px; 
+    margin-right: 8px;
+    padding: 4px 6px; 
+  }
+
+  .topbar_badge {
+    width: 16px;
+    height: 16px;
+    font-size: 10px; 
+    line-height: 16px;
+  }
+}

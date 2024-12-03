@@ -1,0 +1,42 @@
+.sidebarMenu {
+  .ant-menu {
+    background-color: #333 !important; // Sidebar background
+    color: #fff !important; // Default text color
+  }
+
+  .ant-menu-item-selected {
+    background-color: #444 !important; // Background for selected item
+    color: #fff !important; // Text color for selected item
+  }
+
+  .ant-menu-item:hover {
+    background-color: #555 !important; // Background color on hover
+    color: #fff !important; // Text color on hover
+  }
+
+  .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    background-color: #444 !important; // Background for selected submenu
+    color: #fff !important;
+  }
+
+  .ant-menu-item {
+    color: #fff !important; // Ensures menu item text is white by default
+  }
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px; 
+  background-color: white; // Optional: Adds a background color for better visuals
+  height: 120px; // Adjust to fit your logo size
+  overflow: hidden; // Prevents any content from overflowing outside the container
+}
+
+.logo {
+  max-height: 100%; // Ensures the logo's height fits within the container
+  max-width: 100%; // Ensures the logo's width fits within the container
+  object-fit: contain; // Maintains the aspect ratio of the logo
+  
+}

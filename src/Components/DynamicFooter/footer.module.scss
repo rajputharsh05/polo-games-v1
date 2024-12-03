@@ -1,0 +1,84 @@
+.footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px; 
+    background-color: #333; 
+    color: #fff;
+    z-index: 1000; 
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+  }
+  
+  .footer_item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px; /* Slightly larger for readability */
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .footer_icon {
+    font-size: 18px; /* Adjusted for visibility on smaller screens */
+    margin-bottom: 5px; 
+    color: #fff; 
+  }
+  
+  .footer_item:hover {
+    color: #f0c040; 
+  }
+  
+  .top_icon {
+    position: relative; 
+    transform: translateY(-50%);
+    border-radius: 50%;
+    width: 10vw; /* Adjusted size for mobile screens */
+    height: 10vw; /* Adjusted size for mobile screens */
+    border: 5px solid white;
+    display: flex;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: #333; /* Added background for better contrast */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Added shadow for prominence */
+  }
+  
+  @media (max-width: 768px) { /* Tablet and mobile screens */
+    .footer {
+      height: 60px; /* Increased height for tablets */
+    }
+    .footer_icon {
+      font-size: 16px; /* Slightly smaller icons for tablets */
+    }
+    .top_icon {
+      width: 12vw; /* Slightly larger icon for tablets */
+      height: 12vw;
+      transform: translateY(-40%); /* Less upward movement for smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) { /* Small mobile screens */
+    .footer {
+      height: 50px;
+    }
+    .footer_item {
+      font-size: 10px; /* Smaller font for small screens */
+    }
+    .footer_icon {
+      font-size: 14px; /* Adjusted for smaller icons */
+    }
+    .top_icon {
+      width: 15vw; /* Larger size for smaller screens */
+      height: 15vw;
+      transform: translateY(-30%); /* Adjusted for less upward movement */
+    }
+  }
+  @media (min-width: 768px) {
+    .footer {
+      display: none; 
+    }
+  }
