@@ -1,4 +1,4 @@
-import { Col, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import {
   HomeOutlined,
   PlayCircleOutlined,
@@ -6,7 +6,6 @@ import {
   RadarChartOutlined,
 } from "@ant-design/icons";
 import styles from "./sidebar.module.scss";
-import logo from "../../assets/logo.jpeg";
 
 
 const { Sider } = Layout;
@@ -85,9 +84,6 @@ const SideBar = () => {
         borderRight: "1px solid #dcdcdc",
       }}
     >
-      <Col className={styles.logoContainer}>
-        <img className={styles.logo} src={logo} alt="Logo" />
-      </Col>
       <Menu
         mode="inline"
         defaultSelectedKeys={["home"]}
