@@ -73,9 +73,9 @@ const images = [
 const SliderComponent = () => {
 
     const [randomIndex1, setRandomIndex1] = useState(0);
-    const [randomIndex2, setRandomIndex2] = useState(1);
-    const [randomIndex3, setRandomIndex3] = useState(2);
-    const [randomIndex4, setRandomIndex4] = useState(3);
+    // const [randomIndex2, setRandomIndex2] = useState(1);
+    // const [randomIndex3, setRandomIndex3] = useState(2);
+    // const [randomIndex4, setRandomIndex4] = useState(3);
   
     useEffect(() => {
      
@@ -85,29 +85,29 @@ const SliderComponent = () => {
       }, 2000); 
   
       // Interval for Column 2
-      const interval2 = setInterval(() => {
-        const randomNumber = Math.floor(Math.random() * images.length);
-        setRandomIndex2(randomNumber);
-      }, 3000); // Change every 3 seconds
+    //   const interval2 = setInterval(() => {
+    //     const randomNumber = Math.floor(Math.random() * images.length);
+    //     setRandomIndex2(randomNumber);
+    //   }, 3000); // Change every 3 seconds
   
-      // Interval for Column 3
-      const interval3 = setInterval(() => {
-        const randomNumber = Math.floor(Math.random() * images.length);
-        setRandomIndex3(randomNumber);
-      }, 4000); // Change every 4 seconds
+    //   // Interval for Column 3
+    //   const interval3 = setInterval(() => {
+    //     const randomNumber = Math.floor(Math.random() * images.length);
+    //     setRandomIndex3(randomNumber);
+    //   }, 4000); // Change every 4 seconds
   
-      // Interval for Column 4
-      const interval4 = setInterval(() => {
-        const randomNumber = Math.floor(Math.random() * images.length);
-        setRandomIndex4(randomNumber);
-      }, 5000); // Change every 5 seconds
+    //   // Interval for Column 4
+    //   const interval4 = setInterval(() => {
+    //     const randomNumber = Math.floor(Math.random() * images.length);
+    //     setRandomIndex4(randomNumber);
+    //   }, 5000); // Change every 5 seconds
   
       // Cleanup intervals on component unmount
       return () => {
         clearInterval(interval1);
-        clearInterval(interval2);
-        clearInterval(interval3);
-        clearInterval(interval4);
+        // clearInterval(interval2);
+        // clearInterval(interval3);
+        // clearInterval(interval4);
       };
     }, []);
   

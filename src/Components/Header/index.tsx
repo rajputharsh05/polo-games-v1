@@ -62,12 +62,12 @@ const HeaderComponent = () => {
   const navigate = useNavigate();
 
   return (
-    <Row style={{ background: "rgba(21, 21, 21, 1)", lineHeight: "0", }} gutter={[20,20]}>
+    <Row style={{ background: "rgba(12, 46, 55, 1)", lineHeight: "0", }} gutter={[20,20]}>
       <Col span={7}>
         <img src={logo} alt="Logo" />
       </Col>
       <Col span={10}>
-        <div style={{ background: "rgba(21, 21, 21, 1)", color: "gray" }}>
+        <div style={{ background: "rgba(12, 46, 55, 1)", color: "gray" }}>
           <Tabs
             defaultActiveKey="home"
             items={tabItems}

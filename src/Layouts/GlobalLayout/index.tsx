@@ -3,7 +3,6 @@ import SideBar from "../../Components/SideBar";
 import { useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
 import HeaderComponent from "../../Components/Header";
-import TopBar from "../../Components/TopBar";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
@@ -21,6 +20,7 @@ const GlobalLayout = () => {
   useEffect(() => {
     const handleResize = () => {
       const currentWidth = window.innerWidth;
+      console.log(windowWidth);
       setWindowWidth(currentWidth);
 
       if (currentWidth < 768) {
@@ -59,11 +59,11 @@ const GlobalLayout = () => {
         <HeaderComponent></HeaderComponent>
       </Header>
 
-      <Layout style={{ marginTop: "12vh", background: "black" }}>
+      <Layout style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}>
         {isSidebarVisible && (
           <Sider
             style={{
-              background: "rgba(21, 21, 21, 1)",
+              background: "rgba(12, 46, 55, 1)",
               borderRadius: "3vh",
               margin: "1rem",
             }}
@@ -87,8 +87,9 @@ const GlobalLayout = () => {
         {isSidebarVisible && (
           <Sider
             style={{
-              background: "rgba(21, 21, 21, 1)",
+              background: "rgba(12, 46, 55, 1)",
               borderRadius: "3vh",
+              border: "1px solid black",
               margin: "1rem",
             }}
             width="25vw"
