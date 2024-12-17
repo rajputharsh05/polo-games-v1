@@ -1,34 +1,14 @@
 .header {
     height: 10vh; 
     width: 100%;
-    display: flex;
-    align-items: center; 
-    justify-content: space-between; 
     padding: 0 0; 
-    background-color: black; 
+    background-color: rgba(12, 46, 55, 1); 
     position: fixed; 
     top: 0;
     z-index: 1000;
     overflow: hidden; 
   }
   
-  .logoContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-  }
-  
-  .logo {
-    height: 80%; // Scale logo height proportionally
-    width: auto;
-    object-fit: contain; // Prevent distortion
-  }
-  
-  .searchContainer {
-    flex: 1; // Take up available space
-    margin: 0 1vw; // Add spacing between logo and button
-  }
   
   .search {
     width: 100%; 
@@ -57,6 +37,38 @@
     background-color: #d4af37 !important;
   }
   
+
+  .custom_tabs .ant-tabs-nav {
+    display: flex;
+    justify-content: space-between; /* Spread the tabs evenly */
+    width: 100%; /* Ensure the tabs take full width */
+  }
+  
+  .custom_tabs .ant-tabs-tab {
+    flex: 1; /* Each tab takes equal width */
+    text-align: center; /* Center the text inside the tab */
+    color: red; /* Red tabs */
+    font-size: 18px; /* Larger font */
+    font-weight: bold;
+    padding: 10px 0; /* Add padding for better spacing */
+  }
+  
+  .custom_tabs .ant-tabs-tab:hover {
+    color: darkred; /* Darker red on hover */
+  }
+  
+  .custom_tabs .ant-tabs-tab.ant-tabs-tab-active {
+    color: red; /* Active tab stays red */
+    font-size: 22px; /* Slightly larger font for active tab */
+    font-weight: bold;
+  }
+  
+  .custom_tabs .ant-tabs-ink-bar {
+    background-color: red; /* Red underline for active tab */
+    height: 4px; /* Thicker underline */
+  }
+  
+
  
   @media (max-width: 1024px) {
     .search {

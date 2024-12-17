@@ -2,16 +2,7 @@
   display: flex;
   align-items: center;
   padding: 10px;
-  background: linear-gradient(
-    to right,
-    #d4af37 0%,
-    #d4af37 25%,
-    #d4af37 50%,
-    #d4af37 75%,
-    #d4af37 85%,
-    black 95%,
-    black 100%
-  );
+  background: linear-gradient(90deg, #940101 0%, #4560FD 100%);
   color: #fff;
   border-radius: 8px 8px 0px 0px;
 }
@@ -25,7 +16,6 @@
 }
 
 .tableHeader {
-  display: flex;
   align-items: center;
   border-bottom: 1px solid #ddd;
   padding: 8px;
@@ -33,7 +23,7 @@
   cursor: pointer;
   position: relative;
   overflow: hidden; 
-  background-color: #fff; 
+  background-color: rgba(12, 46, 55, 1); 
 }
 
 .tableHeader::before {
@@ -51,7 +41,6 @@
 .tableHeader:hover::before {
   width: 100%; 
 }
-
 
 
 .tagIcon {

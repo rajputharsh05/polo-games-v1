@@ -19,9 +19,9 @@ const CricketSection = () => {
         time: tempSplit[1],
         gameId: ele?.gameId,
         odds: [
-          { key: "1", value: ele?.back1, extra: ele?.back11, color: "#add8e6" },
-          { key: "2", value: ele?.back12, extra: ele?.lay1, color: "#ffc0cb" },
-          { key: "3", value: ele?.lay11, extra: ele?.lay12, color: "#add8e6" },
+          { key: "1", value: ele?.back1, extra: ele?.back11, color: "rgba(50, 163, 188, 1)" },
+          { key: "2", value: ele?.back12, extra: ele?.lay1, color: "rgba(200, 109, 220, 1)" },
+          { key: "3", value: ele?.lay11, extra: ele?.lay12, color: "rgba(50, 163, 188, 1)" },
         ],
       };
       return obj;
@@ -59,7 +59,7 @@ const CricketSection = () => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ margin: "16px" }}>
+      <div>
         <div className={styles.tableWrapper}>
           <PlayCircleOutlined
             style={{ fontSize: "24px", marginRight: "16px" }}
@@ -72,7 +72,6 @@ const CricketSection = () => {
             <div onClick={() => handleRowClick(item?.gameId)} key={item.key} className={styles.tableHeader}>
               <div
                 style={{
-                  flex: 2,
                   marginRight: "16px",
                   display: "flex",
                   justifyContent: "space-between",
@@ -80,12 +79,12 @@ const CricketSection = () => {
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0, 25)}...` : item?.match}</div>
+                  <div style={{ color: "white", fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0, 25)}...` : item?.match}</div>
                   <div style={{ color: "#888", fontSize: "12px" }}>
                     {item?.league?.length > 25 ? `${item?.league?.substr(0, 25)}...` : item?.league}
                   </div>
                 </div>
-                <div>
+                <div style={{ color: "white" }}>
                   {item.status === "live" && (
                     <Badge status="success" style={{ marginRight: 8 }} />
                   )}
@@ -93,38 +92,38 @@ const CricketSection = () => {
                 </div>
               </div>
 
-             
 
-              <Row gutter={8} style={{ flex: 3 }}>
+
+              <Row gutter={8} style={{ marginTop: "2vh" , gap:"2vh"  , display:"flex" , justifyContent:"space-between"}} >
                 {item.odds.map((odd: any) => (
                   <>
                     <Col
-                      span={4}
+                      span={3}
                       key={odd.key}
                       style={{
                         background: odd.color,
                         padding: "8px",
-                        border: "1px solid white",
                         textAlign: "center",
+                        borderRadius:"2vh"
                       }}
                     >
-                      <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                      <div style={{ fontSize: "10px", color: "#666" }}>
+                      <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
                     </Col>
                     <Col
-                      span={4}
+                      span={3}
                       key={odd.key}
                       style={{
                         background: odd.color,
                         padding: "8px",
-                        border: "1px solid white",
                         textAlign: "center",
+                        borderRadius:"2vh"
                       }}
                     >
-                      <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                      <div style={{ fontSize: "10px", color: "#666" }}>
+                      <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
                     </Col>

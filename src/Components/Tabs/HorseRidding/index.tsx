@@ -10,9 +10,9 @@ const horseRidingData = [
     date: "25 Nov",
     time: "4:00 PM",
     odds: [
-      { key: "1", value: "2.5", extra: "8.9", color: "#add8e6" },
-      { key: "X", value: "3.1", extra: "10.7", color: "#ffc0cb" },
-      { key: "2", value: "4.2", extra: "7.2", color: "#add8e6" },
+      { key: "1", value: "2.5", extra: "8.9", color: "rgba(50, 163, 188, 1)" },
+      { key: "X", value: "3.1", extra: "10.7", color: "rgba(200, 109, 220, 1)" },
+      { key: "2", value: "4.2", extra: "7.2", color: "rgba(50, 163, 188, 1)" },
     ],
   },
   {
@@ -23,16 +23,16 @@ const horseRidingData = [
     date: "27 Nov",
     time: "5:30 PM",
     odds: [
-      { key: "1", value: "3.0", extra: "1.2", color: "#add8e6" },
-      { key: "X", value: "2.8", extra: "1.9", color: "#ffc0cb" },
-      { key: "2", value: "5.0", extra: "3.2", color: "#add8e6" },
+      { key: "1", value: "3.0", extra: "1.2", color: "rgba(50, 163, 188, 1)" },
+      { key: "X", value: "2.8", extra: "1.9",  color: "rgba(200, 109, 220, 1)" },
+      { key: "2", value: "5.0", extra: "3.2", color: "rgba(50, 163, 188, 1)" },
     ],
   },
 ];
 
 const HorseRidding = () => {
   return (
-    <div style={{ margin: "16px" }}>
+    <div>
       <div className={styles.tableWrapper}>
         <PlayCircleOutlined style={{ fontSize: "24px", marginRight: "16px" }} />
         <h3 style={{ margin: 0 }}>Horse Ridding</h3>
@@ -43,7 +43,6 @@ const HorseRidding = () => {
           <div key={item.key} className={styles.tableHeader}>
             <div
               style={{
-                flex: 2,
                 marginRight: "16px",
                 display: "flex",
                 justifyContent: "space-between",
@@ -51,7 +50,7 @@ const HorseRidding = () => {
               }}
             >
               <div>
-                <div style={{ fontWeight: "bold" }}>
+                <div style={{ fontWeight: "bold" ,  color: "white", }}>
                   {item?.match?.length > 25
                     ? `${item?.match?.substr(0, 25)}...`
                     : item?.match}
@@ -62,7 +61,7 @@ const HorseRidding = () => {
                     : item?.league}
                 </div>
               </div>
-              <div>
+              <div style={{ color: "white", }}>
                 {item.status === "live" && (
                   <Badge status="success" style={{ marginRight: 8 }} />
                 )}
@@ -70,36 +69,36 @@ const HorseRidding = () => {
               </div>
             </div>
 
-            <Row gutter={8} style={{ flex: 3 }}>
+            <Row gutter={8} style={{ marginTop: "2vh" , gap:"2vh"  , display:"flex" , justifyContent:"space-between"}}>
               {item.odds.map((odd) => (
                 <>
                   <Col
-                    span={4}
+                    span={3}
                     key={odd.key}
                     style={{
                       background: odd.color,
                       padding: "8px",
-                      border: "1px solid white",
                       textAlign: "center",
+                       borderRadius:"2vh"
                     }}
                   >
-                    <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>
+                    <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                    <div style={{ fontSize: "10px", color: "white" }}>
                       {odd.extra}
                     </div>
                   </Col>
                   <Col
-                    span={4}
+                    span={3}
                     key={odd.key}
                     style={{
                       background: odd.color,
                       padding: "8px",
-                      border: "1px solid white",
                       textAlign: "center",
+                      borderRadius:"2vh"
                     }}
                   >
-                    <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>
+                    <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                    <div style={{ fontSize: "10px", color: "white" }}>
                       {odd.extra}
                     </div>
                   </Col>
