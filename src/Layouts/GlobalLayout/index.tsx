@@ -6,7 +6,8 @@ import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
-import { MessageOutlined } from "@ant-design/icons";
+import icon from "../../assets/Chat-component.png"
+import ID from "../../assets/getID.png"
 
 const { Sider, Content, Header } = Layout;
 
@@ -42,12 +43,12 @@ const GlobalLayout = () => {
       style={{
         height: "100vh",
         width: "100vw",
-        background: "black",
+        background: "rgba(12, 46, 55, 1)",
       }}
     >
       <Header
         style={{
-          background: "black",
+          background: "rgba(12, 46, 55, 1)",
           position: "fixed",
           top: 0,
           width: "100vw",
@@ -66,6 +67,10 @@ const GlobalLayout = () => {
               background: "rgba(12, 46, 55, 1)",
               borderRadius: "3vh",
               margin: "1rem",
+              height: "85vh",
+              overflowY: "scroll",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
           >
             <SideBar />
@@ -75,7 +80,7 @@ const GlobalLayout = () => {
         <Content
           style={{
             overflow: "auto",
-            background: "transparent",
+            background: "rgba(12, 46, 55, 1)",
           }}
           className={styles.content_wrapper}
         >
@@ -99,26 +104,28 @@ const GlobalLayout = () => {
         )}
       </Layout>
 
-      <Button
-        type="primary"
-        shape="circle"
-        icon={<MessageOutlined />}
-        style={{
-          position: "fixed",
-          bottom: "5rem",
-          left: "2rem",
-          zIndex: 1100,
-          backgroundColor: "#1890ff",
-        }}
+      <div
+        className={styles.animated_button}
         onClick={() => setIsChatVisible(!isChatVisible)}
-      />
+
+      >
+        <img style={{ height: "50%", width: "50%" }} src={icon}></img>
+      </div>
+
+      <div
+        className={styles.animated_id}
+
+      >
+        <img style={{ height: "50%", width: "50%" }} src={ID}></img>
+      </div>
+
 
       {isChatVisible && (
         <div
           style={{
             position: "fixed",
-            bottom: "5rem",
-            left: "2rem",
+            bottom: "0rem",
+            right: "0rem",
             width: "300px",
             height: "400px",
             background: "white",

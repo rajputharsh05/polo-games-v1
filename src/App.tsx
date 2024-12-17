@@ -10,13 +10,13 @@ function App() {
       theme={{
        token: {
         // Seed Token
-        colorPrimary: '#940101',
+        colorPrimary: 'white',
         borderRadius: 2,
-        colorText:"red",
+        colorText:"white",
         lineWidth:0,
 
         // Alias Token
-        colorBgContainer: 'rgba(21, 21, 21, 1)',
+        colorBgContainer: 'background: linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%);',
       },
     }}
       >

@@ -1,6 +1,5 @@
 import { Layout, Menu } from "antd";
 import {
-  HomeOutlined,
   PlayCircleOutlined,
   TrophyOutlined,
   RadarChartOutlined,
@@ -13,74 +12,107 @@ const { Sider } = Layout;
 const SideBar = () => {
   const menuItems: any = [
     {
-      key: "home",
-      icon: <HomeOutlined />,
-      label: "Home",
-    },
-    {
       key: "in-play",
-      icon: <PlayCircleOutlined />,
+      icon: <PlayCircleOutlined />, // Replace with correct icon
       label: "In Play",
     },
     {
-      key: "separator",
-      type: "group",
-      label: (
-        <div
-          style={{
-            height: "1px",
-            background: "#dcdcdc",
-            margin: "1px 0",
-          }}
-        />
-      ),
-    },
-    {
       key: "cricket",
-      icon: <TrophyOutlined />,
+      icon: <TrophyOutlined />, // Replace with correct icon
       label: "Cricket",
-      children: [
-        { key: "cricket-odi", label: "One Day Internationals" },
-        { key: "cricket-t20", label: "Women’s International Twenty20 Matches" },
-        { key: "cricket-t10", label: "Abu Dhabi T10" },
-        { key: "cricket-league", label: "Global Super League T20" },
-      ],
-    },
-    {
-      key: "soccer",
-      icon: <RadarChartOutlined />,
-      label: "Soccer",
-      children: [
-        { key: "soccer-premier", label: "Premier League" },
-        { key: "soccer-champions", label: "Champions League" },
-        { key: "soccer-worldcup", label: "World Cup" },
-      ],
     },
     {
       key: "tennis",
-      icon: <RadarChartOutlined />,
+      icon: <TrophyOutlined />, // Replace with correct icon
       label: "Tennis",
-      children: [
-        { key: "tennis-grand-slam", label: "Grand Slam" },
-        { key: "tennis-atp", label: "ATP Tours" },
-        { key: "tennis-wta", label: "WTA Tours" },
-      ],
+    },
+    {
+      key: "soccer",
+      icon: <RadarChartOutlined />, // Replace with correct icon
+      label: "Soccer",
     },
     {
       key: "horse-racing",
-      icon: <TrophyOutlined />,
+      icon: <TrophyOutlined />, // Replace with correct icon
       label: "Horse Racing",
-      children: [
-        { key: "horse-racing-local", label: "Local Races" },
-        { key: "horse-racing-international", label: "International Races" },
-      ],
+    },
+    {
+      key: "rugby-union",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Rugby Union",
+    },
+    {
+      key: "golf",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Golf",
+    },
+    {
+      key: "esports",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Esports",
+    },
+    {
+      key: "mma",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "MMA",
+    },
+    {
+      key: "gaelic-games",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Gaelic Games",
+    },
+    {
+      key: "volleyball",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Volleyball",
+    },
+    {
+      key: "handball",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Handball",
+    },
+    {
+      key: "australian-rules",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Australian Rules",
+    },
+    {
+      key: "ice-hockey",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Ice Hockey",
+    },
+    {
+      key: "snooker",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Snooker",
+    },
+    {
+      key: "darts",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Darts",
+    },
+    {
+      key: "cycling",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Cycling",
+    },
+    {
+      key: "special-bets",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Special Bets",
+    },
+    {
+      key: "table-tennis",
+      icon: <TrophyOutlined />, // Replace with correct icon
+      label: "Table Tennis",
     },
   ];
+  
 
   return (
     <Sider
       style={{
-        background: "rgba(21, 21, 21, 1)",
+        background: 'linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)',
         padding:"1vh"
       }}
     >

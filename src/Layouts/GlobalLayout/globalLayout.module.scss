@@ -23,3 +23,92 @@
     transform: translateY(0);
   }
 }
+
+
+// Define Keyframe Animations
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-20px);
+  }
+  60% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@mixin random-animation($duration: 2s) {
+  $animations: bounce;
+  $random-animation: nth($animations, random(length($animations)));
+
+  animation: #{$random-animation} #{$duration} infinite;
+}
+
+
+@mixin random-animation-id($duration: 2s) {
+  $animations: shake;
+  $random-animation: nth($animations, random(length($animations)));
+
+  animation: #{$random-animation} #{$duration} infinite;
+}
+// Button Style
+.animated_button {
+  position: fixed;
+  bottom: 0rem;
+  right: 0rem;
+  z-index: 1100;
+  border-radius: 1vh;
+  padding: 2vh;
+
+  // Apply Random Animation
+  @include random-animation(2s);
+}
+
+.animated_id {
+  position: fixed;
+  bottom: 0rem;
+  left: 13rem;
+  z-index: 1100;
+  border-radius: 1vh;
+  padding: 2vh;
+
+  // Apply Random Animation
+  @include random-animation-id(1s);
+}
