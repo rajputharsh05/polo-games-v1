@@ -119,11 +119,11 @@ const SliderComponent = () => {
                     <img src={images[randomIndex1].src} alt={images[randomIndex1].alt} className="game-image" />
                 </Col>
             </Row>
-            <Row>
+            {/* <Row>
                 <Col span={8}><img src={images[randomIndex2].src} alt={images[randomIndex2].alt} className="game-image" /></Col>
                 <Col span={8}><img src={images[randomIndex3].src} alt={images[randomIndex3].alt} className="game-image" /></Col>
                 <Col span={8}><img src={images[randomIndex4].src} alt={images[randomIndex4].alt} className="game-image" /></Col>
-            </Row>
+            </Row> */}
         </div>
     );
 };

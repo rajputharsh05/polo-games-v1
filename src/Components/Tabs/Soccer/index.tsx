@@ -22,9 +22,9 @@ const ModifyData = (data: []) => {
       time: ele?.stime,
       gameId:ele?.gmid,
       odds: [
-        { key: "1", value: ele?.section[0]?.odds[0]?.odds, extra: ele?.section[0]?.odds[1]?.odds, color: "#add8e6" },
-        { key: "2", value: ele?.section[1]?.odds[0]?.odds, extra: ele?.section[1]?.odds[1]?.odds, color: "#ffc0cb" },
-        { key: "3", value: ele?.section[2]?.odds[0]?.odds, extra: ele?.section[2]?.odds[1]?.odds, color: "#add8e6" },
+        { key: "1", value: ele?.section[0]?.odds[0]?.odds, extra: ele?.section[0]?.odds[1]?.odds, color: "rgba(50, 163, 188, 1)"  },
+        { key: "2", value: ele?.section[1]?.odds[0]?.odds, extra: ele?.section[1]?.odds[1]?.odds,  color: "rgba(200, 109, 220, 1)" },
+        { key: "3", value: ele?.section[2]?.odds[0]?.odds, extra: ele?.section[2]?.odds[1]?.odds, color: "rgba(50, 163, 188, 1)"  },
       ],
     };
     console.log(obj);
@@ -63,7 +63,7 @@ useEffect(() => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ margin: "16px" }}>
+      <div>
         <div className={styles.tableWrapper}>
           <PlayCircleOutlined
             style={{ fontSize: "24px", marginRight: "16px" }}
@@ -76,19 +76,18 @@ useEffect(() => {
             <div onClick={() => handleRowClick(item?.gameId)} key={item.key} className={styles.tableHeader}>
               <div
                 style={{
-                  flex: 2,
                   marginRight: "16px",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
               >
                 <div>
-                <div style={{ fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0,25)}...` :item?.match}</div>
-                  <div style={{ color: "#888", fontSize: "12px" }}>
+                <div style={{color: "white", fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0,25)}...` :item?.match}</div>
+                  <div style={{ color: "white", fontSize: "12px" }}>
                     {item?.league?.length > 25 ? `${item?.league?.substr(0,25)}...` :item?.league}
                   </div>
                 </div>
-                <div>
+                <div style={{color: "white"}}>
                   {item.status === "live" && (
                     <Badge status="success" style={{ marginRight: 8 , whiteSpace: "nowrap" }} />
                   )}
@@ -97,36 +96,36 @@ useEffect(() => {
               </div>
 
 
-              <Row gutter={8} style={{ flex: 3 }}>
+              <Row gutter={8} style={{ marginTop: "2vh" , gap:"2vh"  , display:"flex" , justifyContent:"space-between"}}>
                 {item.odds.map((odd : any) => (
                   <>
                     <Col
-                      span={4}
+                      span={3}
                       key={odd.key}
                       style={{
                         background: odd.color,
                         padding: "8px",
-                        border: "1px solid white",
+                        borderRadius:"2vh",
                         textAlign: "center",
                       }}
                     >
-                      <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                      <div style={{ fontSize: "10px", color: "#666" }}>
+                      <div style={{ color: "white" ,fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
                     </Col>
                     <Col
-                      span={4}
+                      span={3}
                       key={odd.key}
                       style={{
                         background: odd.color,
                         padding: "8px",
-                        border: "1px solid white",
+                        borderRadius:"2vh",
                         textAlign: "center",
                       }}
                     >
-                      <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                      <div style={{ fontSize: "10px", color: "#666" }}>
+                      <div style={{ color: "white" ,fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
                     </Col>

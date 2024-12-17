@@ -1,0 +1,7 @@
+.trending_container {
+    scrollbar-width: none; /* Firefox */
+}
+
+.trending_container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Edge */
+}

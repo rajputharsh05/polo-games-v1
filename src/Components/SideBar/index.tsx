@@ -80,8 +80,8 @@ const SideBar = () => {
   return (
     <Sider
       style={{
-        background: "#333",
-        borderRight: "1px solid #dcdcdc",
+        background: "rgba(21, 21, 21, 1)",
+        padding:"1vh"
       }}
     >
       <Menu
