@@ -23,20 +23,7 @@
     margin-right: 4vw;
   }
   
-  .button {
-    background-color: #d4af37;
-    color: black;
-    font-weight: 600;
-    height: 5vh; 
-    width: auto; 
-    padding: 0 1rem;
-    border: 1px solid white;
-    white-space: nowrap; 
-  }
-  .button:hover{
-    background-color: #d4af37 !important;
-  }
-  
+ 
 
   .custom_tabs .ant-tabs-nav {
     display: flex;
@@ -112,3 +99,32 @@
     }
   }
   
+
+  .searchBarWrapper{
+    background-color: rgba(255, 255, 255, 0.1);
+    height:50%;
+    display: flex;
+    align-items: center;
+    padding: 2vh;
+    border-radius: 3vh;
+  }
+
+  .searchBar{
+    background: transparent;
+    border: 0cm;
+    outline: none
+  }
+
+  .vistorStyles{
+    height: 50%;
+    margin-left:1rem;
+    width: 10vw;
+    border: 2px solid white;
+    background: red;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding: 2vh;
+    border-radius: 2vh;
+    align-items: center;
+  }
