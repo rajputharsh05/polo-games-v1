@@ -10,7 +10,7 @@ function App() {
       theme={{
        token: {
         // Seed Token
-        colorPrimary: 'white',
+        colorPrimary: 'black',
         borderRadius: 2,
         colorText:"white",
         lineWidth:0,
