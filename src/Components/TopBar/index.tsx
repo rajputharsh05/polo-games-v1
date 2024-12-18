@@ -4,6 +4,7 @@ import { Drawer, Row } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import SideBar from "../SideBar";
 import styles from "./topbar.module.scss";
+import logo from "../../assets/MobileHeaderImg.png"
 
 const TopBar = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -60,10 +61,8 @@ const TopBar = () => {
     items.map(({ key, label, badge }: any) => (
       <div
         onClick={() => {
-          console.log("Harshhh")
-          if (badge) {
-            handleTabClick(key);
-          }
+          console.log("Harshhh");
+          handleTabClick(key);
         }}
         key={key}
         className={`${styles.topbar_item} ${
@@ -82,7 +81,7 @@ const TopBar = () => {
       {!isSidebarVisible && (
         <div
           className={styles.topbar_item}
-          style={{ backgroundColor: "red" }}
+          style={{ backgroundColor: "#940101" }}
           onClick={toggleDrawer}
           aria-label="Toggle Menu"
         >
@@ -104,8 +103,10 @@ const TopBar = () => {
         }}
       >
         <Row
-          style={{ width: "100%", height: "10vh", backgroundColor: "black" }}
-        />
+          style={{ width: "100%", height: "10vh", backgroundColor: "rgba(12, 46, 55, 1)" , display:"flex" , justifyContent:"center" , alignItems:"center"}}
+        >
+          <img src={logo} style={{height:"100%" , width:"80%"}}></img>
+        </Row>
         <SideBar />
       </Drawer>
     </div>
