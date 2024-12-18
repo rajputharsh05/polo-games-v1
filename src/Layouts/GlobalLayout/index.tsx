@@ -6,8 +6,10 @@ import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
-import icon from "../../assets/Chat-component.png"
-import ID from "../../assets/getID.png"
+import icon from "../../assets/Chat-component.png";
+import ID from "../../assets/getID.png";
+import MobileHeader from "../../Components/MobileHeader";
+import TopBar from "../../Components/TopBar";
 
 const { Sider, Content, Header } = Layout;
 
@@ -21,22 +23,22 @@ const GlobalLayout = () => {
   useEffect(() => {
     const handleResize = () => {
       const currentWidth = window.innerWidth;
-      console.log(windowWidth);
       setWindowWidth(currentWidth);
-
+      console.log(windowWidth)
+  
       if (currentWidth < 768) {
         setIsSidebarVisible(false);
       } else {
         setIsSidebarVisible(true);
       }
     };
-
+    handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+  
 
   return (
     <Layout
@@ -57,7 +59,13 @@ const GlobalLayout = () => {
           padding: "0px 0px",
         }}
       >
-        <HeaderComponent></HeaderComponent>
+        {isSidebarVisible ? (
+          <HeaderComponent></HeaderComponent>
+        ) : (
+          <>
+            <MobileHeader></MobileHeader>
+          </>
+        )}
       </Header>
 
       <Layout style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}>
@@ -84,6 +92,7 @@ const GlobalLayout = () => {
           }}
           className={styles.content_wrapper}
         >
+          {!isSidebarVisible && <TopBar></TopBar>}
           <div>{outlet}</div>
 
           <DynamincFooter></DynamincFooter>
@@ -107,18 +116,13 @@ const GlobalLayout = () => {
       <div
         className={styles.animated_button}
         onClick={() => setIsChatVisible(!isChatVisible)}
-
       >
         <img style={{ height: "50%", width: "50%" }} src={icon}></img>
       </div>
 
-      <div
-        className={styles.animated_id}
-
-      >
+      <div className={styles.animated_id}>
         <img style={{ height: "50%", width: "50%" }} src={ID}></img>
       </div>
-
 
       {isChatVisible && (
         <div
