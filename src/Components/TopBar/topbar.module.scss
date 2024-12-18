@@ -10,6 +10,7 @@
   overflow-x: auto; 
   -ms-overflow-style: none; 
   scrollbar-width: none; 
+  z-index: 2000;
 
   
   &::-webkit-scrollbar {

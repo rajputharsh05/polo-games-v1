@@ -8,6 +8,7 @@ import GameGallery from "../Components/GameGallery";
 import CasinoGallery from "../Components/CasinoGallery";
 import SliderComponent from "../Components/Slider";
 import MatchPage from "../Components/MatchPage";
+import Trending from "../Components/Trending";
 
 interface RouteBase {
   path: string;
@@ -111,6 +112,14 @@ export const globalRoutes = [
     element:
       <>
         <HorseRidding></HorseRidding>
+        <Footer></Footer>
+      </>
+  },
+  {
+    path: "news",
+    element:
+      <>
+        <Trending></Trending>
         <Footer></Footer>
       </>
   },
