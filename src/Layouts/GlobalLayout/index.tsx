@@ -105,6 +105,9 @@ const GlobalLayout = () => {
               borderRadius: "3vh",
               border: "1px solid black",
               margin: "1rem",
+              overflow:"scroll",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
             }}
             width="25vw"
           >
