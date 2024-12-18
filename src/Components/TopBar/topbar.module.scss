@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: #fff;
+  background-color: rgba(12, 46, 55, 1);
   border-bottom: 1px solid #dcdcdc;
   padding: 0 10px;
   height: 70px;
@@ -23,13 +23,14 @@
   margin-right: 16px;
   font-size: 16px;
   font-weight: 500;
-  color: #333;
+  color: white;
   cursor: pointer;
   transition: all 0.3s ease;
   border-radius: 4px;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+  background-color: black;
+  border : 2px solid linear-gradient(180deg, #DC3939 0%, #2340FF 100%);
  
   &:hover {
     background-color: #f0f0f0;
