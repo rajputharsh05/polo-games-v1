@@ -8,7 +8,7 @@ import GameGallery from "../Components/GameGallery";
 import CasinoGallery from "../Components/CasinoGallery";
 import SliderComponent from "../Components/Slider";
 import MatchPage from "../Components/MatchPage";
-import Trending, { Blogs, News, Reels } from "../Components/Trending";
+import { Blogs, News, Reels } from "../Components/Trending";
 import AdminPage from "../Components/Admin";
 
 interface RouteBase {

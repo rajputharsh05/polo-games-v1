@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Modal, Row, Col, Button, Upload, List, Form, Input } from "antd";
 import { UploadOutlined, DeleteFilled, PlusOutlined } from "@ant-design/icons";
 import { CreateOutlined, ImageAspectRatio, RowingOutlined } from "@mui/icons-material";
