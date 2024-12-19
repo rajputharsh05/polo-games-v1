@@ -1,13 +1,16 @@
 .trending_container {
-    scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; /* Firefox */
 }
 
 .trending_container::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, and Edge */
+  display: none; /* Chrome, Safari, and Edge */
 }
 
-
 [class^="ant-tabs"] {
-    color: white !important;
-  }
+  color: white !important;
+}
   
+.blogs{
+    color: white !important;
+}
+
