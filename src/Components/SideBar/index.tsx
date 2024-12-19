@@ -5,11 +5,15 @@ import {
   RadarChartOutlined,
 } from "@ant-design/icons";
 import styles from "./sidebar.module.scss";
+import { useNavigate } from "react-router-dom";
 
 
 const { Sider } = Layout;
 
 const SideBar = () => {
+
+  const Navigation = useNavigate();
+
   const menuItems: any = [
     {
       key: "in-play",
@@ -109,6 +113,13 @@ const SideBar = () => {
   ];
   
 
+  const handleOnClick = (data : any) => {
+    const res = ["in-play" ,"cricket" , "tennis" , "soccer","horse-racing"].findIndex((ele) => ele === data?.key);
+    if( res != -1){
+      Navigation(`/${data?.key}`)
+    }
+  }
+
   return (
     <Sider
       style={{
@@ -122,6 +133,7 @@ const SideBar = () => {
         defaultSelectedKeys={["home"]}
         defaultOpenKeys={[]}
         items={menuItems}
+        onClick={handleOnClick}
         className={styles.sidebarMenu}
       />
     </Sider>
