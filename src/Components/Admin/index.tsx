@@ -19,7 +19,6 @@ import {
 import styles from "./admin.module.scss";
 import img from "../../assets/Side-ad.png";
 import image from "../../assets/image.png";
-import AppCarousel from "../Carousal";
 import axios from "axios";
 
 const AdminPage = () => {
