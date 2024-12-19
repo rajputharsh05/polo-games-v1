@@ -1,0 +1,30 @@
+.adminWrapper{
+    height: 88vh;
+    background-color: rgba(12, 46, 55, 1);
+    display: flex;
+}
+
+.contentPage{
+    width: 97%;
+    height: 100%;
+    color: white;
+    padding: 2vw;
+}
+
+.AdminOverView{
+    background: linear-gradient(90deg, rgba(12, 46, 55, 0.62) -56.52%, rgba(0, 0, 0, 0.62) 100%);
+    height: 18vh;
+    width: 100%;
+    border-radius: 2vh;
+    color: white;
+    padding: 1vh;
+}
+
+.SideImage{
+    width: 3%;
+    height: 100%;
+}
+
+.Btn:hover{
+    cursor: pointer;
+}

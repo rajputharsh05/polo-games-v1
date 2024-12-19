@@ -2,7 +2,7 @@ import { Tabs, Col, Row } from "antd";
 import info from "./data.json";
 import styles from "./trending.module.scss";
 
-const News = () => (
+export const News = () => (
   <div
     style={{
       padding: "1vh",
@@ -45,7 +45,7 @@ const News = () => (
   </div>
 );
 
-const Blogs = () => (
+export const Blogs = () => (
   <div
     style={{
       padding: "1vh",
@@ -58,7 +58,7 @@ const Blogs = () => (
   </div>
 );
 
-const Reels = () => (
+export const Reels = () => (
   <div
     style={{
       padding: "1vh",
