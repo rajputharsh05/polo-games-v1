@@ -8,22 +8,18 @@ import GameGallery from "../Components/GameGallery";
 import CasinoGallery from "../Components/CasinoGallery";
 import SliderComponent from "../Components/Slider";
 import MatchPage from "../Components/MatchPage";
-import Trending from "../Components/Trending";
+import Trending, { Blogs, News, Reels } from "../Components/Trending";
+import AdminPage from "../Components/Admin";
 
 interface RouteBase {
   path: string;
   element: ReactNode;
 }
 
-interface ProctectedRoutes extends RouteBase {
-  roles: string[];
-}
-
-export const proctectedRoutes: ProctectedRoutes[] = [
+export const proctectedRoutes: RouteBase[] = [
   {
-    path: "/",
-    element: <></>,
-    roles: [],
+    path: "/admin",
+    element: <AdminPage></AdminPage>
   },
 ];
 
@@ -119,7 +115,23 @@ export const globalRoutes = [
     path: "news",
     element:
       <>
-        <Trending></Trending>
+       <News></News>
+        <Footer></Footer>
+      </>
+  },
+  {
+    path: "blogs",
+    element:
+      <>
+        <Blogs></Blogs>
+        <Footer></Footer>
+      </>
+  },
+  {
+    path: "reels",
+    element:
+      <>
+        <Reels></Reels>
         <Footer></Footer>
       </>
   },

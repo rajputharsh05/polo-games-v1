@@ -113,7 +113,8 @@ const SideBar = () => {
     <Sider
       style={{
         background: 'linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)',
-        padding:"1vh"
+        padding:"1vh",
+        color:"white !important"
       }}
     >
       <Menu
