@@ -58,11 +58,11 @@ const TopBar = () => {
 
   const menuItems = [
     { key: "home", label: "Home", badge: -1 },
-    { key: "in-play", label: "In Play", badge: 8 },
-    { key: "news", label: "News", badge: 5 },
-    { key: "blogs", label: "Blogs", badge: 2 },
-    { key: "reels", label: "Reels", badge: 1 },
-    { key: "admin", label: "Admin", badge: 69 },
+    { key: "in-play", label: "In Play", badge: -1 },
+    { key: "news", label: "News", badge: -1 },
+    { key: "blogs", label: "Blogs", badge: -1 },
+    { key: "reels", label: "Reels", badge: -1 },
+    { key: "admin", label: "Admin", badge: -1 },
     { key: "chat", label: "Chat", badge: -1 },
     { key: "demo-id", label: "DemoId", badge: -1 },
     { key: "call-support", label: "Call Support", badge: -1 },
@@ -97,7 +97,6 @@ const TopBar = () => {
     items.map(({ key, label, badge }: any) => (
       <div
         onClick={() => {
-          console.log("Harshhh");
           handleTabClick(key);
         }}
         key={key}
