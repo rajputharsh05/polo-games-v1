@@ -77,7 +77,7 @@ const CasinoGallery = () => {
       <TabPane tab="Live Casino" key="live">
         <Row gutter={[16, 16]}>
           {liveImages.map((image, index) => (
-            <Col key={index} xs={8} sm={8} md={8} lg={4} xl={4}>
+            <Col key={index} xs={12} sm={12} md={12} lg={8} xl={8}>
               <Card
                 hoverable
                 cover={<img alt={image.title} src={image.src} className='live-casino-image' />}
@@ -91,7 +91,7 @@ const CasinoGallery = () => {
       <TabPane tab="Virtual Casino" key="virtual">
         <Row gutter={[16, 16]}>
           {virtualImages.map((image, index) => (
-            <Col key={index} xs={8} sm={8} md={8} lg={4} xl={4}>
+            <Col key={index} xs={12} sm={12} md={12} lg={8} xl={8}>
               <Card
                 hoverable
                 cover={<img alt={image.title} src={image.src} className='live-casino-image' />}

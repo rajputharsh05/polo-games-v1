@@ -42,3 +42,32 @@
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+[class^="ant-table"] {
+  color: white !important;
+  background: inherit !important;
+}
+
+[class^="ant-table-thead"] {
+  background: linear-gradient(
+    90deg,
+    rgba(12, 46, 55, 0.62) -56.52%,
+    rgba(0, 0, 0, 0.62) 100%
+) !important;
+}
+@media (max-width: 768px) {
+  .adminWrapper {
+    padding: 10px;
+  }
+
+  .Btn {
+    height: 12vh !important;
+    font-size: 14px;
+  }
+
+  .contentPage img {
+    height: auto;
+    max-width: 100%;
+  }
+}
+
