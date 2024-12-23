@@ -19,10 +19,7 @@ import {
   PlusCircleOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import {
-  ImageAspectRatio,
-  RowingOutlined,
-} from "@mui/icons-material";
+import { ImageAspectRatio, RowingOutlined } from "@mui/icons-material";
 import styles from "./admin.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import image from "../../assets/image.png";
@@ -41,7 +38,7 @@ const AdminPage = () => {
   const [form] = Form.useForm();
 
   const openModal = (type: any) => {
-    console.log(modalVisible)
+    console.log(modalVisible);
     setModalType(type);
     setModalVisible(true);
   };
@@ -149,7 +146,7 @@ const AdminPage = () => {
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getBlogs();
-        setIsAddBlogs(false)
+        setIsAddBlogs(false);
         form.resetFields();
       }
     } catch (error) {
@@ -159,6 +156,7 @@ const AdminPage = () => {
   };
 
   const handleAgentSubmit = async (values: any) => {
+    console.log("Heyyy")
     try {
       const response = await axios.post(
         "http://localhost:8000/user/create_user",
@@ -314,157 +312,100 @@ const AdminPage = () => {
     <>
       <div className={styles.adminWrapper}>
         <div className={styles.contentPage}>
-          <Row className={styles.AdminOverView} gutter={[20, 20]}>
+          <Row
+          className={styles.AdminOverView}
+            style={{
+              display: "flex",
+              flexWrap: "wrap", // Ensures the layout adapts for smaller screens
+              padding: "1rem",
+            }}
+          >
             <Col
               span={20}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                fontFamily: "poppins",
-                fontSize: "22px",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "clamp(16px, 2vw, 22px)", // Dynamically adjust font size
                 fontWeight: "600",
+                marginBottom: "1rem",
               }}
             >
-              <Row>Hi Hardy !</Row>
-              <Row>Manage All your Blogs , Agents and News from here.</Row>
+              <Row>Hi Hardy!</Row>
+              <Row>Manage All your Blogs, Agents, and News from here.</Row>
               <Row
-                style={{ color: "red", fontWeight: "600", fontSize: "25px" }}
+                style={{
+                  color: "red",
+                  fontWeight: "600",
+                  fontSize: "clamp(20px, 3vw, 25px)", // Adjust font size for "ADMIN"
+                }}
               >
                 ADMIN
               </Row>
             </Col>
-            <Col span={4} style={{ height: "100%" }}>
-              <img style={{ height: "100%" }} src={image}></img>
+            <Col
+              span={4}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}
+            >
+              <img
+                style={{
+                  height: "auto",
+                  width: "clamp(50px, 20%, 100px)", // Responsive image sizing
+                  maxHeight: "100%",
+                }}
+                src={image}
+                alt="Admin Overview"
+              />
             </Col>
           </Row>
+
           <Row
             style={{ marginTop: "3vh" }}
-            justify={"space-between"}
-            align={"middle"}
-            gutter={[20, 20]}
+            justify="space-between"
+            gutter={[16, 16]}
           >
-            {/* <Col span={12}>
-                            <AppCarousel></AppCarousel>
-            </Col> */}
-            <Col
-              onClick={() => openModal("images")}
-              className={styles.Btn}
-              span={4}
-              style={{
-                height: "15vh",
-                width: "100%",
-                background:
-                  modalType === "images"
-                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
-                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
-                borderRadius: "2vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Row>
-                <ImageAspectRatio
-                  style={{ color: "78B771" }}
-                ></ImageAspectRatio>
-              </Row>
-              <Row>Manage Banners</Row>
-            </Col>
-            <Col
-              onClick={() => openModal("agents")}
-              className={styles.Btn}
-              span={4}
-              style={{
-                height: "15vh",
-                width: "100%",
-                background:
-                  modalType === "agents"
-                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
-                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
-                borderRadius: "2vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Row>
-                <RowingOutlined style={{ color: "78B771" }}></RowingOutlined>
-              </Row>
-              <Row>Manage Clients</Row>
-            </Col>
-            <Col
-              onClick={() => openModal("blogs")}
-              className={styles.Btn}
-              span={4}
-              style={{
-                height: "15vh",
-                width: "100%",
-                background:
-                  modalType === "blogs"
-                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
-                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
-                borderRadius: "2vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Row>
-                <DeleteFilled style={{ color: "#78B771" }}></DeleteFilled>
-              </Row>
-              <Row>Manage Blogs</Row>
-            </Col>
-            {/* <Col
-              onClick={() => openModal("createBlog")}
-              className={styles.Btn}
-              span={4}
-              style={{
-                height: "15vh",
-                width: "100%",
-                background:
-                  modalType === "createBlog"
-                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
-                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
-                borderRadius: "2vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Row>
-                <CreateOutlined style={{ color: "#FC0989" }}></CreateOutlined>
-              </Row>
-              <Row>Create Blogs</Row>
-            </Col> */}
-            <Col
-              onClick={() => openModal("manageReels")}
-              className={styles.Btn}
-              span={4}
-              style={{
-                height: "15vh",
-                width: "100%",
-                background:
-                  modalType === "manageReels"
-                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
-                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
-                borderRadius: "2vh",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Row>
-                <VideoCameraOutlined style={{ color: "#FC0989" }} />
-              </Row>
-              <Row>Manage Reels</Row>
-            </Col>
+            {[
+              {
+                key: "images",
+                icon: <ImageAspectRatio />,
+                label: "Manage Banners",
+              },
+              {
+                key: "agents",
+                icon: <RowingOutlined />,
+                label: "Manage Clients",
+              },
+              { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
+              {
+                key: "manageReels",
+                icon: <VideoCameraOutlined />,
+                label: "Manage Reels",
+              },
+            ].map((tab) => (
+              <Col
+                key={tab.key}
+                onClick={() => openModal(tab.key)}
+                className={`${styles.Btn} ${
+                  modalType === tab.key ? styles.active : styles.inactive
+                }`}
+                span={5}
+              >
+                <Row justify={"center"}>
+                  <div className={styles.Icon}>{tab.icon}</div>
+                </Row>
+                <Row justify={"center"}>
+                  <div className={styles.Label}>{tab.label}</div>
+                </Row>
+              </Col>
+            ))}
           </Row>
+
           <Row>
             <Card style={{ width: "100%" }}>
               <div
@@ -490,7 +431,12 @@ const AdminPage = () => {
                         dataSource={uploadedImages}
                         columns={Imagecolumns}
                         rowKey="id"
-                        style={{ backgroundColor: "transparent" }}
+                        style={{
+                          backgroundColor: "transparent",
+                          overflow: "scroll",
+                          msOverflowStyle: "none", // For IE and Edge
+                          scrollbarWidth: "none",
+                        }}
                         pagination={{ pageSize: 5 }}
                       />
                     </>
@@ -518,7 +464,12 @@ const AdminPage = () => {
                       columns={columns}
                       rowKey="id" // Replace 'id' with the unique key in your data
                       pagination={{ pageSize: 10 }}
-                      style={{ backgroundColor: "transparent" }}
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
                     />
                     <Modal
                       open={isAddAgents}
@@ -640,15 +591,16 @@ const AdminPage = () => {
                             />
                           ),
                       }}
-                      style={{ backgroundColor: "transparent" }}
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
                       pagination={{ pageSize: 5 }}
                     />
                   </>
                 )}
-
-                {/* {modalType === "createBlog" && (
-                 
-                )} */}
               </div>
             </Card>
           </Row>

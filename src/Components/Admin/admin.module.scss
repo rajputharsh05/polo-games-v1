@@ -5,7 +5,7 @@
 }
 
 .contentPage {
-  width: 97%;
+  width: 100%;
   height: 100%;
   color: white;
   padding: 2vw;
@@ -22,6 +22,37 @@
   border-radius: 2vh;
   color: white;
   padding: 1vh;
+}
+
+.AdminOverView {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+
+  .content {
+    flex: 1 1 60%;
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 600;
+
+    .admin-text {
+      color: red;
+      font-weight: 600;
+      font-size: clamp(20px, 3vw, 25px);
+    }
+  }
+
+  .image {
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: clamp(50px, 20%, 100px);
+      height: auto;
+    }
+  }
 }
 
 .SideImage {
@@ -53,7 +84,7 @@
     90deg,
     rgba(12, 46, 55, 0.62) -56.52%,
     rgba(0, 0, 0, 0.62) 100%
-) !important;
+  ) !important;
 }
 @media (max-width: 768px) {
   .adminWrapper {
@@ -71,3 +102,61 @@
   }
 }
 
+// Styles for each button
+.Btn {
+  height: 15vh;
+  width: 100%;
+  border-radius: 2vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  transition: all 0.3s ease-in-out;
+
+  // Mobile responsiveness
+  @media (max-width: 768px) {
+    height: 12vh;
+    border-radius: 1.5vh;
+  }
+
+  
+  @media (max-width: 1024px) {
+    height: 13vh;
+  }
+}
+
+.active {
+  background: linear-gradient(
+    90deg,
+    rgba(12, 46, 55, 0.62) -56.52%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
+}
+
+.inactive {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(113, 113, 113, 0.1) 100%
+  );
+}
+
+// Icon color adjustments
+.Icon {
+  color: #78b771;
+  font-size: 2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1.5rem;
+  }
+}
+
+// Label styles
+.Label {
+  font-size: 1rem;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+}
