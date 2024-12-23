@@ -5,80 +5,57 @@ import {
   Col,
   Button,
   Upload,
-  List,
   Form,
   Input,
   message,
+  Card,
+  Table,
 } from "antd";
-import { UploadOutlined, DeleteFilled, PlusOutlined } from "@ant-design/icons";
 import {
-  CreateOutlined,
+  UploadOutlined,
+  DeleteFilled,
+  PlusOutlined,
+  MinusCircleOutlined,
+  PlusCircleOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
+import {
   ImageAspectRatio,
   RowingOutlined,
 } from "@mui/icons-material";
 import styles from "./admin.module.scss";
-import img from "../../assets/Side-ad.png";
+import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import image from "../../assets/image.png";
 import axios from "axios";
 
 const AdminPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(""); // Determines modal content
-  const [uploadedImages, setUploadedImages] = useState([
-    "https://picsum.photos/200",
-  ]);
+  const [modalType, setModalType] = useState("images");
+  const [uploadedImages, setUploadedImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
+  const [isAddblogs, setIsAddBlogs] = useState(false);
   const [agents, setAgents] = useState(["Agent 1", "Agent 2"]);
-  const [blogs, setBlogs] = useState([
-    {
-      title: "My First Blog",
-      content:
-        "This is my first Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Mitun Sahoooooo",
-      id: 1,
-    },
-    {
-      title: "My First Blog",
-      content:
-        "This is my first Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Mitun Sahoooooo",
-      id: 2,
-    },
-    {
-      title: "My Second Blog",
-      content:
-        "This is my Second Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Harsh Sahoooooo",
-      id: 3,
-    },
-    {
-      title: "My Second Blog",
-      content:
-        "This is my Second Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Harsh Sahoooooo",
-      id: 3,
-    },
-    {
-      title: "My Second Blog",
-      content:
-        "This is my Second Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Harsh Sahoooooo",
-      id: 3,
-    },
-    {
-      title: "My Second Blog",
-      content:
-        "This is my Second Blog I'm very happy that i'm able to create this blogs with the help of chat GPT",
-      author: "Harsh Sahoooooo",
-      id: 3,
-    },
-  ]);
+  const [imageModal, setImageModal] = useState(false);
+  const [blogs, setBlogs] = useState([]);
 
   const [form] = Form.useForm();
 
   const openModal = (type: any) => {
+    console.log(modalVisible)
     setModalType(type);
     setModalVisible(true);
+  };
+
+  const getImages = async () => {
+    try {
+      const response = await axios.get("http://localhost:8000/admin/images");
+      const data = response.data;
+      console.log(response.data);
+      setUploadedImages(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch blogs");
+    }
   };
 
   const getBlogs = async () => {
@@ -92,9 +69,50 @@ const AdminPage = () => {
     }
   };
 
- 
-  const handleImageUpload = (file: any) => {
-    setUploadedImages([...uploadedImages, URL.createObjectURL(file)]);
+  const handleImageDelete = async (id: any) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/admin/delete_image/${id}`
+      );
+      if (response?.status === 200) {
+        message.success("Banner removed Successfully");
+        getImages();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the banners");
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/admin/upload-image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getImages();
+        message.success("Banner uploaded successfully!");
+      } else {
+        message.error("Failed to upload Banner. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error uploading Banner:", error);
+      message.error(error?.response?.data?.detail);
+    } finally {
+      setImageModal(false);
+    }
+
+    // Return false to prevent Ant Design from uploading the file automatically
     return false;
   };
 
@@ -113,20 +131,14 @@ const AdminPage = () => {
 
   const handleDelete = (item: any, type: any) => {
     if (type === "images") {
-      setUploadedImages(uploadedImages.filter((img) => img !== item));
+      handleImageDelete(item?.id);
     } else if (type === "agents") {
       setAgents(agents.filter((agent) => agent !== item));
-      handleDeteleAgent(item?.phone_number)
+      handleDeteleAgent(item?.phone_number);
     } else if (type === "blogs") {
       handleBlogsDelete(item?.id);
     }
   };
-
-  //   const handleFormSubmit = (values: any) => {
-  //     setBlogs([...blogs, values.title]);
-  //     setModalVisible(false);
-  //     form.resetFields();
-  //   };
 
   const handleBlogSubmit = async (values: any) => {
     try {
@@ -137,7 +149,7 @@ const AdminPage = () => {
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getBlogs();
-        setModalVisible(false);
+        setIsAddBlogs(false)
         form.resetFields();
       }
     } catch (error) {
@@ -155,21 +167,22 @@ const AdminPage = () => {
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getAgents();
-        setModalVisible(false);
         setIsAddAgents(false);
         form.resetFields();
       }
     } catch (error) {
       console.error(error);
-      message.error("Unable to create Blog");
+      message.error("Unable to create Agent");
     }
   };
 
   const getAgents = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/user/get_all_users");
+      const response = await axios.get(
+        "http://localhost:8000/user/get_all_users"
+      );
       const data = response.data;
-      console.log(data)
+      console.log(data);
       setAgents(data);
     } catch (error) {
       console.error(error);
@@ -177,10 +190,11 @@ const AdminPage = () => {
     }
   };
 
-
-  const handleDeteleAgent = async (id : any) => {
+  const handleDeteleAgent = async (id: any) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/user/delete_user_by_phone_number/${id}`);
+      const response = await axios.delete(
+        `http://localhost:8000/user/delete_user_by_phone_number/${id}`
+      );
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
         getAgents();
@@ -189,12 +203,112 @@ const AdminPage = () => {
       console.error(error);
       message.error("Unable to delete the blog");
     }
-  } 
+  };
 
   useEffect(() => {
     getBlogs();
-    getAgents()
+    getAgents();
+    getImages();
   }, []);
+
+  const columns = [
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phone_number",
+      key: "phone_number",
+      render: (text: string) => (
+        <span style={{ color: "white" }}>{`${text}`}</span>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "agents")}
+        />
+      ),
+    },
+  ];
+
+  const Blogscolumns = [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Author",
+      dataIndex: "author",
+      key: "author",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "blogs")}
+        />
+      ),
+    },
+  ];
+
+  const Imagecolumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "File Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "content",
+      render: (_: any, record: any) => (
+        <img
+          src={record.content}
+          alt={record.name}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "images")}
+        />
+      ),
+    },
+  ];
 
   return (
     <>
@@ -232,7 +346,7 @@ const AdminPage = () => {
           >
             {/* <Col span={12}>
                             <AppCarousel></AppCarousel>
-                        </Col> */}
+            </Col> */}
             <Col
               onClick={() => openModal("images")}
               className={styles.Btn}
@@ -241,7 +355,9 @@ const AdminPage = () => {
                 height: "15vh",
                 width: "100%",
                 background:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
+                  modalType === "images"
+                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
+                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
                 borderRadius: "2vh",
                 display: "flex",
                 justifyContent: "center",
@@ -250,9 +366,11 @@ const AdminPage = () => {
               }}
             >
               <Row>
-                <ImageAspectRatio></ImageAspectRatio>
+                <ImageAspectRatio
+                  style={{ color: "78B771" }}
+                ></ImageAspectRatio>
               </Row>
-              <Row>Upload Images</Row>
+              <Row>Manage Banners</Row>
             </Col>
             <Col
               onClick={() => openModal("agents")}
@@ -262,7 +380,9 @@ const AdminPage = () => {
                 height: "15vh",
                 width: "100%",
                 background:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
+                  modalType === "agents"
+                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
+                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
                 borderRadius: "2vh",
                 display: "flex",
                 justifyContent: "center",
@@ -271,10 +391,9 @@ const AdminPage = () => {
               }}
             >
               <Row>
-                <RowingOutlined></RowingOutlined>
+                <RowingOutlined style={{ color: "78B771" }}></RowingOutlined>
               </Row>
-              <Row>Create/Remove</Row>
-              <Row>Agents</Row>
+              <Row>Manage Clients</Row>
             </Col>
             <Col
               onClick={() => openModal("blogs")}
@@ -284,7 +403,9 @@ const AdminPage = () => {
                 height: "15vh",
                 width: "100%",
                 background:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
+                  modalType === "blogs"
+                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
+                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
                 borderRadius: "2vh",
                 display: "flex",
                 justifyContent: "center",
@@ -293,12 +414,11 @@ const AdminPage = () => {
               }}
             >
               <Row>
-                <DeleteFilled></DeleteFilled>
+                <DeleteFilled style={{ color: "#78B771" }}></DeleteFilled>
               </Row>
-              <Row>Edit/Delete</Row>
-              <Row>Blogs</Row>
+              <Row>Manage Blogs</Row>
             </Col>
-            <Col
+            {/* <Col
               onClick={() => openModal("createBlog")}
               className={styles.Btn}
               span={4}
@@ -306,7 +426,9 @@ const AdminPage = () => {
                 height: "15vh",
                 width: "100%",
                 background:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
+                  modalType === "createBlog"
+                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
+                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
                 borderRadius: "2vh",
                 display: "flex",
                 justifyContent: "center",
@@ -315,19 +437,21 @@ const AdminPage = () => {
               }}
             >
               <Row>
-                <CreateOutlined></CreateOutlined>
+                <CreateOutlined style={{ color: "#FC0989" }}></CreateOutlined>
               </Row>
               <Row>Create Blogs</Row>
-            </Col>
+            </Col> */}
             <Col
-              onClick={() => openModal("createBlog")}
+              onClick={() => openModal("manageReels")}
               className={styles.Btn}
               span={4}
               style={{
                 height: "15vh",
                 width: "100%",
                 background:
-                  "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
+                  modalType === "manageReels"
+                    ? "linear-gradient(90deg,rgba(12, 46, 55, 0.62) -56.52%,rgba(0, 0, 0, 0.62) 100%"
+                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(113, 113, 113, 0.1) 100%)",
                 borderRadius: "2vh",
                 display: "flex",
                 justifyContent: "center",
@@ -336,212 +460,313 @@ const AdminPage = () => {
               }}
             >
               <Row>
-                <CreateOutlined></CreateOutlined>
+                <VideoCameraOutlined style={{ color: "#FC0989" }} />
               </Row>
-              <Row>Create Blogs</Row>
+              <Row>Manage Reels</Row>
             </Col>
           </Row>
-        </div>
-        <div
-          className={styles.SideImage}
-          style={{
-            backgroundImage: `url(${img})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></div>
-
-        <Modal
-          title={
-            modalType === "images"
-              ? "Manage Images"
-              : modalType === "agents"
-              ? "Manage Agents"
-              : modalType === "blogs"
-              ? "Manage Blogs"
-              : "Create Blog"
-          }
-          open={modalVisible}
-          onCancel={() => setModalVisible(false)}
-          footer={null}
-          bodyStyle={{
-            maxHeight: "400px",
-            overflowY: "auto",
-            paddingRight: "10px",
-          }}
-        >
-          <div
-            style={{
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-            className="hide_scrollbar"
-          >
-            {modalType === "images" && (
-              <>
-                <Upload beforeUpload={handleImageUpload} showUploadList={false}>
-                  <Button icon={<UploadOutlined />}>Upload Image</Button>
-                </Upload>
-                <List
-                  dataSource={uploadedImages}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <img src={item} alt="Uploaded" width={100} />
-                      <Button
-                        type="text"
-                        icon={<DeleteFilled />}
-                        onClick={() => handleDelete(item, "images")}
-                      />
-                    </List.Item>
-                  )}
-                />
-              </>
-            )}
-
-            {modalType === "agents" && (
-              <>
-                <List
-                  style={{ color: "black !important" }}
-                  dataSource={agents}
-                  renderItem={(item:any) => (
-                    <List.Item>
-                      <h3>
-                        {item?.username}
-                      </h3>
-                      <p>
-                      {`Phone No:  ${item?.phone_number}`}
-                      </p>
-                      <Button
-                        type="text"
-                        icon={<DeleteFilled />}
-                        onClick={() => handleDelete(item, "agents")}
-                      />
-                    </List.Item>
-                  )}
-                />
-                {!isAddAgents && (
-                  <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => setIsAddAgents(true)}
-                  >
-                    Add Agent
-                  </Button>
-                )}
-                <div
-                  style={
-                    isAddAgents ? { display: "block" } : { display: "none" }
-                  }
-                >
-                  <Form form={form} onFinish={handleAgentSubmit}>
-                    <Form.Item
-                      name="username"
-                      label="User Name"
-                      rules={[{ required: true }]}
-                    >
-                      <Input placeholder="Enter your username" />
-                    </Form.Item>
-                    <Form.Item
-                      name="phone_number"
-                      label="Phone Number"
-                      rules={[{ required: true }]}
-                    >
-                      <Input placeholder="Enter Phone Number" />
-                    </Form.Item>
-                    <Form.Item
-                      name="country_code"
-                      label="Country Code"
-                      rules={[{ required: true }]}
-                    >
-                      <Input placeholder="Enter Country Code" />
-                    </Form.Item>
-
-                    <Form.Item
-                      name="selected_site"
-                      label="Enter Site"
-                      rules={[{ required: true, type: "string" }]}
-                    >
-                      <Input placeholder="Enter Site" />
-                    </Form.Item>
-                    <Row gutter={[20, 20]} justify={"space-between"}>
-                      <Button
-                        style={{ backgroundColor: "#73d13d" }}
-                        type="default"
-                        icon={<PlusOutlined />}
-                        htmlType="submit"
-                      >
-                        Submit
-                      </Button>
-                      {isAddAgents && (
+          <Row>
+            <Card style={{ width: "100%" }}>
+              <div
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+                className="hide_scrollbar"
+              >
+                {modalType === "images" && (
+                  <div style={{ marginTop: "2vh" }}>
+                    <>
+                      <Row justify={"end"} style={{ marginBottom: "2vh" }}>
                         <Button
                           type="primary"
-                          onClick={() => setIsAddAgents(false)}
+                          icon={<PlusOutlined />}
+                          onClick={() => setImageModal(true)}
                         >
-                          Cancel
+                          Add Banner
                         </Button>
-                      )}
-                    </Row>
-                  </Form>
-                </div>
-              </>
-            )}
-
-            {modalType === "blogs" && (
-              <>
-                <List
-                  dataSource={blogs}
-                  renderItem={(item) => (
-                    <List.Item>
-                      <div style={{ flex: 1 }}>
-                        <h3>{item?.title}</h3>
-                        <p style={{ margin: 0 }}>
-                          <strong>Author:</strong> {item?.author}
-                        </p>
-                        <p style={{ margin: 0 }}>
-                          <strong>Content:</strong> {item?.content}
-                        </p>
-                      </div>
-                      <Button
-                        type="text"
-                        icon={<DeleteFilled />}
-                        onClick={() => handleDelete(item, "blogs")}
+                      </Row>
+                      <Table
+                        dataSource={uploadedImages}
+                        columns={Imagecolumns}
+                        rowKey="id"
+                        style={{ backgroundColor: "transparent" }}
+                        pagination={{ pageSize: 5 }}
                       />
-                    </List.Item>
-                  )}
+                    </>
+                  </div>
+                )}
+
+                {modalType === "agents" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setIsAddAgents(true)}
+                        >
+                          Add Agent
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={agents}
+                      columns={columns}
+                      rowKey="id" // Replace 'id' with the unique key in your data
+                      pagination={{ pageSize: 10 }}
+                      style={{ backgroundColor: "transparent" }}
+                    />
+                    <Modal
+                      open={isAddAgents}
+                      onCancel={() => setIsAddAgents(false)}
+                      onClose={() => setIsAddAgents(false)}
+                      footer=""
+                    >
+                      <Card
+                        title={
+                          <Row
+                            justify={"center"}
+                            style={{
+                              backgroundColor: "inherit",
+                              marginBottom: "2vh",
+                            }}
+                          >
+                            <img
+                              src={logo} // Replace with the actual path to your logo
+                              alt="Polo Games Logo"
+                              style={{ height: "50px" }}
+                            />
+                          </Row>
+                        }
+                      >
+                        <Form
+                          style={{ color: "white" }}
+                          form={form}
+                          onFinish={handleAgentSubmit}
+                        >
+                          <Form.Item
+                            name="username"
+                            label="User Name"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter your username" />
+                          </Form.Item>
+                          <Form.Item
+                            name="phone_number"
+                            label="Phone Number"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter Phone Number" />
+                          </Form.Item>
+                          <Form.Item
+                            name="country_code"
+                            label="Country Code"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter Country Code" />
+                          </Form.Item>
+
+                          <Form.Item
+                            name="selected_site"
+                            label="Enter Site"
+                            rules={[{ required: true, type: "string" }]}
+                          >
+                            <Input placeholder="Enter Site" />
+                          </Form.Item>
+                          <Row gutter={[20, 20]} justify={"space-between"}>
+                            {isAddAgents && (
+                              <Button
+                                type="primary"
+                                onClick={() => setIsAddAgents(false)}
+                              >
+                                Cancel
+                              </Button>
+                            )}
+                            <Button
+                              style={{ backgroundColor: "#73d13d" }}
+                              type="default"
+                              htmlType="submit"
+                            >
+                              Submit
+                            </Button>
+                          </Row>
+                        </Form>
+                      </Card>
+                    </Modal>
+                  </>
+                )}
+
+                {modalType === "blogs" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setIsAddBlogs(true)}
+                        >
+                          Add Blogs
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={blogs}
+                      columns={Blogscolumns}
+                      rowKey="id" // Replace with your unique key
+                      expandable={{
+                        expandedRowRender: (record) => (
+                          <p style={{ margin: 0, color: "white" }}>
+                            <strong>Content:</strong> {record.content}
+                          </p>
+                        ),
+                        rowExpandable: (record) => !!record.content,
+                        expandIcon: ({ expanded, onExpand, record }) =>
+                          expanded ? (
+                            <MinusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ) : (
+                            <PlusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ),
+                      }}
+                      style={{ backgroundColor: "transparent" }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {/* {modalType === "createBlog" && (
+                 
+                )} */}
+              </div>
+            </Card>
+          </Row>
+        </div>
+
+        <Modal
+          open={isAddblogs}
+          onCancel={() => setIsAddBlogs(false)}
+          onClose={() => setIsAddBlogs(false)}
+          footer={""}
+        >
+          <Card
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
                 />
-              </>
-            )}
-
-            {modalType === "createBlog" && (
-              <Form form={form} onFinish={handleBlogSubmit}>
-                <Form.Item
-                  name="title"
-                  label="Blog Title"
-                  rules={[{ required: true }]}
+              </Row>
+            }
+          >
+            <Form
+              style={{ color: "white", marginTop: "3vh" }}
+              form={form}
+              onFinish={handleBlogSubmit}
+            >
+              <Form.Item
+                name="title"
+                label="Title"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the blog title!",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter blog title" />
+              </Form.Item>
+              <Form.Item
+                name="author"
+                label="Author"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the author name!",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter blog Author Name" />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the blog content!",
+                  },
+                ]}
+              >
+                <Input.TextArea placeholder="Enter blog content" />
+              </Form.Item>
+              <Form.Item>
+                <Row justify={"space-between"}>
+                  <Col>
+                    <Button type="primary" onClick={() => setIsAddBlogs(false)}>
+                      Cancle
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      style={{ backgroundColor: "#73d13d" }}
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
+              </Form.Item>
+            </Form>
+          </Card>
+        </Modal>
+        <Modal
+          open={imageModal}
+          onCancel={() => setImageModal(false)}
+          onClose={() => setImageModal(false)}
+          footer={""}
+        >
+          <Card
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Upload beforeUpload={handleImageUpload} showUploadList={false}>
+                <Button
+                  style={{ color: "white", marginTop: "5vh" }}
+                  icon={<UploadOutlined />}
                 >
-                  <Input placeholder="Enter blog title" />
-                </Form.Item>
-                <Form.Item
-                  name="author"
-                  label="Author"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Enter blog Author Name" />
-                </Form.Item>
-                <Form.Item
-                  name="content"
-                  label="Content"
-                  rules={[{ required: true }]}
-                >
-                  <Input.TextArea placeholder="Enter blog content" />
-                </Form.Item>
-
-                <Button type="primary" htmlType="submit">
-                  Submit
+                  Upload Banner
                 </Button>
-              </Form>
-            )}
-          </div>
+              </Upload>
+            </Row>
+          </Card>
         </Modal>
       </div>
     </>
@@ -549,15 +774,3 @@ const AdminPage = () => {
 };
 
 export default AdminPage;
-
-{
-  /* <Col span={12}>
-                            <Row justify={"space-around"} gutter={[10, 10]} style={{ marginTop: "2vh" }}>
-                                
-
-                            </Row>
-                            <Row justify={"space-around"} gutter={[10, 10]} style={{ marginTop: "2vh" }}>
-                               
-                            </Row>
-                        </Col> */
-}

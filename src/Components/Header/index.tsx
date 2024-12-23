@@ -1,19 +1,113 @@
-import { Col, Modal, Row } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Dropdown,
+  Form,
+  Input,
+  Menu,
+  message,
+  Modal,
+  Row,
+} from "antd";
 import styles from "./header.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import { SearchOutlined } from "@ant-design/icons";
 import inplay from "../../assets/inplay.png";
 import Home from "../../assets/Home.png";
 import whatsApp from "../../assets/whatsapp.png";
-import call from "../../assets/call.png";
 import AboutUS from "../../assets/about us.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from "axios";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
 
+  const location = useLocation();
+
   const [isOpen, setIsOpen] = useState(false);
+
+  const [loginModal, setLoginModal] = useState(false);
+
+  const [loginOrRegister, setLoginOrRegister] = useState(false);
+
+  const [form] = Form.useForm();
+
+  const manageRegistration = async (values: any) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/user/create_user",
+        values
+      );
+      if (response?.status === 200) {
+        message.success("Added user SuccessFully");
+        setLoginModal(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to create Agent");
+    }
+  };
+
+  const manageLogin = async (values: any) => {
+    console.log(values);
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/user/get_user_by_id/${values?.phone_number}`
+      );
+      if (response?.status === 200 && response.data !== null) {
+        message.success("User logged in SuccessFully");
+        setLoginModal(false);
+        form.resetFields();
+      } else {
+        message.error("Unable Login please check the password and username");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable Login please check the password and username");
+    }
+  };
+
+  const handleFormSubmit = async (values: any) => {
+    if (loginOrRegister) {
+      manageRegistration(values);
+    } else {
+      manageLogin(values);
+    }
+  };
+
+  const supportMenu = (
+    <Menu>
+      <Menu.Item key="1">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "black", // Adjust text color as needed
+            fontSize: "12px",
+            fontWeight: "500",
+          }}
+        >
+          Call Support
+        </div>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "black", // Adjust text color as needed
+            fontSize: "12px",
+            fontWeight: "500",
+          }}
+        >
+          Chat Support
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Row
@@ -47,7 +141,7 @@ const HeaderComponent = () => {
           <img
             src={inplay}
             alt="Play Icon"
-            style={{ width: "24px", marginRight: "0.5rem" }}
+            style={{ width: "20px", marginRight: "0.5rem" }}
           />
           Play
         </div>
@@ -66,18 +160,20 @@ const HeaderComponent = () => {
           <img
             src={Home}
             alt="Play Icon"
-            style={{ width: "24px", marginRight: "0.5rem" }}
+            style={{ width: "20px", marginRight: "0.5rem" }}
           />
           Home
         </div>
-        <div className={styles.searchBarWrapper}>
-          <input
-            type="text"
-            placeholder="Search"
-            className={styles.searchBar}
-          />
-          <SearchOutlined className="text-white text-2xl" />
-        </div>
+        {location.pathname !== "/admin" && (
+          <div className={styles.searchBarWrapper}>
+            <input
+              type="text"
+              placeholder="Search"
+              className={styles.searchBar}
+            />
+            <SearchOutlined className="text-white text-2xl" />
+          </div>
+        )}
 
         <div className={styles.vistorStyles}>
           <p>2,22,323</p>
@@ -88,45 +184,54 @@ const HeaderComponent = () => {
         span={9}
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "space-around",
           alignItems: "center",
         }}
         className={styles.Hover}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginRight: "2rem",
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "500",
-          }}
-        >
-          <img
-            src={whatsApp}
-            alt="Play Icon"
-            style={{ width: "24px", marginRight: "0.5rem" }}
-          />
-          Chat Support
-        </div>{" "}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginRight: "2rem",
-            color: "white",
-            fontSize: "16px",
-            fontWeight: "500",
-          }}
-        >
-          <img
-            src={call}
-            alt="Play Icon"
-            style={{ width: "20px", marginRight: "0.5rem" }}
-          />
-          Call Us
-        </div>
+        {location.pathname !== "/admin" && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "2rem",
+              color: "white",
+              fontSize: "16px",
+              fontWeight: "500",
+              cursor: "pointer",
+            }}
+          >
+            <Dropdown overlay={supportMenu} trigger={["click"]}>
+              <div>
+                <img
+                  src={whatsApp}
+                  alt="Play Icon"
+                  style={{ width: "20px", marginRight: "0.5rem" }}
+                />
+                Live Support
+              </div>
+            </Dropdown>
+          </div>
+        )}{" "}
+        {/* {location.pathname !== "/admin" && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginRight: "2rem",
+              color: "white",
+              fontSize: "16px",
+              fontWeight: "500",
+            }}
+          >
+            <img
+              src={call}
+              alt="Play Icon"
+              style={{ width: "15px", marginRight: "0.5rem" }}
+            />
+            Call Us
+          </div>
+        )} */}
         <div
           style={{
             display: "flex",
@@ -141,9 +246,14 @@ const HeaderComponent = () => {
           <img
             src={AboutUS}
             alt="Play Icon"
-            style={{ width: "24px", marginRight: "0.5rem" }}
+            style={{ width: "20px", marginRight: "0.5rem" }}
           />
           About Us
+        </div>
+        <div>
+          <Button type="primary" onClick={() => setLoginModal(true)}>
+            Login
+          </Button>
         </div>
       </Col>
       <Modal
@@ -152,7 +262,166 @@ const HeaderComponent = () => {
         onClose={() => setIsOpen(false)}
         onCancel={() => setIsOpen(false)}
       >
-        World's Best Gaming Site
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"} style={{ color: "white" }}>
+            World's Best Gaming Site
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={loginModal}
+        onClose={() => setLoginModal(false)}
+        onCancel={() => setLoginModal(false)}
+        footer={""}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"} align={"bottom"}>
+            {!loginOrRegister ? (
+              <Form
+                style={{ color: "white" }}
+                form={form}
+                onFinish={handleFormSubmit}
+              >
+                <Form.Item
+                  name="username"
+                  label="User Name"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Enter your username" />
+                </Form.Item>
+                <Form.Item
+                  name="phone_number"
+                  label="Phone Number"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Enter Phone Number" />
+                </Form.Item>
+                <Row gutter={[20, 20]} justify={"space-between"}>
+                  {true && (
+                    <Button type="primary" onClick={() => setLoginModal(false)}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    style={{ backgroundColor: "#73d13d" }}
+                    type="default"
+                    htmlType="submit"
+                  >
+                    Login
+                  </Button>
+                </Row>
+              </Form>
+            ) : (
+              <Form
+                style={{ color: "white" }}
+                form={form}
+                onFinish={handleFormSubmit}
+              >
+                <Form.Item
+                  name="username"
+                  label="User Name"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Enter your username" />
+                </Form.Item>
+                <Form.Item
+                  name="phone_number"
+                  label="Phone Number"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Enter Phone Number" />
+                </Form.Item>
+                <Form.Item
+                  name="country_code"
+                  label="Country Code"
+                  rules={[{ required: true }]}
+                >
+                  <Input placeholder="Enter Country Code" />
+                </Form.Item>
+
+                <Form.Item
+                  name="selected_site"
+                  label="Enter Site"
+                  rules={[{ required: true, type: "string" }]}
+                >
+                  <Input placeholder="Enter Site" />
+                </Form.Item>
+
+                <Row gutter={[20, 20]} justify={"space-between"}>
+                  {true && (
+                    <Button type="primary" onClick={() => setLoginModal(false)}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button
+                    style={{ backgroundColor: "#73d13d" }}
+                    type="default"
+                    htmlType="submit"
+                  >
+                    Register
+                  </Button>
+                </Row>
+              </Form>
+            )}
+          </Row>
+          <Row justify={"center"} align={"middle"} style={{ marginTop: "2vh" }}>
+            {loginOrRegister ? (
+              <Button
+                type="primary"
+                style={{
+                  color: "white !important",
+                  background: "rgba(12, 46, 55, 1)",
+                  border: "1px solid black",
+                  borderRadius: "1vh",
+                }}
+                onClick={() => setLoginOrRegister(false)}
+              >
+                Already have an account ?
+              </Button>
+            ) : (
+              <>
+                <Button
+                  type="primary"
+                  style={{
+                    color: "white !important",
+                    background: "rgba(12, 46, 55, 1)",
+                    border: "1px solid black",
+                    borderRadius: "1vh",
+                  }}
+                  onClick={() => setLoginOrRegister(true)}
+                >
+                  Don't have a account
+                </Button>
+              </>
+            )}
+          </Row>
+        </Card>
       </Modal>
     </Row>
   );
