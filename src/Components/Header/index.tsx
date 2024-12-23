@@ -16,7 +16,6 @@ import { SearchOutlined } from "@ant-design/icons";
 import inplay from "../../assets/inplay.png";
 import Home from "../../assets/Home.png";
 import whatsApp from "../../assets/whatsapp.png";
-import call from "../../assets/call.png";
 import AboutUS from "../../assets/about us.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
