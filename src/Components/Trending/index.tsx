@@ -1,4 +1,4 @@
-import { Tabs, Col, Row, message, List } from "antd";
+import { Col, Row, message, List } from "antd";
 import info from "./data.json";
 import styles from "./trending.module.scss";
 import { useEffect, useRef, useState } from "react";
@@ -199,23 +199,23 @@ export const Reels = () => {
   );
 };
 const Trending = () => {
-  const items = [
-    {
-      key: "news",
-      label: "News",
-      children: <News />,
-    },
-    {
-      key: "blogs",
-      label: "Blogs",
-      children: <Blogs />,
-    },
-    {
-      key: "reels",
-      label: "Reels",
-      children: <Reels />,
-    },
-  ];
+  // const items = [
+  //   {
+  //     key: "news",
+  //     label: "News",
+  //     children: <News />,
+  //   },
+  //   {
+  //     key: "blogs",
+  //     label: "Blogs",
+  //     children: <Blogs />,
+  //   },
+  //   {
+  //     key: "reels",
+  //     label: "Reels",
+  //     children: <Reels />,
+  //   },
+  // ];
 
   return (
     <div className={styles.sidebar}>
