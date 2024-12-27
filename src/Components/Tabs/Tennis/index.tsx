@@ -3,15 +3,21 @@ import { PlayCircleOutlined } from "@ant-design/icons";
 import styles from "../tabs.module.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TennisSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [LiveCount, setLiveCount] = useState<number>(0);
 
   const ModifyData = (data: []) => {
+    let count = 0;
     const ModifiedData = data?.map((ele: any) => {
+      if (ele?.inPlay) {
+        count += 1;
+      }
       const obj = {
         match: ele?.ename,
         status: ele?.iplay ? "live" : "upcoming",
@@ -42,7 +48,12 @@ const TennisSection = () => {
       return obj;
     });
 
-    setDataSource(ModifiedData);
+    if (location?.pathname === "/" && ModifiedData?.length > 3) {
+      setDataSource(ModifiedData.slice(0, 3));
+    } else {
+      setDataSource(ModifiedData);
+    }
+    setLiveCount(count);
   };
 
   const getApiData = async () => {
@@ -80,6 +91,12 @@ const TennisSection = () => {
             style={{ fontSize: "24px", marginRight: "16px" }}
           />
           <h3 style={{ margin: 0 }}>Tennis</h3>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{LiveCount}</div>
+          </div>
         </div>
 
         <div className={styles.table}>
@@ -146,6 +163,9 @@ const TennisSection = () => {
               </Row>
             </div>
           ))}
+          {
+            datasource?.length === 0 && <Row justify={"center"} style={{color:"white"}}><h2>No Data Found</h2></Row>
+          }
         </div>
       </div>
     </Spin>
