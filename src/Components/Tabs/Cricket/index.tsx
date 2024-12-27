@@ -3,15 +3,21 @@ import { PlayCircleOutlined } from "@ant-design/icons";
 import styles from "../tabs.module.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CricketSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState<boolean>(false);
+  const [LiveCount, setLiveCount] = useState<number>(0);
 
   const ModifyData = (data: []) => {
+    let count = 0;
     const ModifiedData = data?.map((ele: any) => {
+      if (ele?.inPlay === "True") {
+        count += 1;
+      }
       const tempSplit = ele?.eventName?.split("/");
       const obj = {
         match: tempSplit[0],
@@ -19,15 +25,35 @@ const CricketSection = () => {
         time: tempSplit[1],
         gameId: ele?.gameId,
         odds: [
-          { key: "1", value: ele?.back1, extra: ele?.back11, color: "rgba(50, 163, 188, 1)" },
-          { key: "2", value: ele?.back12, extra: ele?.lay1, color: "rgba(200, 109, 220, 1)" },
-          { key: "3", value: ele?.lay11, extra: ele?.lay12, color: "rgba(50, 163, 188, 1)" },
+          {
+            key: "1",
+            value: ele?.back1,
+            extra: ele?.back11,
+            color: "rgba(50, 163, 188, 1)",
+          },
+          {
+            key: "2",
+            value: ele?.back12,
+            extra: ele?.lay1,
+            color: "rgba(200, 109, 220, 1)",
+          },
+          {
+            key: "3",
+            value: ele?.lay11,
+            extra: ele?.lay12,
+            color: "rgba(50, 163, 188, 1)",
+          },
         ],
       };
       return obj;
     });
 
-    setDataSource(ModifiedData);
+    if (location?.pathname === "/" && ModifiedData?.length > 3) {
+      setDataSource(ModifiedData.slice(0, 3));
+    } else {
+      setDataSource(ModifiedData);
+    }
+    setLiveCount(count);
   };
 
   const getApiData = async () => {
@@ -54,8 +80,8 @@ const CricketSection = () => {
   }, []);
 
   const handleRowClick = (id: any) => {
-    navigate(`/cricket/${id}`)
-  }
+    navigate(`/cricket/${id}`);
+  };
 
   return (
     <Spin spinning={loading}>
@@ -65,11 +91,21 @@ const CricketSection = () => {
             style={{ fontSize: "24px", marginRight: "16px" }}
           />
           <h3 style={{ margin: 0 }}>Cricket</h3>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{LiveCount}</div>
+          </div>
         </div>
 
         <div className={styles.table}>
-          {datasource.map((item: any) => (
-            <div onClick={() => handleRowClick(item?.gameId)} key={item.key} className={styles.tableHeader}>
+          {datasource?.map((item: any) => (
+            <div
+              onClick={() => handleRowClick(item?.gameId)}
+              key={item.key}
+              className={styles.tableHeader}
+            >
               <div
                 style={{
                   marginRight: "16px",
@@ -79,9 +115,15 @@ const CricketSection = () => {
                 }}
               >
                 <div>
-                  <div style={{ color: "white", fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0, 25)}...` : item?.match}</div>
+                  <div style={{ color: "white", fontWeight: "bold" }}>
+                    {item?.match?.length > 25
+                      ? `${item?.match?.substr(0, 25)}...`
+                      : item?.match}
+                  </div>
                   <div style={{ color: "#888", fontSize: "12px" }}>
-                    {item?.league?.length > 25 ? `${item?.league?.substr(0, 25)}...` : item?.league}
+                    {item?.league?.length > 25
+                      ? `${item?.league?.substr(0, 25)}...`
+                      : item?.league}
                   </div>
                 </div>
                 <div style={{ color: "white" }}>
@@ -92,9 +134,15 @@ const CricketSection = () => {
                 </div>
               </div>
 
-
-
-              <Row gutter={8} style={{ marginTop: "2vh" , gap:"2vh"  , display:"flex" , justifyContent:"space-between"}} >
+              <Row
+                gutter={8}
+                style={{
+                  marginTop: "2vh",
+                  gap: "2vh",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
                 {item.odds.map((odd: any) => (
                   <>
                     <Col
@@ -104,10 +152,12 @@ const CricketSection = () => {
                         background: odd.color,
                         padding: "8px",
                         textAlign: "center",
-                        borderRadius:"2vh"
+                        borderRadius: "2vh",
                       }}
                     >
-                      <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {odd.value}
+                      </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
@@ -119,10 +169,12 @@ const CricketSection = () => {
                         background: odd.color,
                         padding: "8px",
                         textAlign: "center",
-                        borderRadius:"2vh"
+                        borderRadius: "2vh",
                       }}
                     >
-                      <div style={{ color: "white", fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {odd.value}
+                      </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>

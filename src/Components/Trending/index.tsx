@@ -3,49 +3,65 @@ import info from "./data.json";
 import styles from "./trending.module.scss";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import image from "../../../public/images/evolution_gaming_banner.png";
+import video from "../../assets/Polo_gaming.mp4"
+export const News = () => {
+  const location = useLocation();
 
-export const News = () => (
-  <div
-    style={{
-      padding: "1vh",
-      display: "flex",
-      flexDirection: "column",
-      gap: "1vh",
-      maxHeight: "100%", // Restrict the container height
-      overflowY: "auto", // Enable vertical scrolling
-      color: "white",
-      fontSize: "16px",
-    }}
-    className={styles.trending_container}
-  >
-    {info?.data?.map((ele, index) => (
-      <Row
-        key={index}
-        gutter={[16, 16]}
-        style={{
-          paddingBottom: "1vh",
-          marginBottom: "1vh",
-        }}
-      >
-        <Col span={8}>
-          <img
-            style={{ width: "100%", height: "100%", borderRadius: "8px" }}
-            src={ele?.image}
-            alt=""
-          />
-        </Col>
-        <Col
-          span={16}
-          style={{ color: "white", cursor: "pointer" }}
-          title={ele?.description} // Show full description on hover
+  const [data, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (location?.pathname !== "/") {
+      setData(info?.data);
+    } else {
+      setData(info?.data?.slice(0, 2));
+    }
+  });
+
+  return (
+    <div
+      style={{
+        padding: "1vh",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1vh",
+        maxHeight: "100%", // Restrict the container height
+        overflowY: "auto", // Enable vertical scrolling
+        color: "white",
+        fontSize: "16px",
+      }}
+      className={styles.trending_container}
+    >
+      {data?.map((ele, index) => (
+        <Row
+          key={index}
+          gutter={[16, 16]}
+          style={{
+            paddingBottom: "1vh",
+            marginBottom: "1vh",
+          }}
         >
-          <p>{`${ele?.description?.substring(0, 45)}...`}</p>
-          <p>{ele?.pub_date}</p>
-        </Col>
-      </Row>
-    ))}
-  </div>
-);
+          <Col span={8}>
+            <img
+              style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+              src={ele?.image}
+              alt=""
+            />
+          </Col>
+          <Col
+            span={16}
+            style={{ color: "white", cursor: "pointer" }}
+            title={ele?.description} // Show full description on hover
+          >
+            <p>{`${ele?.description?.substring(0, 45)}...`}</p>
+            <p>{ele?.pub_date}</p>
+          </Col>
+        </Row>
+      ))}
+    </div>
+  );
+};
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -120,24 +136,22 @@ export const Reels = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement; 
+          const video = entry.target as HTMLVideoElement;
           if (entry.isIntersecting) {
             video.play();
           } else {
             video.pause();
-            video.currentTime = 0; 
+            video.currentTime = 0;
           }
         });
       },
-      { threshold: 0.5 } 
+      { threshold: 0.5 }
     );
 
-   
     videoRefs.current.forEach((video) => {
       if (video) observer.observe(video);
     });
 
-   
     return () => {
       videoRefs.current.forEach((video) => {
         if (video) observer.unobserve(video);
@@ -166,7 +180,7 @@ export const Reels = () => {
           }}
         >
           <video
-            ref={(el) => (videoRefs.current[index] = el)} 
+            ref={(el) => (videoRefs.current[index] = el)}
             width="100%"
             height="360"
             controls
@@ -204,24 +218,32 @@ const Trending = () => {
   ];
 
   return (
-    <div
-      style={{
-        background: "#1a1a1a",
-        color: "white",
-        padding: "1vh",
-        borderRadius: "8px",
-      }}
-    >
-      <Tabs
-        defaultActiveKey="news"
-        items={items}
-        centered
-        tabBarStyle={{
-          color: "white",
-          fontSize: "16px",
-          fontWeight: "bold",
-        }}
-      />
+    <div className={styles.sidebar}>
+      <div className={styles.header}>
+        <h3>Our Influencers</h3>
+        <div className={styles.imageWrapper}>
+          <video
+            src={video} // Ensure correct path to video
+            className={styles.mainImage}
+            controls // Add controls if you want play/pause functionality
+          />
+
+        </div>
+      </div>
+      <div className={styles.trendingNews}>
+        <h4>Trending News</h4>
+        <News></News>
+      </div>
+
+      <div className={styles.exploreMore}>
+        <h4>Explore More</h4>
+        <img src={image} alt="Casino" className={styles.exploreImage} />
+      </div>
+      <div className={styles.footer}>
+        <p>24X7 Support</p>
+        <p>100% SAFE - Protected connection and encrypted data</p>
+        <p>© Copyright 2024. All Rights Reserved.</p>
+      </div>
     </div>
   );
 };

@@ -2,6 +2,10 @@ import "./yo.css";
 import { Col, message, Row } from "antd";
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
+import image1 from "../../../public/images/smart_soft_gaming_banner.jpg";
+import image2 from "../../../public/images/royal_gaming_banner.jpg";
+import image3 from "../../../public/images/evolution_gaming_banner.png";
+import image4 from "../../../public/images/play_tech_gaming_banner.jpg";
 
 const SliderComponent = () => {
   const [images, setImages] = useState<{ src: string; alt: string }[]>([]);
@@ -17,6 +21,24 @@ const SliderComponent = () => {
       }));
       setImages(formattedImages);
     } catch (error) {
+      setImages([
+        {
+          src: image1,
+          alt: "",
+        },
+        {
+          src: image2,
+          alt: "",
+        },
+        {
+          src: image3,
+          alt: "",
+        },
+        {
+          src: image4,
+          alt: "",
+        },
+      ]);
       console.error(error);
       message.error("Unable to fetch images");
     }

@@ -2,38 +2,77 @@ import { Layout, Menu } from "antd";
 import {
   PlayCircleOutlined,
   TrophyOutlined,
-  RadarChartOutlined,
+  RadarChartOutlined
 } from "@ant-design/icons";
 import styles from "./sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
 
-
 const { Sider } = Layout;
 
 const SideBar = () => {
-
   const Navigation = useNavigate();
 
   const menuItems: any = [
     {
       key: "in-play",
-      icon: <PlayCircleOutlined />, // Replace with correct icon
-      label: "In Play",
+      icon: <PlayCircleOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>In Play</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{0}</div>
+          </div>
+        </div>
+      ),
     },
     {
       key: "cricket",
-      icon: <TrophyOutlined />, // Replace with correct icon
-      label: "Cricket",
+      icon: <TrophyOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Cricket</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{0}</div>
+          </div>
+        </div>
+      ),
+      
     },
     {
       key: "tennis",
-      icon: <TrophyOutlined />, // Replace with correct icon
-      label: "Tennis",
+      icon: <TrophyOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Tennis</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{0}</div>
+          </div>
+        </div>
+      )
     },
     {
       key: "soccer",
-      icon: <RadarChartOutlined />, // Replace with correct icon
-      label: "Soccer",
+      icon: <RadarChartOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Soccer</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{0}</div>
+          </div>
+        </div>
+      )
     },
     {
       key: "horse-racing",
@@ -42,90 +81,97 @@ const SideBar = () => {
     },
     {
       key: "rugby-union",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Rugby Union",
     },
     {
       key: "golf",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Golf",
     },
     {
       key: "esports",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Esports",
     },
     {
       key: "mma",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "MMA",
     },
     {
       key: "gaelic-games",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Gaelic Games",
     },
     {
       key: "volleyball",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Volleyball",
     },
     {
       key: "handball",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Handball",
     },
     {
       key: "australian-rules",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Australian Rules",
     },
     {
       key: "ice-hockey",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Ice Hockey",
     },
     {
       key: "snooker",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Snooker",
     },
     {
       key: "darts",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Darts",
     },
     {
       key: "cycling",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Cycling",
     },
     {
       key: "special-bets",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Special Bets",
     },
     {
       key: "table-tennis",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />,
       label: "Table Tennis",
     },
   ];
-  
 
-  const handleOnClick = (data : any) => {
-    const res = ["in-play" ,"cricket" , "tennis" , "soccer","horse-racing"].findIndex((ele) => ele === data?.key);
-    if( res != -1){
-      Navigation(`/${data?.key}`)
+  const handleOnClick = (data: any) => {
+    const res = [
+      "in-play",
+      "cricket",
+      "tennis",
+      "soccer",
+      "horse-racing",
+    ].findIndex((ele) => ele === data?.key);
+    if (res != -1) {
+      Navigation(`/${data?.key}`);
     }
-  }
+  };
 
   return (
     <Sider
+      width={"20vw"}
       style={{
-        background: 'linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)',
-        padding:"1vh",
-        color:"white !important"
+        background: "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
+        padding: "1vh",
+        color: "white !important",
+        width:"100%"
       }}
     >
       <Menu

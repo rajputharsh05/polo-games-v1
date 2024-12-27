@@ -6,10 +6,11 @@ import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
-import icon from "../../assets/Chat-component.png";
-import ID from "../../assets/getID.png";
+import icon from "../../assets/ic_round-support-agent.png";
+import ID from "../../assets/Group 26.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
+import img from "../../assets/Side-ad-main-page.png";
 
 const { Sider, Content, Header } = Layout;
 
@@ -24,8 +25,8 @@ const GlobalLayout = () => {
     const handleResize = () => {
       const currentWidth = window.innerWidth;
       setWindowWidth(currentWidth);
-      console.log(windowWidth)
-  
+      console.log(windowWidth);
+
       if (currentWidth < 768) {
         setIsSidebarVisible(false);
       } else {
@@ -38,7 +39,6 @@ const GlobalLayout = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  
 
   return (
     <Layout
@@ -71,11 +71,11 @@ const GlobalLayout = () => {
       <Layout style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}>
         {isSidebarVisible && (
           <Sider
+            width="20vw"
             style={{
               background: "rgba(12, 46, 55, 1)",
               borderRadius: "3vh",
-              margin: "1rem",
-              height: "85vh",
+              height: "87vh",
               overflowY: "scroll",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
@@ -94,25 +94,26 @@ const GlobalLayout = () => {
         >
           {!isSidebarVisible && <TopBar></TopBar>}
           <div>{outlet}</div>
-
           <DynamincFooter></DynamincFooter>
         </Content>
 
         {isSidebarVisible && (
-          <Sider
-            style={{
-              background: "rgba(12, 46, 55, 1)",
-              borderRadius: "3vh",
-              border: "1px solid black",
-              margin: "1rem",
-              overflow:"scroll",
-              scrollbarWidth: "none",
-              msOverflowStyle: "none",
-            }}
-            width="25vw"
-          >
-            <Trending></Trending>
-          </Sider>
+          <>
+            <img src={img}></img>
+            <Sider
+              style={{
+                background: "rgba(12, 46, 55, 1)",
+                borderRadius: "3vh",
+                border: "1px solid black",
+                overflow: "scroll",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+              width="25vw"
+            >
+              <Trending></Trending>
+            </Sider>
+          </>
         )}
       </Layout>
 

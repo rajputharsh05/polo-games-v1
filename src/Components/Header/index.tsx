@@ -20,6 +20,9 @@ import AboutUS from "../../assets/about us.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import call from "../../assets/call.png";
+import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
+import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -86,11 +89,16 @@ const HeaderComponent = () => {
             display: "flex",
             alignItems: "center",
             color: "black", // Adjust text color as needed
-            fontSize: "12px",
-            fontWeight: "500",
+            fontSize: "16px",
+            fontWeight: "600",
+            backgroundColor: "rgba(217, 217, 217, 1)",
+            padding: "1vh",
+            borderRadius: "3vh",
+            justifyContent: "space-between",
           }}
         >
-          Call Support
+          <p>Online Chat</p>
+          <img src={onlineChatImg} height={"20%"} width={"20%"}></img>
         </div>
       </Menu.Item>
       <Menu.Item key="2">
@@ -98,12 +106,17 @@ const HeaderComponent = () => {
           style={{
             display: "flex",
             alignItems: "center",
-            color: "black", // Adjust text color as needed
-            fontSize: "12px",
-            fontWeight: "500",
+            color: "black",
+            fontSize: "16px",
+            fontWeight: "600",
+            backgroundColor: "rgba(217, 217, 217, 1)",
+            padding: "1vh",
+            borderRadius: "3vh",
+            justifyContent: "space-between",
           }}
         >
-          Chat Support
+          <p>Whatsapp Chat</p>
+          <img src={whatsAppChatImg} height={"20%"} width={"20%"}></img>
         </div>
       </Menu.Item>
     </Menu>
@@ -208,12 +221,12 @@ const HeaderComponent = () => {
                   alt="Play Icon"
                   style={{ width: "20px", marginRight: "0.5rem" }}
                 />
-                Live Support
+                Chat Support
               </div>
             </Dropdown>
           </div>
         )}{" "}
-        {/* {location.pathname !== "/admin" && (
+        {location.pathname !== "/admin" && (
           <div
             style={{
               display: "flex",
@@ -231,7 +244,7 @@ const HeaderComponent = () => {
             />
             Call Us
           </div>
-        )} */}
+        )}
         <div
           style={{
             display: "flex",
