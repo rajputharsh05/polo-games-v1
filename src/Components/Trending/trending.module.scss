@@ -59,6 +59,9 @@
   .header {
     .imageWrapper {
       position: relative;
+      height: 50vh;
+      scrollbar-width: none; 
+      overflow-x: scroll;
       .mainImage {
         width: 100%;
         border-radius: 8px;

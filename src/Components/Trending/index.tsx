@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
-import video from "../../assets/Polo_gaming.mp4"
 export const News = () => {
   const location = useLocation();
 
@@ -112,6 +111,7 @@ export const Blogs = () => {
 
 export const Reels = () => {
   const [reels, setReels] = useState<string[]>([]);
+  const loaction = useLocation();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
 
   const getReels = async () => {
@@ -161,15 +161,17 @@ export const Reels = () => {
 
   return (
     <>
-      <h3
-        style={{
-          padding: "1vh",
-          color: "white",
-          fontSize: "16px",
-        }}
-      >
-        Reels Section
-      </h3>
+      {loaction.pathname !== "/" && (
+        <h3
+          style={{
+            padding: "1vh",
+            color: "white",
+            fontSize: "16px",
+          }}
+        >
+          Reels Section
+        </h3>
+      )}
       {reels?.map((ele, index) => (
         <div
           key={index}
@@ -183,12 +185,17 @@ export const Reels = () => {
             ref={(el) => (videoRefs.current[index] = el)}
             width="100%"
             height="360"
-            controls
             style={{
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              marginTop: "10px",
+              height: "50vh",
+              width: "100%",
+              objectFit: "cover",
+              borderRadius: "10px",
             }}
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
           >
             <source src={ele} type="video/mp4" />
             Your browser does not support the video tag.
@@ -199,35 +206,12 @@ export const Reels = () => {
   );
 };
 const Trending = () => {
-  // const items = [
-  //   {
-  //     key: "news",
-  //     label: "News",
-  //     children: <News />,
-  //   },
-  //   {
-  //     key: "blogs",
-  //     label: "Blogs",
-  //     children: <Blogs />,
-  //   },
-  //   {
-  //     key: "reels",
-  //     label: "Reels",
-  //     children: <Reels />,
-  //   },
-  // ];
-
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
         <h3>Our Influencers</h3>
         <div className={styles.imageWrapper}>
-          <video
-            src={video} // Ensure correct path to video
-            className={styles.mainImage}
-            controls // Add controls if you want play/pause functionality
-          />
-
+          <Reels></Reels>
         </div>
       </div>
       <div className={styles.trendingNews}>

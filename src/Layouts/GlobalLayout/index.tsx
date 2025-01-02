@@ -11,6 +11,7 @@ import ID from "../../assets/Group 26.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
 import img from "../../assets/Side-ad-main-page.png";
+import MarqueeImage from "./test"
 
 const { Sider, Content, Header } = Layout;
 
@@ -99,7 +100,7 @@ const GlobalLayout = () => {
 
         {isSidebarVisible && (
           <>
-            <img src={img}></img>
+            <img style={{width:"2vw"}} src={img}></img>
             <Sider
               style={{
                 background: "rgba(12, 46, 55, 1)",
@@ -121,7 +122,7 @@ const GlobalLayout = () => {
         className={styles.animated_button}
         onClick={() => setIsChatVisible(!isChatVisible)}
       >
-        <img style={{ height: "50%", width: "50%" }} src={icon}></img>
+        <img style={{ height: "80%", width: "90%" }} src={icon}></img>
       </div>
 
       <div className={styles.animated_id}>

@@ -126,7 +126,7 @@ const HeaderComponent = () => {
     <Row
       style={{ background: "rgba(12, 46, 55, 1)", lineHeight: "0" }}
       gutter={[20, 20]}
-      justify={"space-between"}
+      justify={"space-around"}
     >
       <Col span={2}>
         <img src={logo} alt="Logo" />

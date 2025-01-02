@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 const { Sider } = Layout;
 
 const SideBar = () => {
-  const Navigation = useNavigate();
+  const navigation = useNavigate();
 
   const menuItems: any = [
     {
@@ -160,7 +160,7 @@ const SideBar = () => {
       "horse-racing",
     ].findIndex((ele) => ele === data?.key);
     if (res != -1) {
-      Navigation(`/${data?.key}`);
+      navigation(`/${data?.key}`);
     }
   };
 

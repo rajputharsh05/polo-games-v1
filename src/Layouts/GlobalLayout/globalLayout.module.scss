@@ -104,11 +104,36 @@
 .animated_id {
   position: fixed;
   bottom: 0rem;
-  left: 13rem;
+  left: 0rem;
   z-index: 1100;
   border-radius: 1vh;
   padding: 2vh;
 
   // Apply Random Animation
   @include random-animation-id(1s);
+}
+
+.scrolling_container {
+  width: 100px; /* Adjust based on your text length */
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.rotated_text {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 20px;
+  color: #fff;
+  transform: rotate(90deg);
+  animation: scrollUp 5s linear infinite;
+}
+
+@keyframes scrollUp {
+  0% {
+    transform: rotate(90deg) translateY(100%);
+  }
+  100% {
+    transform: rotate(90deg) translateY(-100%);
+  }
 }

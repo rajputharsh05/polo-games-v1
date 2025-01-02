@@ -31,9 +31,12 @@ const AdminPage = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
   const [isAddblogs, setIsAddBlogs] = useState(false);
-  const [agents, setAgents] = useState(["Agent 1", "Agent 2"]);
+  const [agents, setAgents] = useState([]);
   const [imageModal, setImageModal] = useState(false);
   const [blogs, setBlogs] = useState([]);
+  const [reels, setReels] = useState([]);
+  const [reelModal, setReelModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -49,6 +52,19 @@ const AdminPage = () => {
       const data = response.data;
       console.log(response.data);
       setUploadedImages(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch blogs");
+    }
+  };
+
+  const getReels = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/reels/get-reels/"
+      );
+      const data = response.data;
+      setReels(data);
     } catch (error) {
       console.error(error);
       message.error("unable to fetch blogs");
@@ -113,6 +129,38 @@ const AdminPage = () => {
     return false;
   };
 
+  const handleReelsUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:8000/reels/upload-reel",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getReels();
+        message.success("Reel uploaded successfully!");
+      } else {
+        message.error("Failed to upload Reel. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error uploading Reel:", error);
+      message.error("Error uploading Reel");
+    } finally {
+      setReelModal(false);
+      setLoading(false);
+    }
+    return false;
+  };
+
   const handleBlogsDelete = async (id: any) => {
     try {
       const response = await axios.delete(`http://localhost:8000/blogs/${id}`);
@@ -156,7 +204,6 @@ const AdminPage = () => {
   };
 
   const handleAgentSubmit = async (values: any) => {
-    console.log("Heyyy")
     try {
       const response = await axios.post(
         "http://localhost:8000/user/create_user",
@@ -203,10 +250,26 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteReels = async (id: any) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/reels/delete-reel/${id}`
+      );
+      if (response?.status === 200) {
+        message.success("Reel Deleted Successfully");
+        getReels();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the Reel");
+    }
+  };
+
   useEffect(() => {
     getBlogs();
     getAgents();
     getImages();
+    getReels();
   }, []);
 
   const columns = [
@@ -308,12 +371,55 @@ const AdminPage = () => {
     },
   ];
 
+  function getLastSegment(url: string) {
+    try {
+      const urlObj = new URL(url);
+      const path = urlObj?.pathname;
+      const segments = path?.split("/");
+      return segments?.pop();
+    } catch (error) {
+      console.error("Invalid URL", error);
+      return null;
+    }
+  }
+
+  const ReelsColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number, idx: number, num: number) => {
+        return <span style={{ color: "white" }}>{num + 1}</span>;
+      },
+    },
+    {
+      title: "File Name",
+      dataIndex: "name",
+      key: "name",
+      render: (_: any, record: any) => (
+        <span style={{ color: "white" }}>{getLastSegment(record)}</span>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteReels(getLastSegment(record))}
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <div className={styles.adminWrapper}>
         <div className={styles.contentPage}>
           <Row
-          className={styles.AdminOverView}
+            className={styles.AdminOverView}
             style={{
               display: "flex",
               flexWrap: "wrap", // Ensures the layout adapts for smaller screens
@@ -601,6 +707,37 @@ const AdminPage = () => {
                     />
                   </>
                 )}
+
+                {modalType === "manageReels" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setReelModal(true)}
+                        >
+                          Add Reels
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={reels}
+                      columns={ReelsColumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
               </div>
             </Card>
           </Row>
@@ -715,6 +852,39 @@ const AdminPage = () => {
                   icon={<UploadOutlined />}
                 >
                   Upload Banner
+                </Button>
+              </Upload>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={reelModal}
+          onCancel={() => setReelModal(false)}
+          onClose={() => setReelModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
+                <Button
+                  style={{ color: "white", marginTop: "5vh" }}
+                  icon={<UploadOutlined />}
+                >
+                  Upload Reels
                 </Button>
               </Upload>
             </Row>
