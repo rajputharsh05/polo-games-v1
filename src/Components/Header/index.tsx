@@ -63,6 +63,7 @@ const HeaderComponent = () => {
       const response = await axios.post(
         `http://localhost:8000/otp/send-otp?phone_number=${values?.phone_number}`
       );
+      console.log(response)
       setCurrentPhoneNumber(values?.phone_number)
       setEnterOtp(true);
     } catch (error: any) {
@@ -98,6 +99,7 @@ const HeaderComponent = () => {
       const response = await axios.post(
         `http://localhost:8000/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
       );
+      console.log(response)
       setEnterOtp(true);
     } catch (error: any) {
       console.error(error);

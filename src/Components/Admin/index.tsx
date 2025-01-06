@@ -464,6 +464,7 @@ const AdminPage = () => {
       dataIndex: "id",
       key: "id",
       render: (text: number, idx: number, num: number) => {
+        console.log(text, idx, num);
         return <span style={{ color: "white" }}>{num + 1}</span>;
       },
     },

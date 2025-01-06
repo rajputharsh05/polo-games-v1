@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
 import icon from "../../assets/ic_round-support-agent.png";
-import ID from "../../assets/Group 26.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
 import axios from "axios";
