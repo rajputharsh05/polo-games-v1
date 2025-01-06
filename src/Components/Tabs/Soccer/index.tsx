@@ -4,12 +4,15 @@ import styles from "../tabs.module.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateSoccer } from "../../../Redux/lineMatchesSlice";
 
 const SoccerSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [LiveCount, setLiveCount] = useState<number>(0);
 
   const ModifyData = (data: []) => {
@@ -49,11 +52,12 @@ const SoccerSection = () => {
     });
 
     if (location?.pathname === "/" && ModifiedData?.length > 3) {
-      setDataSource(ModifiedData.slice(0, 3));
+      setDataSource(ModifiedData.slice(0, 2));
     } else {
       setDataSource(ModifiedData);
     }
     setLiveCount(count);
+    dispatch(updateSoccer(count));
   };
 
   const getApiData = async () => {
@@ -187,6 +191,23 @@ const SoccerSection = () => {
             </div>
           ))}
         </div>
+        {location?.pathname === "/" && datasource?.length !== 0 &&(
+          <Row style={{ color: "white" }} justify={"center"} align={"middle"}>
+            <p
+              onClick={() => {
+                navigate("/soccer");
+              }}
+              className={styles.showMoreButton}
+            >
+              view more ?
+            </p>
+          </Row>
+        )}
+        {datasource?.length === 0 && (
+          <Row justify={"center"} style={{ color: "white" }}>
+            <h2>No Data Found</h2>
+          </Row>
+        )}
       </div>
     </Spin>
   );

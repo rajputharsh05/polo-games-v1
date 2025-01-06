@@ -31,9 +31,14 @@ const AdminPage = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
   const [isAddblogs, setIsAddBlogs] = useState(false);
-  const [agents, setAgents] = useState(["Agent 1", "Agent 2"]);
+  const [agents, setAgents] = useState([]);
   const [imageModal, setImageModal] = useState(false);
   const [blogs, setBlogs] = useState([]);
+  const [reels, setReels] = useState([]);
+  const [reelModal, setReelModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [marqueeModal, setMarqueeModal] = useState(false);
+  const [text, setText] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -49,6 +54,19 @@ const AdminPage = () => {
       const data = response.data;
       console.log(response.data);
       setUploadedImages(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch blogs");
+    }
+  };
+
+  const getReels = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/reels/get-reels/"
+      );
+      const data = response.data;
+      setReels(data);
     } catch (error) {
       console.error(error);
       message.error("unable to fetch blogs");
@@ -109,7 +127,38 @@ const AdminPage = () => {
       setImageModal(false);
     }
 
-    // Return false to prevent Ant Design from uploading the file automatically
+    return false;
+  };
+
+  const handleReelsUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+      const response = await axios.post(
+        "http://localhost:8000/reels/upload-reel",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getReels();
+        message.success("Reel uploaded successfully!");
+      } else {
+        message.error("Failed to upload Reel. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error uploading Reel:", error);
+      message.error("Error uploading Reel");
+    } finally {
+      setReelModal(false);
+      setLoading(false);
+    }
     return false;
   };
 
@@ -156,7 +205,6 @@ const AdminPage = () => {
   };
 
   const handleAgentSubmit = async (values: any) => {
-    console.log("Heyyy")
     try {
       const response = await axios.post(
         "http://localhost:8000/user/create_user",
@@ -203,10 +251,73 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteReels = async (id: any) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/reels/delete-reel/${id}`
+      );
+      if (response?.status === 200) {
+        message.success("Reel Deleted Successfully");
+        getReels();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the Reel");
+    }
+  };
+
+  const getTexts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/marqueetext/statements"
+      );
+      const data = response.data;
+      console.log(data);
+      setText(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch texts");
+    }
+  };
+
+  const handleMarqueeSubmit = async (values: any) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/marqueetext/create-statement?content=${values?.Text}`
+      );
+      if (response?.status === 200) {
+        message.success("Added Marquee SuccessFully");
+        getTexts();
+        setMarqueeModal(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to create text");
+    }
+  };
+
+  const handleTextDelete = async (id : any) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/marqueetext/delete-statement/${id}`
+      );
+      if (response?.status === 200) {
+        message.success("Text Deleted Successfully");
+        getTexts();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the Text");
+    }
+  };
+
   useEffect(() => {
     getBlogs();
     getAgents();
     getImages();
+    getReels();
+    getTexts();
   }, []);
 
   const columns = [
@@ -308,12 +419,83 @@ const AdminPage = () => {
     },
   ];
 
+  const Textcolumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleTextDelete(record?.id)}
+        />
+      ),
+    },
+  ];
+
+  function getLastSegment(url: string) {
+    try {
+      const urlObj = new URL(url);
+      const path = urlObj?.pathname;
+      const segments = path?.split("/");
+      return segments?.pop();
+    } catch (error) {
+      console.error("Invalid URL", error);
+      return null;
+    }
+  }
+
+  const ReelsColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number, idx: number, num: number) => {
+        console.log(text, idx, num);
+        return <span style={{ color: "white" }}>{num + 1}</span>;
+      },
+    },
+    {
+      title: "File Name",
+      dataIndex: "name",
+      key: "name",
+      render: (_: any, record: any) => (
+        <span style={{ color: "white" }}>{getLastSegment(record)}</span>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDeleteReels(getLastSegment(record))}
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <div className={styles.adminWrapper}>
         <div className={styles.contentPage}>
           <Row
-          className={styles.AdminOverView}
+            className={styles.AdminOverView}
             style={{
               display: "flex",
               flexWrap: "wrap", // Ensures the layout adapts for smaller screens
@@ -387,6 +569,11 @@ const AdminPage = () => {
                 icon: <VideoCameraOutlined />,
                 label: "Manage Reels",
               },
+              {
+                key: "manageMarquee",
+                icon: <VideoCameraOutlined />,
+                label: "Manage Marquee",
+              },
             ].map((tab) => (
               <Col
                 key={tab.key}
@@ -394,7 +581,7 @@ const AdminPage = () => {
                 className={`${styles.Btn} ${
                   modalType === tab.key ? styles.active : styles.inactive
                 }`}
-                span={5}
+                span={4}
               >
                 <Row justify={"center"}>
                   <div className={styles.Icon}>{tab.icon}</div>
@@ -601,6 +788,68 @@ const AdminPage = () => {
                     />
                   </>
                 )}
+
+                {modalType === "manageReels" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setReelModal(true)}
+                        >
+                          Add Reels
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={reels}
+                      columns={ReelsColumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "manageMarquee" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setMarqueeModal(true)}
+                        >
+                          Add Reels
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={text}
+                      columns={Textcolumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
               </div>
             </Card>
           </Row>
@@ -717,6 +966,104 @@ const AdminPage = () => {
                   Upload Banner
                 </Button>
               </Upload>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={reelModal}
+          onCancel={() => setReelModal(false)}
+          onClose={() => setReelModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
+                <Button
+                  style={{ color: "white", marginTop: "5vh" }}
+                  icon={<UploadOutlined />}
+                >
+                  Upload Reels
+                </Button>
+              </Upload>
+            </Row>
+          </Card>
+        </Modal>
+
+        <Modal
+          open={marqueeModal}
+          onCancel={() => setMarqueeModal(false)}
+          onClose={() => setMarqueeModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Form
+                style={{ color: "white", marginTop: "3vh" }}
+                form={form}
+                onFinish={handleMarqueeSubmit}
+              >
+                <Form.Item
+                  name="Text"
+                  label="Text"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the Your text here!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter Text" />
+                </Form.Item>
+                <Form.Item>
+                  <Row justify={"space-between"}>
+                    <Col>
+                      <Button
+                        type="primary"
+                        onClick={() => setMarqueeModal(false)}
+                      >
+                        Cancle
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        style={{ backgroundColor: "#73d13d" }}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
             </Row>
           </Card>
         </Modal>

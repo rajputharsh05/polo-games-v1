@@ -33,7 +33,11 @@ const HeaderComponent = () => {
 
   const [loginModal, setLoginModal] = useState(false);
 
+  const [enterOtp, setEnterOtp] = useState(false);
+
   const [loginOrRegister, setLoginOrRegister] = useState(false);
+
+  const [currentPHoneNumber, setCurrentPhoneNumber] = useState<number>();
 
   const [form] = Form.useForm();
 
@@ -55,21 +59,28 @@ const HeaderComponent = () => {
   };
 
   const manageLogin = async (values: any) => {
-    console.log(values);
     try {
-      const response = await axios.get(
-        `http://localhost:8000/user/get_user_by_id/${values?.phone_number}`
+      const response = await axios.post(
+        `http://localhost:8000/otp/send-otp?phone_number=${values?.phone_number}`
       );
-      if (response?.status === 200 && response.data !== null) {
-        message.success("User logged in SuccessFully");
-        setLoginModal(false);
+      console.log(response)
+      setCurrentPhoneNumber(values?.phone_number)
+      setEnterOtp(true);
+    } catch (error: any) {
+      console.error(error);
+      if (
+        error?.status === 404 &&
+        error?.response?.data?.detail ===
+          "Phone number not found in any user tables"
+      ) {
+        message.warning("user not registered");
         form.resetFields();
+        setLoginOrRegister(!loginOrRegister);
       } else {
+        setEnterOtp(true);
+        setCurrentPhoneNumber(values?.phone_number)
         message.error("Unable Login please check the password and username");
       }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable Login please check the password and username");
     }
   };
 
@@ -78,6 +89,32 @@ const HeaderComponent = () => {
       manageRegistration(values);
     } else {
       manageLogin(values);
+    }
+  };
+
+  const handleOtpSubmit = async (values : any) => {
+    console.log(currentPHoneNumber)
+    console.log(values?.otp)
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
+      );
+      console.log(response)
+      setEnterOtp(true);
+    } catch (error: any) {
+      console.error(error);
+      if (
+        error?.status === 404 &&
+        error?.response?.data?.detail ===
+          "Phone number not found in any user tables"
+      ) {
+        message.warning("user not registered");
+        form.resetFields();
+        setLoginOrRegister(!loginOrRegister);
+      } else {
+        setEnterOtp(true);
+        message.error("Unable Login please check the password and username");
+      }
     }
   };
 
@@ -126,7 +163,7 @@ const HeaderComponent = () => {
     <Row
       style={{ background: "rgba(12, 46, 55, 1)", lineHeight: "0" }}
       gutter={[20, 20]}
-      justify={"space-between"}
+      justify={"space-around"}
     >
       <Col span={2}>
         <img src={logo} alt="Logo" />
@@ -189,7 +226,7 @@ const HeaderComponent = () => {
         )}
 
         <div className={styles.vistorStyles}>
-          <p>2,22,323</p>
+          <p style={{ marginRight: "5px" }}>3</p>
           <p>Visitors</p>
         </div>
       </Col>
@@ -215,7 +252,7 @@ const HeaderComponent = () => {
             }}
           >
             <Dropdown overlay={supportMenu} trigger={["click"]}>
-              <div>
+              <div style={{ display: "flex", alignItems: "center" }}>
                 <img
                   src={whatsApp}
                   alt="Play Icon"
@@ -307,7 +344,7 @@ const HeaderComponent = () => {
               style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
             >
               <img
-                src={logo} // Replace with the actual path to your logo
+                src={logo}
                 alt="Polo Games Logo"
                 style={{ height: "50px" }}
               />
@@ -316,107 +353,151 @@ const HeaderComponent = () => {
         >
           <Row justify={"center"} align={"bottom"}>
             {!loginOrRegister ? (
-              <Form
-                style={{ color: "white" }}
-                form={form}
-                onFinish={handleFormSubmit}
-              >
-                <Form.Item
-                  name="username"
-                  label="User Name"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Enter your username" />
-                </Form.Item>
-                <Form.Item
-                  name="phone_number"
-                  label="Phone Number"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Enter Phone Number" />
-                </Form.Item>
-                <Row gutter={[20, 20]} justify={"space-between"}>
-                  {true && (
-                    <Button type="primary" onClick={() => setLoginModal(false)}>
-                      Cancel
-                    </Button>
-                  )}
-                  <Button
-                    style={{ backgroundColor: "#73d13d" }}
-                    type="default"
-                    htmlType="submit"
+              <>
+                {!enterOtp && (
+                  <Form
+                    style={{ color: "white" }}
+                    form={form}
+                    onFinish={handleFormSubmit}
                   >
-                    Login
-                  </Button>
-                </Row>
-              </Form>
+                    <Form.Item
+                      name="phone_number"
+                      label="Phone Number"
+                      rules={[{ required: true }]}
+                    >
+                      <Input placeholder="Enter Phone Number" />
+                    </Form.Item>
+                    <Row gutter={[20, 20]} justify={"space-between"}>
+                      {true && (
+                        <Button
+                          type="primary"
+                          onClick={() => setLoginModal(false)}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                      <Button
+                        style={{ backgroundColor: "#73d13d", color: "white" }}
+                        type="default"
+                        htmlType="submit"
+                      >
+                        Get OTP
+                      </Button>
+                    </Row>
+                  </Form>
+                )}
+
+                {enterOtp && (
+                  <Form
+                    style={{ color: "white" }}
+                    form={form}
+                    onFinish={handleOtpSubmit}
+                  >
+                    <Form.Item
+                      name="otp"
+                      label="Enter OTP"
+                      rules={[{ required: true }]}
+                    >
+                      <Input placeholder="Enter Phone Number" />
+                    </Form.Item>
+                    <Row gutter={[20, 20]} justify={"space-between"}>
+                      <Button
+                        style={{ backgroundColor: "#73d13d", color: "white" }}
+                        type="default"
+                        htmlType="submit"
+                      >
+                        Verify OTP
+                      </Button>
+                    </Row>
+                  </Form>
+                )}
+              </>
             ) : (
-              <Form
-                style={{ color: "white" }}
-                form={form}
-                onFinish={handleFormSubmit}
-              >
-                <Form.Item
-                  name="username"
-                  label="User Name"
-                  rules={[{ required: true }]}
+              <>
+                <Form
+                  style={{ color: "white" }}
+                  form={form}
+                  onFinish={handleFormSubmit}
                 >
-                  <Input placeholder="Enter your username" />
-                </Form.Item>
-                <Form.Item
-                  name="phone_number"
-                  label="Phone Number"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Enter Phone Number" />
-                </Form.Item>
-                <Form.Item
-                  name="country_code"
-                  label="Country Code"
-                  rules={[{ required: true }]}
-                >
-                  <Input placeholder="Enter Country Code" />
-                </Form.Item>
-
-                <Form.Item
-                  name="selected_site"
-                  label="Enter Site"
-                  rules={[{ required: true, type: "string" }]}
-                >
-                  <Input placeholder="Enter Site" />
-                </Form.Item>
-
-                <Row gutter={[20, 20]} justify={"space-between"}>
-                  {true && (
-                    <Button type="primary" onClick={() => setLoginModal(false)}>
-                      Cancel
-                    </Button>
-                  )}
-                  <Button
-                    style={{ backgroundColor: "#73d13d" }}
-                    type="default"
-                    htmlType="submit"
+                  <Form.Item
+                    name="username"
+                    label="User Name"
+                    rules={[{ required: true }]}
                   >
-                    Register
-                  </Button>
-                </Row>
-              </Form>
+                    <Input placeholder="Enter your username" />
+                  </Form.Item>
+                  <Form.Item
+                    name="phone_number"
+                    label="Phone Number"
+                    rules={[{ required: true }]}
+                  >
+                    <Input placeholder="Enter Phone Number" />
+                  </Form.Item>
+                  <Form.Item
+                    name="country_code"
+                    label="Country Code"
+                    rules={[{ required: true }]}
+                  >
+                    <Input placeholder="Enter Country Code" />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="selected_site"
+                    label="Enter Site"
+                    rules={[{ required: true, type: "string" }]}
+                  >
+                    <Input placeholder="Enter Site" />
+                  </Form.Item>
+                  <Row gutter={[20, 20]} justify={"space-between"}>
+                    {true && (
+                      <Button
+                        type="primary"
+                        onClick={() => setLoginModal(false)}
+                      >
+                        Cancel
+                      </Button>
+                    )}
+                    <Button
+                      style={{ backgroundColor: "#73d13d" }}
+                      type="default"
+                      htmlType="submit"
+                    >
+                      Register
+                    </Button>
+                  </Row>
+                </Form>
+              </>
             )}
           </Row>
           <Row justify={"center"} align={"middle"} style={{ marginTop: "2vh" }}>
             {loginOrRegister ? (
-              <Button
-                type="primary"
-                style={{
-                  color: "white !important",
-                  background: "rgba(12, 46, 55, 1)",
-                  border: "1px solid black",
-                  borderRadius: "1vh",
-                }}
-                onClick={() => setLoginOrRegister(false)}
-              >
-                Already have an account ?
-              </Button>
+              <Row justify={"space-between"} align={"middle"}>
+                <Button
+                  type="primary"
+                  style={{
+                    color: "white !important",
+                    background: "rgba(12, 46, 55, 1)",
+                    border: "1px solid black",
+                    borderRadius: "1vh",
+                  }}
+                  onClick={() => setLoginOrRegister(false)}
+                >
+                  Already have an account?
+                </Button>
+                <img
+                  src={whatsApp}
+                  alt="WhatsApp"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    const phoneNumber = "7992476139";
+                    const message = "Hello, I would like to connect with you!";
+                    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                      message
+                    )}`;
+                    window.open(whatsappURL, "_blank");
+                  }}
+                />
+              </Row>
             ) : (
               <>
                 <Button
