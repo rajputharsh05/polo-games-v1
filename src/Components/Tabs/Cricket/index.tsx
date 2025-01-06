@@ -1,14 +1,17 @@
-import { Badge, Row, Col, message, Spin } from "antd";
+import { Badge, Row, Col, message, Spin, Button } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import styles from "../tabs.module.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateCriket } from "../../../Redux/lineMatchesSlice";
 
 const CricketSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [LiveCount, setLiveCount] = useState<number>(0);
 
@@ -49,11 +52,12 @@ const CricketSection = () => {
     });
 
     if (location?.pathname === "/" && ModifiedData?.length > 3) {
-      setDataSource(ModifiedData.slice(0, 3));
+      setDataSource(ModifiedData.slice(0, 2));
     } else {
       setDataSource(ModifiedData);
     }
     setLiveCount(count);
+    dispatch(updateCriket(count))
   };
 
   const getApiData = async () => {
@@ -185,6 +189,18 @@ const CricketSection = () => {
             </div>
           ))}
         </div>
+        {location?.pathname === "/" && datasource?.length !== 0 && (
+          <Row style={{ color: "white" }} justify={"center"} align={"middle"}>
+            <p
+              onClick={() => {
+                navigate("/cricket");
+              }}
+              className={styles.showMoreButton}
+            >
+              view more ?
+            </p>
+          </Row>
+        )}
       </div>
     </Spin>
   );

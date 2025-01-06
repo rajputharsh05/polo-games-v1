@@ -2,15 +2,20 @@ import { Layout, Menu } from "antd";
 import {
   PlayCircleOutlined,
   TrophyOutlined,
-  RadarChartOutlined
+  RadarChartOutlined,
 } from "@ant-design/icons";
 import styles from "./sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const { Sider } = Layout;
 
 const SideBar = () => {
   const navigation = useNavigate();
+  const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
+  const tennis = useSelector((state: any) => state?.match?.tennis);
+  const soccer = useSelector((state: any) => state?.match?.soccer);
+  console.log(cricket);
 
   const menuItems: any = [
     {
@@ -23,7 +28,9 @@ const SideBar = () => {
             <div className={styles.LiveSectionFirst}>
               <div className={styles.LiveCircle}></div>
             </div>
-            <div className={styles.LiveSectionSecond}>{0}</div>
+            <div className={styles.LiveSectionSecond}>
+              {cricket + soccer + tennis}
+            </div>
           </div>
         </div>
       ),
@@ -38,26 +45,10 @@ const SideBar = () => {
             <div className={styles.LiveSectionFirst}>
               <div className={styles.LiveCircle}></div>
             </div>
-            <div className={styles.LiveSectionSecond}>{0}</div>
+            <div className={styles.LiveSectionSecond}>{cricket}</div>
           </div>
         </div>
       ),
-      
-    },
-    {
-      key: "tennis",
-      icon: <TrophyOutlined />,
-      label: (
-        <div className={styles.menuItem}>
-          <span>Tennis</span>
-          <div className={styles.LiveWrapper}>
-            <div className={styles.LiveSectionFirst}>
-              <div className={styles.LiveCircle}></div>
-            </div>
-            <div className={styles.LiveSectionSecond}>{0}</div>
-          </div>
-        </div>
-      )
     },
     {
       key: "soccer",
@@ -69,10 +60,25 @@ const SideBar = () => {
             <div className={styles.LiveSectionFirst}>
               <div className={styles.LiveCircle}></div>
             </div>
-            <div className={styles.LiveSectionSecond}>{0}</div>
+            <div className={styles.LiveSectionSecond}>{soccer}</div>
           </div>
         </div>
-      )
+      ),
+    },
+    {
+      key: "tennis",
+      icon: <TrophyOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Tennis</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{tennis}</div>
+          </div>
+        </div>
+      ),
     },
     {
       key: "horse-racing",
@@ -171,7 +177,7 @@ const SideBar = () => {
         background: "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
         padding: "1vh",
         color: "white !important",
-        width:"100%"
+        width: "100%",
       }}
     >
       <Menu

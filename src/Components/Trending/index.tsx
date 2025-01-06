@@ -16,7 +16,7 @@ export const News = () => {
     } else {
       setData(info?.data?.slice(0, 2));
     }
-  });
+  }, []);
 
   return (
     <div
@@ -209,7 +209,6 @@ const Trending = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
-        <h3>Our Influencers</h3>
         <div className={styles.imageWrapper}>
           <Reels></Reels>
         </div>

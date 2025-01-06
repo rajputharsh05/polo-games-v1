@@ -1,4 +1,4 @@
-import { Layout, Button } from "antd";
+import { Layout, Button, message } from "antd";
 import SideBar from "../../Components/SideBar";
 import { useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
@@ -10,13 +10,28 @@ import icon from "../../assets/ic_round-support-agent.png";
 import ID from "../../assets/Group 26.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
-import img from "../../assets/Side-ad-main-page.png";
-import MarqueeImage from "./test"
+import axios from "axios";
+import ballAnimation from "../../assets/Ball animation.gif"
 
 const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
+  const [text, setText] = useState([]);
+
+  const getTexts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/marqueetext/statements"
+      );
+      const data = response.data;
+      console.log(data);
+      setText(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch texts");
+    }
+  };
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -41,6 +56,10 @@ const GlobalLayout = () => {
     };
   }, []);
 
+  useEffect(() => {
+    getTexts();
+  }, []);
+
   return (
     <Layout
       style={{
@@ -56,7 +75,7 @@ const GlobalLayout = () => {
           top: 0,
           width: "100vw",
           zIndex: 1000,
-          height: "10vh",
+          height: "8vh",
           padding: "0px 0px",
         }}
       >
@@ -100,7 +119,15 @@ const GlobalLayout = () => {
 
         {isSidebarVisible && (
           <>
-            <img style={{width:"2vw"}} src={img}></img>
+            {
+              <div className={styles["marquee-container"]}>
+                {text?.map((ele: any, index: number) => (
+                  <div key={index} className={styles["marquee-content"]}>
+                    {ele?.content}
+                  </div>
+                ))}
+              </div>
+            }
             <Sider
               style={{
                 background: "rgba(12, 46, 55, 1)",
@@ -126,7 +153,7 @@ const GlobalLayout = () => {
       </div>
 
       <div className={styles.animated_id}>
-        <img style={{ height: "50%", width: "50%" }} src={ID}></img>
+        <img style={{ height: "100%", width: "100%" }} src={ballAnimation}></img>
       </div>
 
       {isChatVisible && (

@@ -37,6 +37,8 @@ const AdminPage = () => {
   const [reels, setReels] = useState([]);
   const [reelModal, setReelModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [marqueeModal, setMarqueeModal] = useState(false);
+  const [text, setText] = useState([]);
 
   const [form] = Form.useForm();
 
@@ -125,7 +127,6 @@ const AdminPage = () => {
       setImageModal(false);
     }
 
-    // Return false to prevent Ant Design from uploading the file automatically
     return false;
   };
 
@@ -265,11 +266,58 @@ const AdminPage = () => {
     }
   };
 
+  const getTexts = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/marqueetext/statements"
+      );
+      const data = response.data;
+      console.log(data);
+      setText(data);
+    } catch (error) {
+      console.error(error);
+      message.error("unable to fetch texts");
+    }
+  };
+
+  const handleMarqueeSubmit = async (values: any) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8000/marqueetext/create-statement?content=${values?.Text}`
+      );
+      if (response?.status === 200) {
+        message.success("Added Marquee SuccessFully");
+        getTexts();
+        setMarqueeModal(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to create text");
+    }
+  };
+
+  const handleTextDelete = async (id : any) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8000/marqueetext/delete-statement/${id}`
+      );
+      if (response?.status === 200) {
+        message.success("Text Deleted Successfully");
+        getTexts();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the Text");
+    }
+  };
+
   useEffect(() => {
     getBlogs();
     getAgents();
     getImages();
     getReels();
+    getTexts();
   }, []);
 
   const columns = [
@@ -366,6 +414,33 @@ const AdminPage = () => {
           type="text"
           icon={<DeleteFilled />}
           onClick={() => handleDelete(record, "images")}
+        />
+      ),
+    },
+  ];
+
+  const Textcolumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleTextDelete(record?.id)}
         />
       ),
     },
@@ -493,6 +568,11 @@ const AdminPage = () => {
                 icon: <VideoCameraOutlined />,
                 label: "Manage Reels",
               },
+              {
+                key: "manageMarquee",
+                icon: <VideoCameraOutlined />,
+                label: "Manage Marquee",
+              },
             ].map((tab) => (
               <Col
                 key={tab.key}
@@ -500,7 +580,7 @@ const AdminPage = () => {
                 className={`${styles.Btn} ${
                   modalType === tab.key ? styles.active : styles.inactive
                 }`}
-                span={5}
+                span={4}
               >
                 <Row justify={"center"}>
                   <div className={styles.Icon}>{tab.icon}</div>
@@ -738,6 +818,37 @@ const AdminPage = () => {
                     />
                   </>
                 )}
+
+                {modalType === "manageMarquee" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setMarqueeModal(true)}
+                        >
+                          Add Reels
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={text}
+                      columns={Textcolumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
               </div>
             </Card>
           </Row>
@@ -887,6 +998,71 @@ const AdminPage = () => {
                   Upload Reels
                 </Button>
               </Upload>
+            </Row>
+          </Card>
+        </Modal>
+
+        <Modal
+          open={marqueeModal}
+          onCancel={() => setMarqueeModal(false)}
+          onClose={() => setMarqueeModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Form
+                style={{ color: "white", marginTop: "3vh" }}
+                form={form}
+                onFinish={handleMarqueeSubmit}
+              >
+                <Form.Item
+                  name="Text"
+                  label="Text"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the Your text here!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter Text" />
+                </Form.Item>
+                <Form.Item>
+                  <Row justify={"space-between"}>
+                    <Col>
+                      <Button
+                        type="primary"
+                        onClick={() => setMarqueeModal(false)}
+                      >
+                        Cancle
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        style={{ backgroundColor: "#73d13d" }}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
             </Row>
           </Card>
         </Modal>

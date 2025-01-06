@@ -4,18 +4,21 @@ import styles from "../tabs.module.scss";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { updateTennis } from "../../../Redux/lineMatchesSlice";
+import { useDispatch } from "react-redux";
 
 const TennisSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const [LiveCount, setLiveCount] = useState<number>(0);
 
   const ModifyData = (data: []) => {
     let count = 0;
     const ModifiedData = data?.map((ele: any) => {
-      if (ele?.inPlay) {
+      if (ele?.iplay) {
         count += 1;
       }
       const obj = {
@@ -29,19 +32,19 @@ const TennisSection = () => {
             key: "1",
             value: ele?.section[0]?.odds[0]?.odds,
             extra: ele?.section[0]?.odds[1]?.odds,
-            color: "rgba(50, 163, 188, 1)"
+            color: "rgba(50, 163, 188, 1)",
           },
           {
             key: "2",
             value: ele?.section[1]?.odds[0]?.odds,
             extra: ele?.section[1]?.odds[1]?.odds,
-            color: "rgba(200, 109, 220, 1)"
+            color: "rgba(200, 109, 220, 1)",
           },
           {
             key: "3",
             value: ele?.section[2]?.odds[0]?.odds,
             extra: ele?.section[2]?.odds[1]?.odds,
-           color: "rgba(50, 163, 188, 1)"
+            color: "rgba(50, 163, 188, 1)",
           },
         ],
       };
@@ -49,11 +52,12 @@ const TennisSection = () => {
     });
 
     if (location?.pathname === "/" && ModifiedData?.length > 3) {
-      setDataSource(ModifiedData.slice(0, 3));
+      setDataSource(ModifiedData.slice(0, 2));
     } else {
       setDataSource(ModifiedData);
     }
     setLiveCount(count);
+    dispatch(updateTennis(count));
   };
 
   const getApiData = async () => {
@@ -80,8 +84,8 @@ const TennisSection = () => {
   }, []);
 
   const handleRowClick = (id: any) => {
-    navigate(`/cricket/${id}`)
-  }
+    navigate(`/cricket/${id}`);
+  };
 
   return (
     <Spin spinning={loading}>
@@ -100,23 +104,32 @@ const TennisSection = () => {
         </div>
 
         <div className={styles.table}>
-          {datasource.map((item : any) => (
-            <div onClick={() => handleRowClick(item?.gameId)} key={item.key} className={styles.tableHeader}>
+          {datasource.map((item: any) => (
+            <div
+              onClick={() => handleRowClick(item?.gameId)}
+              key={item.key}
+              className={styles.tableHeader}
+            >
               <div
                 style={{
-                  
                   marginRight: "16px",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
               >
                 <div>
-                  <div style={{color : "white" , fontWeight: "bold" }}>{item?.match?.length > 25 ? `${item?.match?.substr(0,25)}...` :item?.match}</div>
+                  <div style={{ color: "white", fontWeight: "bold" }}>
+                    {item?.match?.length > 25
+                      ? `${item?.match?.substr(0, 25)}...`
+                      : item?.match}
+                  </div>
                   <div style={{ color: "white", fontSize: "12px" }}>
-                    {item?.league?.length > 25 ? `${item?.league?.substr(0,25)}...` :item?.league}
+                    {item?.league?.length > 25
+                      ? `${item?.league?.substr(0, 25)}...`
+                      : item?.league}
                   </div>
                 </div>
-                <div style={{color:"white"}}>
+                <div style={{ color: "white" }}>
                   {item.status === "live" && (
                     <Badge status="success" style={{ marginRight: 8 }} />
                   )}
@@ -124,9 +137,16 @@ const TennisSection = () => {
                 </div>
               </div>
 
-
-              <Row gutter={8} style={{ marginTop: "2vh" , gap:"2vh"  , display:"flex" , justifyContent:"space-between"}}>
-                {item.odds.map((odd : any) => (
+              <Row
+                gutter={8}
+                style={{
+                  marginTop: "2vh",
+                  gap: "2vh",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                {item.odds.map((odd: any) => (
                   <>
                     <Col
                       span={3}
@@ -134,11 +154,13 @@ const TennisSection = () => {
                       style={{
                         background: odd.color,
                         padding: "8px",
-                        borderRadius:"2vh",
+                        borderRadius: "2vh",
                         textAlign: "center",
                       }}
                     >
-                      <div style={{ color : "white", fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {odd.value}
+                      </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
@@ -149,11 +171,13 @@ const TennisSection = () => {
                       style={{
                         background: odd.color,
                         padding: "8px",
-                      borderRadius:"2vh",
+                        borderRadius: "2vh",
                         textAlign: "center",
                       }}
                     >
-                      <div style={{ color:"white ",fontWeight: "bold" }}>{odd.value}</div>
+                      <div style={{ color: "white ", fontWeight: "bold" }}>
+                        {odd.value}
+                      </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
                         {odd.extra}
                       </div>
@@ -163,9 +187,23 @@ const TennisSection = () => {
               </Row>
             </div>
           ))}
-          {
-            datasource?.length === 0 && <Row justify={"center"} style={{color:"white"}}><h2>No Data Found</h2></Row>
-          }
+          {datasource?.length === 0 && (
+            <Row justify={"center"} style={{ color: "white" }}>
+              <h2>No Data Found</h2>
+            </Row>
+          )}
+          {location?.pathname === "/" && datasource?.length !== 0 && (
+            <Row style={{ color: "white" }} justify={"center"} align={"middle"}>
+              <p
+                onClick={() => {
+                  navigate("/tennis");
+                }}
+                className={styles.showMoreButton}
+              >
+                view more ?
+              </p>
+            </Row>
+          )}
         </div>
       </div>
     </Spin>
