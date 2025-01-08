@@ -1,0 +1,55 @@
+.authWrapper {
+  height: 88vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  
+
+  .logoWrapper {
+    height: 20%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    img {
+      height: 100%;
+      width: 80%;
+    }
+  }
+}
+
+.textWrapper {
+  color: "white" !important;
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  font-family: Popins !important;
+  margin-top: 1vh;
+
+  .textStyle{
+    margin-top: 1vh;
+    color:white ; 
+    font-weight:600 ;
+    font-size:28px;
+    margin-left: 10vw;
+    font-family: Popins;
+  }
+}
+
+
+.footerIcon{
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: poppins !important;
+    align-items: center;
+
+
+    img{
+        height: 7vh;
+        width: 7vh;
+    }
+}
