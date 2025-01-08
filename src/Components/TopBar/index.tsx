@@ -36,6 +36,7 @@ import {
 import { useSelector } from "react-redux";
 
 const TopBar = () => {
+  const loaction = useLocation();
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
@@ -211,7 +212,7 @@ const TopBar = () => {
   const [form] = Form.useForm();
 
   const supportMenu = (
-    <Menu >
+    <Menu>
       <Menu.Item key="1">
         <div
           style={{
@@ -244,7 +245,7 @@ const TopBar = () => {
             justifyContent: "space-between",
           }}
           onClick={() => {
-            const phoneNumber = "7992476139";
+            const phoneNumber = "9333333330";
             const message = "Hello, I would like to connect with you!";
             const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
               message
@@ -263,6 +264,7 @@ const TopBar = () => {
     if (window.innerWidth < 768) {
       setModalOpen(false);
     }
+
     const handleResize = () => {
       const currentWidth = window.innerWidth;
       setIsSidebarVisible(currentWidth >= 768);
@@ -290,20 +292,20 @@ const TopBar = () => {
       setActiveTab(key);
     } else if (key === "call-us") {
       // Replace "1234567890" with the desired phone number
-      window.location.href = "tel:1234567890";
+      window.location.href = "tel:9333333330";
     } else {
       setActiveTab(key);
       navigate(`/${key}`);
-  
+
       if (window.innerWidth < 768) {
         setModalOpen(false);
       }
     }
   };
-  
 
   const menuItems = [
     { key: "home", label: "Home", badge: -1, icon: <HomeFilled></HomeFilled> },
+    { key: "auth", label: "Login", badge: -1, icon: <Person></Person> },
     {
       key: "chat-support",
       label: "Chat Support",
@@ -320,8 +322,7 @@ const TopBar = () => {
     { key: "news", label: "News", badge: -1, icon: <Newspaper></Newspaper> },
     { key: "blogs", label: "Blogs", badge: -1, icon: <BookSharp></BookSharp> },
     { key: "reels", label: "Reels", badge: -1, icon: <VideoCall></VideoCall> },
-    { key: "admin", label: "Admin", badge: -1, icon: <Person></Person> },
-  
+
     {
       key: "demo-id",
       label: "DemoId",
@@ -391,10 +392,7 @@ const TopBar = () => {
               visible={isDropdownOpen}
               onVisibleChange={(flag) => setIsDropdownOpen(flag)} // Sync dropdown visibility
             >
-              <div
-                onClick={() => handleTabClick(key)}
-              >
-              </div>
+              <div onClick={() => handleTabClick(key)}></div>
             </Dropdown>
           )}
         </div>
@@ -402,118 +400,128 @@ const TopBar = () => {
     });
 
   return (
-    <div className={styles.topbar}>
-      {!isSidebarVisible && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1vw !important",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div
-            className={styles.topbar_item}
-            onClick={toggleDrawer}
-            aria-label="Toggle Menu"
-          >
-            <MenuOutlined />
-          </div>
-          <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
-            {"categories"}
-          </p>
-        </div>
-      )}
-      {renderMenuItems(menuItems)}
-      <Drawer
-        placement="left"
-        onClose={toggleDrawer}
-        open={openModal}
-        width={200}
-        bodyStyle={{
-          padding: 0,
-          background: "#fff",
-        }}
-        style={{
-          overflow: "scroll",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-        headerStyle={{
-          display: "none",
-        }}
-      >
-        <Row
-          style={{
-            width: "60vw",
-            height: "10vh",
-            backgroundColor: "rgba(12, 46, 55, 1)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <img src={logo} style={{ height: "60%", width: "80%" }}></img>
-        </Row>
-        <Row
-          style={{
-            background:
-              "linear-gradient(rgb(12, 46, 55) -16.64%, rgb(0, 0, 0) 100%)",
-          }}
-        >
-          <Sider
-            width={"60vw"}
+    <>
+      {loaction?.pathname !== "/auth" && (
+        <div className={styles.topbar}>
+          {!isSidebarVisible && loaction?.pathname !== "/auth" && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1vw !important",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div
+                className={styles.topbar_item}
+                onClick={toggleDrawer}
+                aria-label="Toggle Menu"
+              >
+                <MenuOutlined />
+              </div>
+              <p
+                style={{
+                  whiteSpace: "nowrap",
+                  fontSize: "10px",
+                  color: "white",
+                }}
+              >
+                {"categories"}
+              </p>
+            </div>
+          )}
+          {renderMenuItems(menuItems)}
+          <Drawer
+            placement="left"
+            onClose={toggleDrawer}
+            open={openModal}
+            width={200}
+            bodyStyle={{
+              padding: 0,
+              background: "#fff",
+            }}
             style={{
-              background:
-                "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
-              display: "",
-              color: "white !important",
-              width: "100%",
               overflow: "scroll",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
             }}
+            headerStyle={{
+              display: "none",
+            }}
           >
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["home"]}
-              defaultOpenKeys={[]}
-              items={menuItemsSideBar}
-              onClick={handleOnClick}
-              className={styles.sidebarMenu}
-            />
-          </Sider>
-        </Row>
-      </Drawer>
-      <Modal
-        open={isOpen}
-        title="Admin Login"
-        onClose={() => setIsOpen(false)}
-        footer=""
-        onCancel={() => setIsOpen(false)}
-      >
-        <Form form={form} onFinish={handleAdminSubmit}>
-          <Form.Item
-            name="username"
-            label="User Name"
-            rules={[{ required: true }]}
+            <Row
+              style={{
+                width: "60vw",
+                height: "10vh",
+                backgroundColor: "rgba(12, 46, 55, 1)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <img src={logo} style={{ height: "60%", width: "80%" }}></img>
+            </Row>
+            <Row
+              style={{
+                background:
+                  "linear-gradient(rgb(12, 46, 55) -16.64%, rgb(0, 0, 0) 100%)",
+              }}
+            >
+              <Sider
+                width={"60vw"}
+                style={{
+                  background:
+                    "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
+                  display: "",
+                  color: "white !important",
+                  width: "100%",
+                  overflow: "scroll",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+              >
+                <Menu
+                  mode="inline"
+                  defaultSelectedKeys={["home"]}
+                  defaultOpenKeys={[]}
+                  items={menuItemsSideBar}
+                  onClick={handleOnClick}
+                  className={styles.sidebarMenu}
+                />
+              </Sider>
+            </Row>
+          </Drawer>
+          <Modal
+            open={isOpen}
+            title="Admin Login"
+            onClose={() => setIsOpen(false)}
+            footer=""
+            onCancel={() => setIsOpen(false)}
           >
-            <Input placeholder="Enter your username" />
-          </Form.Item>
-          <Form.Item
-            name="phone_number"
-            label="Phone Number"
-            rules={[{ required: true }]}
-          >
-            <Input placeholder="Enter your Phone Number" />
-          </Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form>
-      </Modal>
-    </div>
+            <Form form={form} onFinish={handleAdminSubmit}>
+              <Form.Item
+                name="username"
+                label="User Name"
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="Enter your username" />
+              </Form.Item>
+              <Form.Item
+                name="phone_number"
+                label="Phone Number"
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="Enter your Phone Number" />
+              </Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form>
+          </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

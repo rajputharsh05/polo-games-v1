@@ -11,6 +11,7 @@ import MatchPage from "../Components/MatchPage";
 import { Blogs, News, Reels } from "../Components/Trending";
 import AdminPage from "../Components/Admin";
 import Pages from "../Components/Pages";
+import Auth from "../Components/Auth";
 
 interface RouteBase {
   path: string;
@@ -139,5 +140,9 @@ export const globalRoutes = [
   {
     path:"/pages",
     element: <Pages></Pages>
+  },
+  {
+    path:"/auth",
+    element: <Auth></Auth>
   }
 ];

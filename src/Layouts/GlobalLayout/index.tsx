@@ -1,6 +1,6 @@
 import { Layout, Button, message } from "antd";
 import SideBar from "../../Components/SideBar";
-import { useOutlet } from "react-router-dom";
+import { useLocation, useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
 import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
@@ -10,12 +10,13 @@ import icon from "../../assets/ic_round-support-agent.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
 import axios from "axios";
-import ballAnimation from "../../assets/Ball animation.gif"
+import ballAnimation from "../../assets/Ball animation.gif";
 
 const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
+  const location = useLocation();
   const [text, setText] = useState([]);
 
   const getTexts = async () => {
@@ -67,27 +68,35 @@ const GlobalLayout = () => {
         background: "rgba(12, 46, 55, 1)",
       }}
     >
-      <Header
-        style={{
-          background: "rgba(12, 46, 55, 1)",
-          position: "fixed",
-          top: 0,
-          width: "100vw",
-          zIndex: 1000,
-          height: "8vh",
-          padding: "0px 0px",
-        }}
-      >
-        {isSidebarVisible ? (
-          <HeaderComponent></HeaderComponent>
-        ) : (
-          <>
-            <MobileHeader></MobileHeader>
-          </>
-        )}
-      </Header>
+      {location.pathname !== "/auth" && (
+        <Header
+          style={{
+            background: "rgba(12, 46, 55, 1)",
+            position: "fixed",
+            top: 0,
+            width: "100vw",
+            zIndex: 1000,
+            height: "8vh",
+            padding: "0px 0px",
+          }}
+        >
+          {isSidebarVisible ? (
+            <HeaderComponent></HeaderComponent>
+          ) : (
+            <>
+              <MobileHeader></MobileHeader>
+            </>
+          )}
+        </Header>
+      )}
 
-      <Layout style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}>
+      <Layout
+        style={
+          location.pathname !== "/auth"
+            ? { marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }
+            : { background: "rgba(12, 46, 55, 1)" }
+        }
+      >
         {isSidebarVisible && (
           <Sider
             width="20vw"
@@ -115,8 +124,6 @@ const GlobalLayout = () => {
           <div>{outlet}</div>
           <DynamincFooter></DynamincFooter>
         </Content>
-
-            
 
         {isSidebarVisible && (
           <>
@@ -153,9 +160,16 @@ const GlobalLayout = () => {
         <img style={{ height: "80%", width: "90%" }} src={icon}></img>
       </div>
 
-      <div className={styles.animated_id}>
-        <img style={{ height: "100%", width: "100%" }} src={ballAnimation}></img>
-      </div>
+      {
+        location.pathname !== "/auth" &&
+
+        <div className={styles.animated_id}>
+        <img
+          style={{ height: "100%", width: "100%" }}
+          src={ballAnimation}
+          ></img>
+        </div>
+      }
 
       {isChatVisible && (
         <div
