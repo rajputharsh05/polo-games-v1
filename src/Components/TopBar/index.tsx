@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   Button,
   Drawer,
+  Dropdown,
   Form,
   Input,
   Layout,
@@ -15,6 +16,8 @@ import { HomeFilled, IdcardFilled, MenuOutlined } from "@ant-design/icons";
 
 import styles from "./topbar.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
+import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
+import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import axios from "axios";
 import {
   PlayCircleOutlined,
@@ -24,10 +27,10 @@ import {
 import {
   BookSharp,
   Call,
-  ChatBubble,
   Newspaper,
   Person,
   PlayCircle,
+  Telegram,
   VideoCall,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
@@ -36,6 +39,7 @@ const TopBar = () => {
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
 
   const navigation = useNavigate();
@@ -205,6 +209,56 @@ const TopBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [form] = Form.useForm();
+
+  const supportMenu = (
+    <Menu >
+      <Menu.Item key="1">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "black", // Adjust text color as needed
+            fontSize: "16px",
+            fontWeight: "600",
+            backgroundColor: "rgba(217, 217, 217, 1)",
+            padding: "1vh",
+            borderRadius: "3vh",
+            justifyContent: "space-between",
+          }}
+        >
+          <p>Online Chat</p>
+          <img src={onlineChatImg} height={"20%"} width={"20%"}></img>
+        </div>
+      </Menu.Item>
+      <Menu.Item key="2">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            color: "black",
+            fontSize: "16px",
+            fontWeight: "600",
+            backgroundColor: "rgba(217, 217, 217, 1)",
+            padding: "1vh",
+            borderRadius: "3vh",
+            justifyContent: "space-between",
+          }}
+          onClick={() => {
+            const phoneNumber = "7992476139";
+            const message = "Hello, I would like to connect with you!";
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+              message
+            )}`;
+            window.open(whatsappURL, "_blank");
+          }}
+        >
+          <p>Whatsapp Chat</p>
+          <img src={whatsAppChatImg} height={"20%"} width={"20%"}></img>
+        </div>
+      </Menu.Item>
+    </Menu>
+  );
+
   useEffect(() => {
     if (window.innerWidth < 768) {
       setModalOpen(false);
@@ -231,18 +285,32 @@ const TopBar = () => {
   const handleTabClick = (key: any) => {
     if (key === "admin") {
       setIsOpen(true);
+    } else if (key === "chat-support") {
+      setIsDropdownOpen(true);
+      setActiveTab(key);
+    } else if (key === "call-us") {
+      // Replace "1234567890" with the desired phone number
+      window.location.href = "tel:1234567890";
     } else {
       setActiveTab(key);
       navigate(`/${key}`);
-
+  
       if (window.innerWidth < 768) {
         setModalOpen(false);
       }
     }
   };
+  
 
   const menuItems = [
     { key: "home", label: "Home", badge: -1, icon: <HomeFilled></HomeFilled> },
+    {
+      key: "chat-support",
+      label: "Chat Support",
+      badge: -1,
+      icon: <Telegram></Telegram>,
+    },
+    { key: "call-us", label: "Call us", badge: -1, icon: <Call></Call> },
     {
       key: "in-play",
       label: "In Play",
@@ -253,18 +321,12 @@ const TopBar = () => {
     { key: "blogs", label: "Blogs", badge: -1, icon: <BookSharp></BookSharp> },
     { key: "reels", label: "Reels", badge: -1, icon: <VideoCall></VideoCall> },
     { key: "admin", label: "Admin", badge: -1, icon: <Person></Person> },
-    { key: "chat", label: "Chat", badge: -1, icon: <ChatBubble></ChatBubble> },
+  
     {
       key: "demo-id",
       label: "DemoId",
       badge: -1,
       icon: <IdcardFilled></IdcardFilled>,
-    },
-    {
-      key: "call-support",
-      label: "Call Support",
-      badge: -1,
-      icon: <Call></Call>,
     },
   ];
 
@@ -294,35 +356,50 @@ const TopBar = () => {
   };
 
   const renderMenuItems = (items: any) =>
-    items.map(({ key, label, badge, icon }: any) => (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1vw !important",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
+    items.map(({ key, label, badge, icon }: any) => {
+      return (
         <div
-          onClick={() => {
-            handleTabClick(key);
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1vw !important",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
-          key={key}
-          className={`${styles.topbar_item} ${
-            activeTab === key ? styles.active : ""
-          }`}
         >
-          {icon}
-          {badge && badge !== -1 && (
-            <span className={styles.topbar_badge}>{badge}</span>
+          <div
+            onClick={() => {
+              handleTabClick(key);
+            }}
+            key={key}
+            className={`${styles.topbar_item} ${
+              activeTab === key ? styles.active : ""
+            }`}
+          >
+            {icon}
+            {badge && badge !== -1 && (
+              <span className={styles.topbar_badge}>{badge}</span>
+            )}
+          </div>
+          <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
+            {label}
+          </p>
+          {label === "Chat Support" && (
+            <Dropdown
+              key={key}
+              overlay={supportMenu}
+              visible={isDropdownOpen}
+              onVisibleChange={(flag) => setIsDropdownOpen(flag)} // Sync dropdown visibility
+            >
+              <div
+                onClick={() => handleTabClick(key)}
+              >
+              </div>
+            </Dropdown>
           )}
         </div>
-        <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
-          {label}
-        </p>
-      </div>
-    ));
+      );
+    });
 
   return (
     <div className={styles.topbar}>
@@ -390,7 +467,7 @@ const TopBar = () => {
             style={{
               background:
                 "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
-              display:"",
+              display: "",
               color: "white !important",
               width: "100%",
               overflow: "scroll",
