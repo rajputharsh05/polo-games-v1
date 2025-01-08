@@ -90,3 +90,53 @@
   }
 }
 
+
+.menuItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  span {
+    flex-grow: 1; // Ensures the text takes remaining space
+  }
+
+  
+}
+
+.LiveWrapper {
+  height: 3vh;
+  width: 25%;
+  display: flex;
+  margin-left: 1vw;
+  border-radius: 1vh;
+}
+
+.LiveSectionFirst {
+  width: 60% !important;
+  background-color: white !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.LiveSectionSecond {
+  width: 40% !important;
+  background-color: rgba(151, 19, 19, 1);
+}
+
+.LiveCircle {
+  background-color: rgba(100, 100, 100, 1);
+  height: 50%;
+  width: 30%;
+  border-radius: 50%;
+}
+
+.LiveSectionSecond {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  font-family: poppins;
+}
+

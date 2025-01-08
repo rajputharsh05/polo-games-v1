@@ -44,6 +44,7 @@
   color: white !important;
 }
 
+
 .menuItem {
   display: flex;
   justify-content: space-between;
@@ -52,6 +53,8 @@
   span {
     flex-grow: 1; // Ensures the text takes remaining space
   }
+
+  
 }
 
 .LiveWrapper {

@@ -82,7 +82,7 @@ const SideBar = () => {
     },
     {
       key: "horse-racing",
-      icon: <TrophyOutlined />, // Replace with correct icon
+      icon: <TrophyOutlined />, 
       label: "Horse Racing",
     },
     {

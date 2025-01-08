@@ -1,11 +1,26 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Button, Drawer, Form, Input, message, Modal, Row } from "antd";
+import {
+  Button,
+  Drawer,
+  Form,
+  Input,
+  Layout,
+  Menu,
+  message,
+  Modal,
+  Row,
+} from "antd";
 import { HomeFilled, IdcardFilled, MenuOutlined } from "@ant-design/icons";
-import SideBar from "../SideBar";
+
 import styles from "./topbar.module.scss";
-import logo from "../../assets/MobileHeaderImg.png";
+import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import axios from "axios";
+import {
+  PlayCircleOutlined,
+  TrophyOutlined,
+  RadarChartOutlined,
+} from "@ant-design/icons";
 import {
   BookSharp,
   Call,
@@ -15,11 +30,172 @@ import {
   PlayCircle,
   VideoCall,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
 
 const TopBar = () => {
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
+  const { Sider } = Layout;
+
+  const navigation = useNavigate();
+  const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
+  const tennis = useSelector((state: any) => state?.match?.tennis);
+  const soccer = useSelector((state: any) => state?.match?.soccer);
+  console.log(cricket);
+
+  const menuItemsSideBar: any = [
+    {
+      key: "in-play",
+      icon: <PlayCircleOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>In Play</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>
+              {cricket + soccer + tennis}
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "cricket",
+      icon: <TrophyOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Cricket</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{cricket}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "soccer",
+      icon: <RadarChartOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Soccer</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{soccer}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "tennis",
+      icon: <TrophyOutlined />,
+      label: (
+        <div className={styles.menuItem}>
+          <span>Tennis</span>
+          <div className={styles.LiveWrapper}>
+            <div className={styles.LiveSectionFirst}>
+              <div className={styles.LiveCircle}></div>
+            </div>
+            <div className={styles.LiveSectionSecond}>{tennis}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: "horse-racing",
+      icon: <TrophyOutlined />,
+      label: "Horse Racing",
+    },
+    {
+      key: "rugby-union",
+      icon: <TrophyOutlined />,
+      label: "Rugby Union",
+    },
+    {
+      key: "golf",
+      icon: <TrophyOutlined />,
+      label: "Golf",
+    },
+    {
+      key: "esports",
+      icon: <TrophyOutlined />,
+      label: "Esports",
+    },
+    {
+      key: "mma",
+      icon: <TrophyOutlined />,
+      label: "MMA",
+    },
+    {
+      key: "gaelic-games",
+      icon: <TrophyOutlined />,
+      label: "Gaelic Games",
+    },
+    {
+      key: "volleyball",
+      icon: <TrophyOutlined />,
+      label: "Volleyball",
+    },
+    {
+      key: "handball",
+      icon: <TrophyOutlined />,
+      label: "Handball",
+    },
+    {
+      key: "australian-rules",
+      icon: <TrophyOutlined />,
+      label: "Australian Rules",
+    },
+    {
+      key: "ice-hockey",
+      icon: <TrophyOutlined />,
+      label: "Ice Hockey",
+    },
+    {
+      key: "snooker",
+      icon: <TrophyOutlined />,
+      label: "Snooker",
+    },
+    {
+      key: "darts",
+      icon: <TrophyOutlined />,
+      label: "Darts",
+    },
+    {
+      key: "cycling",
+      icon: <TrophyOutlined />,
+      label: "Cycling",
+    },
+    {
+      key: "special-bets",
+      icon: <TrophyOutlined />,
+      label: "Special Bets",
+    },
+    {
+      key: "table-tennis",
+      icon: <TrophyOutlined />,
+      label: "Table Tennis",
+    },
+  ];
+
+  const handleOnClick = (data: any) => {
+    const res = [
+      "in-play",
+      "cricket",
+      "tennis",
+      "soccer",
+      "horse-racing",
+    ].findIndex((ele) => ele === data?.key);
+    if (res != -1) {
+      navigation(`/${data?.key}`);
+    }
+  };
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(
     window.innerWidth >= 768
@@ -151,13 +327,15 @@ const TopBar = () => {
   return (
     <div className={styles.topbar}>
       {!isSidebarVisible && (
-        <div  style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1vw !important",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1vw !important",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <div
             className={styles.topbar_item}
             onClick={toggleDrawer}
@@ -166,8 +344,8 @@ const TopBar = () => {
             <MenuOutlined />
           </div>
           <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
-          {"categories"}
-        </p>
+            {"categories"}
+          </p>
         </div>
       )}
       {renderMenuItems(menuItems)}
@@ -180,13 +358,18 @@ const TopBar = () => {
           padding: 0,
           background: "#fff",
         }}
+        style={{
+          overflow: "scroll",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
         headerStyle={{
           display: "none",
         }}
       >
         <Row
           style={{
-            width: "100%",
+            width: "60vw",
             height: "10vh",
             backgroundColor: "rgba(12, 46, 55, 1)",
             display: "flex",
@@ -194,9 +377,37 @@ const TopBar = () => {
             alignItems: "center",
           }}
         >
-          <img src={logo} style={{ height: "100%", width: "80%" }}></img>
+          <img src={logo} style={{ height: "60%", width: "80%" }}></img>
         </Row>
-        <SideBar />
+        <Row
+          style={{
+            background:
+              "linear-gradient(rgb(12, 46, 55) -16.64%, rgb(0, 0, 0) 100%)",
+          }}
+        >
+          <Sider
+            width={"60vw"}
+            style={{
+              background:
+                "linear-gradient(180deg, #0C2E37 -16.64%, #000000 100%)",
+              display:"",
+              color: "white !important",
+              width: "100%",
+              overflow: "scroll",
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["home"]}
+              defaultOpenKeys={[]}
+              items={menuItemsSideBar}
+              onClick={handleOnClick}
+              className={styles.sidebarMenu}
+            />
+          </Sider>
+        </Row>
       </Drawer>
       <Modal
         open={isOpen}
