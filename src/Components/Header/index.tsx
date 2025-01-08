@@ -26,7 +26,7 @@ import call from "../../assets/call.png";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import Cookies from "js-cookie";
-import { Telegram, WhatsApp } from "@mui/icons-material";
+import { WhatsApp } from "@mui/icons-material";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();

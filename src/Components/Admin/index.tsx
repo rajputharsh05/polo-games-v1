@@ -10,8 +10,6 @@ import {
   message,
   Card,
   Table,
-  Spin,
-  Typography,
 } from "antd";
 import {
   UploadOutlined,
