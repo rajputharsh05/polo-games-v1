@@ -1,11 +1,20 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button, Drawer, Form, Input, message, Modal, Row } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { HomeFilled, IdcardFilled, MenuOutlined } from "@ant-design/icons";
 import SideBar from "../SideBar";
 import styles from "./topbar.module.scss";
 import logo from "../../assets/MobileHeaderImg.png";
 import axios from "axios";
+import {
+  BookSharp,
+  Call,
+  ChatBubble,
+  Newspaper,
+  Person,
+  PlayCircle,
+  VideoCall,
+} from "@mui/icons-material";
 
 const TopBar = () => {
   const [activeTab, setActiveTab] = useState("home");
@@ -57,15 +66,30 @@ const TopBar = () => {
   };
 
   const menuItems = [
-    { key: "home", label: "Home", badge: -1 },
-    { key: "in-play", label: "In Play", badge: -1 },
-    { key: "news", label: "News", badge: -1 },
-    { key: "blogs", label: "Blogs", badge: -1 },
-    { key: "reels", label: "Reels", badge: -1 },
-    { key: "admin", label: "Admin", badge: -1 },
-    { key: "chat", label: "Chat", badge: -1 },
-    { key: "demo-id", label: "DemoId", badge: -1 },
-    { key: "call-support", label: "Call Support", badge: -1 },
+    { key: "home", label: "Home", badge: -1, icon: <HomeFilled></HomeFilled> },
+    {
+      key: "in-play",
+      label: "In Play",
+      badge: -1,
+      icon: <PlayCircle></PlayCircle>,
+    },
+    { key: "news", label: "News", badge: -1, icon: <Newspaper></Newspaper> },
+    { key: "blogs", label: "Blogs", badge: -1, icon: <BookSharp></BookSharp> },
+    { key: "reels", label: "Reels", badge: -1, icon: <VideoCall></VideoCall> },
+    { key: "admin", label: "Admin", badge: -1, icon: <Person></Person> },
+    { key: "chat", label: "Chat", badge: -1, icon: <ChatBubble></ChatBubble> },
+    {
+      key: "demo-id",
+      label: "DemoId",
+      badge: -1,
+      icon: <IdcardFilled></IdcardFilled>,
+    },
+    {
+      key: "call-support",
+      label: "Call Support",
+      badge: -1,
+      icon: <Call></Call>,
+    },
   ];
 
   const handleAdminSubmit = async (values: any) => {
@@ -94,33 +118,56 @@ const TopBar = () => {
   };
 
   const renderMenuItems = (items: any) =>
-    items.map(({ key, label, badge }: any) => (
+    items.map(({ key, label, badge, icon }: any) => (
       <div
-        onClick={() => {
-          handleTabClick(key);
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1vw !important",
+          alignItems: "center",
+          justifyContent: "space-between",
         }}
-        key={key}
-        className={`${styles.topbar_item} ${
-          activeTab === key ? styles.active : ""
-        }`}
       >
-        {label}
-        {badge && badge !== -1 && (
-          <span className={styles.topbar_badge}>{badge}</span>
-        )}
+        <div
+          onClick={() => {
+            handleTabClick(key);
+          }}
+          key={key}
+          className={`${styles.topbar_item} ${
+            activeTab === key ? styles.active : ""
+          }`}
+        >
+          {icon}
+          {badge && badge !== -1 && (
+            <span className={styles.topbar_badge}>{badge}</span>
+          )}
+        </div>
+        <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
+          {label}
+        </p>
       </div>
     ));
 
   return (
     <div className={styles.topbar}>
       {!isSidebarVisible && (
-        <div
-          className={styles.topbar_item}
-          style={{ backgroundColor: "#940101" }}
-          onClick={toggleDrawer}
-          aria-label="Toggle Menu"
-        >
-          <MenuOutlined />
+        <div  style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1vw !important",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}>
+          <div
+            className={styles.topbar_item}
+            onClick={toggleDrawer}
+            aria-label="Toggle Menu"
+          >
+            <MenuOutlined />
+          </div>
+          <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
+          {"categories"}
+        </p>
         </div>
       )}
       {renderMenuItems(menuItems)}

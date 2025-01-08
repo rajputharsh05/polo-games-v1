@@ -9,6 +9,8 @@ import {
   message,
   Modal,
   Row,
+  Select,
+  Spin,
 } from "antd";
 import styles from "./header.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
@@ -18,11 +20,13 @@ import Home from "../../assets/Home.png";
 import whatsApp from "../../assets/whatsapp.png";
 import AboutUS from "../../assets/about us.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import call from "../../assets/call.png";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
+import Cookies from "js-cookie";
+import { WhatsApp } from "@mui/icons-material";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -39,7 +43,39 @@ const HeaderComponent = () => {
 
   const [currentPHoneNumber, setCurrentPhoneNumber] = useState<number>();
 
+  const [loading, setLoading] = useState(false);
+
+  const [visitors, setVisitors] = useState(0);
+
   const [form] = Form.useForm();
+
+  const updateUserCount = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/visitors/log-visitor"
+      );
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getVisitors = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/visitors/visitor-count"
+      );
+      console.log(response);
+      setVisitors(response?.data?.count);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    updateUserCount();
+    getVisitors();
+  }, []);
 
   const manageRegistration = async (values: any) => {
     try {
@@ -50,6 +86,7 @@ const HeaderComponent = () => {
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
         setLoginModal(false);
+        setLoginOrRegister(!loginOrRegister);
         form.resetFields();
       }
     } catch (error) {
@@ -60,27 +97,26 @@ const HeaderComponent = () => {
 
   const manageLogin = async (values: any) => {
     try {
+      setLoading(true);
       const response = await axios.post(
         `http://localhost:8000/otp/send-otp?phone_number=${values?.phone_number}`
       );
-      console.log(response)
-      setCurrentPhoneNumber(values?.phone_number)
+      console.log(response);
+      setCurrentPhoneNumber(values?.phone_number);
       setEnterOtp(true);
     } catch (error: any) {
       console.error(error);
-      if (
-        error?.status === 404 &&
-        error?.response?.data?.detail ===
-          "Phone number not found in any user tables"
-      ) {
-        message.warning("user not registered");
+      if (error?.status === 404) {
+        message.warning("user not registered please register before login");
         form.resetFields();
         setLoginOrRegister(!loginOrRegister);
       } else {
         setEnterOtp(true);
-        setCurrentPhoneNumber(values?.phone_number)
-        message.error("Unable Login please check the password and username");
+        setCurrentPhoneNumber(values?.phone_number);
+        message.error("Unable to send OTP please check the phone number");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,15 +128,26 @@ const HeaderComponent = () => {
     }
   };
 
-  const handleOtpSubmit = async (values : any) => {
-    console.log(currentPHoneNumber)
-    console.log(values?.otp)
+  const handleOtpSubmit = async (values: any) => {
     try {
       const response = await axios.post(
         `http://localhost:8000/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
       );
-      console.log(response)
-      setEnterOtp(true);
+      console.log(response);
+
+      if (response?.status === 200) {
+        message.success("Login Success");
+        setLoginModal(false);
+        form.resetFields();
+        Cookies.set("userRole", response?.data?.role, { expires: 1 });
+        Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
+        if (response?.data?.role !== "User") {
+          navigate("/admin");
+        } else if (response?.data?.role === "User") {
+          navigate("/pages");
+        }
+        setEnterOtp(!enterOtp);
+      }
     } catch (error: any) {
       console.error(error);
       if (
@@ -116,6 +163,13 @@ const HeaderComponent = () => {
         message.error("Unable Login please check the password and username");
       }
     }
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("userRole");
+    Cookies.remove("userToken");
+    navigate("/");
+    message.success("Logged out successfully");
   };
 
   const supportMenu = (
@@ -226,7 +280,7 @@ const HeaderComponent = () => {
         )}
 
         <div className={styles.vistorStyles}>
-          <p style={{ marginRight: "5px" }}>3</p>
+          <p style={{ marginRight: "5px" }}>{visitors}</p>
           <p>Visitors</p>
         </div>
       </Col>
@@ -301,9 +355,15 @@ const HeaderComponent = () => {
           About Us
         </div>
         <div>
-          <Button type="primary" onClick={() => setLoginModal(true)}>
-            Login
-          </Button>
+          {location.pathname === "/admin" ? (
+            <Button type="primary" onClick={handleLogout}>
+              Logout
+            </Button>
+          ) : (
+            <Button type="primary" onClick={() => setLoginModal(true)}>
+              Login
+            </Button>
+          )}
         </div>
       </Col>
       <Modal
@@ -333,8 +393,14 @@ const HeaderComponent = () => {
       </Modal>
       <Modal
         open={loginModal}
-        onClose={() => setLoginModal(false)}
-        onCancel={() => setLoginModal(false)}
+        onClose={() => {
+          setEnterOtp(false);
+          setLoginModal(false);
+        }}
+        onCancel={() => {
+          setEnterOtp(false);
+          setLoginModal(false);
+        }}
         footer={""}
       >
         <Card
@@ -355,36 +421,38 @@ const HeaderComponent = () => {
             {!loginOrRegister ? (
               <>
                 {!enterOtp && (
-                  <Form
-                    style={{ color: "white" }}
-                    form={form}
-                    onFinish={handleFormSubmit}
-                  >
-                    <Form.Item
-                      name="phone_number"
-                      label="Phone Number"
-                      rules={[{ required: true }]}
+                  <Spin spinning={loading}>
+                    <Form
+                      style={{ color: "white" }}
+                      form={form}
+                      onFinish={handleFormSubmit}
                     >
-                      <Input placeholder="Enter Phone Number" />
-                    </Form.Item>
-                    <Row gutter={[20, 20]} justify={"space-between"}>
-                      {true && (
-                        <Button
-                          type="primary"
-                          onClick={() => setLoginModal(false)}
-                        >
-                          Cancel
-                        </Button>
-                      )}
-                      <Button
-                        style={{ backgroundColor: "#73d13d", color: "white" }}
-                        type="default"
-                        htmlType="submit"
+                      <Form.Item
+                        name="phone_number"
+                        label="Phone Number"
+                        rules={[{ required: true }]}
                       >
-                        Get OTP
-                      </Button>
-                    </Row>
-                  </Form>
+                        <Input placeholder="Enter Phone Number" />
+                      </Form.Item>
+                      <Row gutter={[20, 20]} justify={"space-between"}>
+                        {true && (
+                          <Button
+                            type="primary"
+                            onClick={() => setLoginModal(false)}
+                          >
+                            Cancel
+                          </Button>
+                        )}
+                        <Button
+                          style={{ backgroundColor: "#73d13d", color: "white" }}
+                          type="default"
+                          htmlType="submit"
+                        >
+                          Get OTP
+                        </Button>
+                      </Row>
+                    </Form>
+                  </Spin>
                 )}
 
                 {enterOtp && (
@@ -398,9 +466,9 @@ const HeaderComponent = () => {
                       label="Enter OTP"
                       rules={[{ required: true }]}
                     >
-                      <Input placeholder="Enter Phone Number" />
+                      <Input placeholder="Enter your OTP" />
                     </Form.Item>
-                    <Row gutter={[20, 20]} justify={"space-between"}>
+                    <Row gutter={[20, 20]} justify={"center"}>
                       <Button
                         style={{ backgroundColor: "#73d13d", color: "white" }}
                         type="default"
@@ -414,62 +482,127 @@ const HeaderComponent = () => {
               </>
             ) : (
               <>
-                <Form
-                  style={{ color: "white" }}
-                  form={form}
-                  onFinish={handleFormSubmit}
-                >
-                  <Form.Item
-                    name="username"
-                    label="User Name"
-                    rules={[{ required: true }]}
+                <Row>
+                  <Form
+                    style={{ color: "white" }}
+                    form={form}
+                    onFinish={handleFormSubmit}
                   >
-                    <Input placeholder="Enter your username" />
-                  </Form.Item>
-                  <Form.Item
-                    name="phone_number"
-                    label="Phone Number"
-                    rules={[{ required: true }]}
-                  >
-                    <Input placeholder="Enter Phone Number" />
-                  </Form.Item>
-                  <Form.Item
-                    name="country_code"
-                    label="Country Code"
-                    rules={[{ required: true }]}
-                  >
-                    <Input placeholder="Enter Country Code" />
-                  </Form.Item>
+                    <Form.Item
+                      name="username"
+                      label="User Name"
+                      rules={[
+                        { required: true, message: "User Name is required" },
+                      ]}
+                    >
+                      <Input placeholder="Enter your username" />
+                    </Form.Item>
 
-                  <Form.Item
-                    name="selected_site"
-                    label="Enter Site"
-                    rules={[{ required: true, type: "string" }]}
-                  >
-                    <Input placeholder="Enter Site" />
-                  </Form.Item>
-                  <Row gutter={[20, 20]} justify={"space-between"}>
-                    {true && (
+                    <Row gutter={16}>
+                      <Col span={10}>
+                        <Form.Item
+                          name="country_code"
+                          label="Country Code"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Country Code is required",
+                            },
+                            {
+                              pattern: /^\+\d+$/,
+                              message:
+                                "Country Code must start with '+' followed by numbers",
+                            },
+                          ]}
+                        >
+                          <Input placeholder="+1" />
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={14}>
+                        <Form.Item
+                          name="phone_number"
+                          label="Phone Number"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Phone Number is required",
+                            },
+                            {
+                              pattern: /^[0-9]{10,15}$/,
+                              message:
+                                "Phone Number must be 10 to 15 digits long",
+                            },
+                          ]}
+                        >
+                          <Input placeholder="Enter Phone Number" />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+
+                    <Form.Item
+                      name="selected_site"
+                      label="Select Site"
+                      rules={[{ required: true, message: "Site is required" }]}
+                    >
+                      <Select placeholder="Select a site">
+                        <Select.Option value="bet365">
+                          https://www.realsport9.com
+                        </Select.Option>
+                        <Select.Option value="betway">
+                          https://www.skyexch.art{" "}
+                        </Select.Option>
+                        <Select.Option value="unibet">
+                          https://world77.co
+                        </Select.Option>
+                        <Select.Option value="williamhill">
+                          https://realsport247.com
+                        </Select.Option>
+                        <Select.Option value="paddypower">
+                          https://tiger365.me/login
+                        </Select.Option>
+                      </Select>
+                    </Form.Item>
+
+                    <Row gutter={[20, 20]} justify={"space-between"}>
                       <Button
                         type="primary"
                         onClick={() => setLoginModal(false)}
                       >
                         Cancel
                       </Button>
-                    )}
-                    <Button
-                      style={{ backgroundColor: "#73d13d" }}
-                      type="default"
-                      htmlType="submit"
-                    >
-                      Register
-                    </Button>
-                  </Row>
-                </Form>
+                      <Button
+                        style={{ backgroundColor: "#73d13d" }}
+                        type="default"
+                        htmlType="submit"
+                      >
+                        Register
+                      </Button>
+                    </Row>
+                  </Form>
+                </Row>
+                <Row justify={"center"} style={{fontFamily:"Poppins"}} gutter={[16,16]}>
+                  <Col style={{ color: "white", fontFamily:"Poppins",fontSize: "18px" , display:"flex" , justifyContent:"center" }} span={24}>
+                    OR
+                  </Col>
+                  <Col style={{ color: "white",fontFamily:"Poppins", fontSize: "16px", display:"flex" , justifyContent:"center" }} span={24}>
+                    Get Your Ready-Made ID From WhatsApp
+                  </Col>
+                  <Col span={24} style={ {display:"flex" , justifyContent:"center"}}>
+                    <Button onClick={() => {
+                    const phoneNumber = "7992476139";
+                    const message = "Hello, I would like to connect with you!";
+                    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                      message
+                    )}`;
+                    window.open(whatsappURL, "_blank");
+                  }} style={{padding:"2vh", borderRadius:"1rem", height:"6vh",width:"100%",background: "linear-gradient(90deg, #940101 0%, #4560FD 100%)", color:"white" , fontFamily:"Poppins"}} icon={<WhatsApp></WhatsApp>} >WhatsApp Now</Button>
+                  </Col>
+                </Row>
               </>
             )}
           </Row>
-          <Row justify={"center"} align={"middle"} style={{ marginTop: "2vh" }}>
+          {/* <Row justify={"center"} align={"middle"} style={{ marginTop: "2vh" }}>
             {loginOrRegister ? (
               <Row justify={"space-between"} align={"middle"}>
                 <Button
@@ -514,7 +647,7 @@ const HeaderComponent = () => {
                 </Button>
               </>
             )}
-          </Row>
+          </Row> */}
         </Card>
       </Modal>
     </Row>

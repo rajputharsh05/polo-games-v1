@@ -12,6 +12,7 @@
 
 .blogs {
   color: white !important;
+  background-color: #03141e !important; 
 }
 
 /* Assuming you are using CSS Modules */
@@ -54,6 +55,7 @@
     margin-bottom: 1rem;
     font-size: 1.2rem;
     color: #e6e6e6;
+    cursor: pointer;
   }
 
   .header {
@@ -76,7 +78,7 @@
         gap: 8px;
         .icon {
           font-size: 1.2rem;
-          background: rgba(0, 0, 0, 0.5);
+          background-color: #03141e; 
           padding: 8px;
           border-radius: 50%;
           color: white;
@@ -87,6 +89,7 @@
   }
 
   .trendingNews {
+    background-color: #03141e; 
     margin-top: 1rem;
     .newsItem {
       display: flex;
@@ -110,6 +113,7 @@
   }
 
   .exploreMore {
+    background-color: #03141e; 
     .exploreImage {
       width: 100%;
       border-radius: 8px;
@@ -118,6 +122,7 @@
   }
 
   .footer {
+    background-color: #03141e; 
     text-align: center;
     font-size: 0.8rem;
     color: #888;

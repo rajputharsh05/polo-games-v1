@@ -116,6 +116,8 @@ const GlobalLayout = () => {
           <DynamincFooter></DynamincFooter>
         </Content>
 
+            
+
         {isSidebarVisible && (
           <>
             {
@@ -129,7 +131,7 @@ const GlobalLayout = () => {
             }
             <Sider
               style={{
-                background: "rgba(12, 46, 55, 1)",
+                background: "#03141e",
                 borderRadius: "3vh",
                 border: "1px solid black",
                 overflow: "scroll",

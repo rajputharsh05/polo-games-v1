@@ -19,7 +19,12 @@ import {
   PlusCircleOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { ImageAspectRatio, RowingOutlined } from "@mui/icons-material";
+import {
+  ImageAspectRatio,
+  RowingOutlined,
+  TextSnippet,
+  WebStories,
+} from "@mui/icons-material";
 import styles from "./admin.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import image from "../../assets/image.png";
@@ -36,9 +41,11 @@ const AdminPage = () => {
   const [blogs, setBlogs] = useState([]);
   const [reels, setReels] = useState([]);
   const [reelModal, setReelModal] = useState(false);
+  const [webSites, setWebsites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [marqueeModal, setMarqueeModal] = useState(false);
   const [text, setText] = useState([]);
+  const [webSiteModal, setWebsiteModal] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -46,6 +53,25 @@ const AdminPage = () => {
     console.log(modalVisible);
     setModalType(type);
     setModalVisible(true);
+  };
+
+  const getWebsites = async () => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get(
+        "http://localhost:8000/imagelink/items/"
+      );
+
+      const data = response?.data;
+      console.log(data);
+      setWebsites(data);
+    } catch (error) {
+      message.error("Unable to fetch data");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getImages = async () => {
@@ -297,7 +323,7 @@ const AdminPage = () => {
     }
   };
 
-  const handleTextDelete = async (id : any) => {
+  const handleTextDelete = async (id: any) => {
     try {
       const response = await axios.delete(
         `http://localhost:8000/marqueetext/delete-statement/${id}`
@@ -312,13 +338,91 @@ const AdminPage = () => {
     }
   };
 
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    message.success(`${file.name} selected successfully.`);
+  };
+
+  const handleLinkSubmit = async (values: { link: string }) => {
+    if (!imageFile) {
+      message.error("Please upload an image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("link", values.link);
+    formData.append("image", imageFile);
+
+    try {
+      const response = await axios.post("http://localhost:8000/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      message.success("Data uploaded successfully!");
+      console.log(response.data);
+    } catch (error) {
+      message.error("Failed to upload data.");
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getBlogs();
     getAgents();
     getImages();
     getReels();
     getTexts();
+    getWebsites();
   }, []);
+
+  const webSiteColums = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Link",
+      dataIndex: "link",
+      key: "link",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "image_base64",
+      dataIndex: "image_base64",
+      render: (_: any, record: any) => (
+        <img
+          src={`data:image/png;base64,${record.image_base64}`}
+          alt={record.link}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "websites")}
+        />
+      ),
+    },
+  ];
 
   const columns = [
     {
@@ -491,435 +595,598 @@ const AdminPage = () => {
   ];
 
   return (
-    <>
-      <div className={styles.adminWrapper}>
-        <div className={styles.contentPage}>
-          <Row
-            className={styles.AdminOverView}
+    <div className={styles.adminWrapper}>
+      <div className={styles.contentPage}>
+        <Row
+          className={styles.AdminOverView}
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            padding: "1rem",
+          }}
+        >
+          <Col
+            span={20}
             style={{
               display: "flex",
-              flexWrap: "wrap", // Ensures the layout adapts for smaller screens
-              padding: "1rem",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "clamp(16px, 2vw, 22px)",
+              fontWeight: "600",
+              marginBottom: "1rem",
             }}
           >
-            <Col
-              span={20}
+            <Row>Hi Hardy!</Row>
+            <Row>Manage All your Blogs, Agents, and News from here.</Row>
+            <Row
               style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                fontFamily: "Poppins, sans-serif",
-                fontSize: "clamp(16px, 2vw, 22px)", // Dynamically adjust font size
+                color: "red",
                 fontWeight: "600",
-                marginBottom: "1rem",
+                fontSize: "clamp(20px, 3vw, 25px)", // Adjust font size for "ADMIN"
               }}
             >
-              <Row>Hi Hardy!</Row>
-              <Row>Manage All your Blogs, Agents, and News from here.</Row>
-              <Row
-                style={{
-                  color: "red",
-                  fontWeight: "600",
-                  fontSize: "clamp(20px, 3vw, 25px)", // Adjust font size for "ADMIN"
-                }}
-              >
-                ADMIN
+              ADMIN
+            </Row>
+          </Col>
+          <Col
+            span={4}
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%",
+            }}
+          >
+            <img
+              style={{
+                height: "auto",
+                width: "clamp(50px, 20%, 100px)", // Responsive image sizing
+                maxHeight: "100%",
+              }}
+              src={image}
+              alt="Admin Overview"
+            />
+          </Col>
+        </Row>
+
+        <Row
+          style={{ marginTop: "3vh" }}
+          justify="space-between"
+          gutter={[16, 16]}
+        >
+          {[
+            {
+              key: "images",
+              icon: <ImageAspectRatio />,
+              label: "Manage Banners",
+            },
+            {
+              key: "agents",
+              icon: <RowingOutlined />,
+              label: "Manage Clients",
+            },
+            { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
+            {
+              key: "manageReels",
+              icon: <VideoCameraOutlined />,
+              label: "Manage Reels",
+            },
+            {
+              key: "manageMarquee",
+              icon: <TextSnippet />,
+              label: "Manage Marquee",
+            },
+            {
+              key: "manageWebsites",
+              icon: <WebStories></WebStories>,
+              label: "Manage Websites",
+            },
+          ].map((tab) => (
+            <Col
+              key={tab.key}
+              onClick={() => openModal(tab.key)}
+              className={`${styles.Btn} ${
+                modalType === tab.key ? styles.active : styles.inactive
+              }`}
+              span={3}
+            >
+              <Row justify={"center"}>
+                <div className={styles.Icon}>{tab.icon}</div>
+              </Row>
+              <Row justify={"center"}>
+                <div className={styles.Label}>{tab.label}</div>
               </Row>
             </Col>
-            <Col
-              span={4}
+          ))}
+        </Row>
+
+        <Row>
+          <Card style={{ width: "100%" }}>
+            <div
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
               }}
+              className="hide_scrollbar"
+            >
+              {modalType === "images" && (
+                <div style={{ marginTop: "2vh" }}>
+                  <>
+                    <Row justify={"end"} style={{ marginBottom: "2vh" }}>
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setImageModal(true)}
+                      >
+                        Add Banner
+                      </Button>
+                    </Row>
+                    <Table
+                      dataSource={uploadedImages}
+                      columns={Imagecolumns}
+                      rowKey="id"
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                </div>
+              )}
+
+              {modalType === "agents" && (
+                <>
+                  {
+                    <Row
+                      justify={"end"}
+                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setIsAddAgents(true)}
+                      >
+                        Add Agent
+                      </Button>
+                    </Row>
+                  }
+                  <Table
+                    dataSource={agents}
+                    columns={columns}
+                    rowKey="id" // Replace 'id' with the unique key in your data
+                    pagination={{ pageSize: 10 }}
+                    style={{
+                      backgroundColor: "transparent",
+                      overflow: "scroll",
+                      msOverflowStyle: "none", // For IE and Edge
+                      scrollbarWidth: "none",
+                    }}
+                  />
+                  <Modal
+                    open={isAddAgents}
+                    onCancel={() => setIsAddAgents(false)}
+                    onClose={() => setIsAddAgents(false)}
+                    footer=""
+                  >
+                    <Card
+                      title={
+                        <Row
+                          justify={"center"}
+                          style={{
+                            backgroundColor: "inherit",
+                            marginBottom: "2vh",
+                          }}
+                        >
+                          <img
+                            src={logo} // Replace with the actual path to your logo
+                            alt="Polo Games Logo"
+                            style={{ height: "50px" }}
+                          />
+                        </Row>
+                      }
+                    >
+                      <Form
+                        style={{ color: "white" }}
+                        form={form}
+                        onFinish={handleAgentSubmit}
+                      >
+                        <Form.Item
+                          name="username"
+                          label="User Name"
+                          rules={[{ required: true }]}
+                        >
+                          <Input placeholder="Enter your username" />
+                        </Form.Item>
+                        <Form.Item
+                          name="phone_number"
+                          label="Phone Number"
+                          rules={[{ required: true }]}
+                        >
+                          <Input placeholder="Enter Phone Number" />
+                        </Form.Item>
+                        <Form.Item
+                          name="country_code"
+                          label="Country Code"
+                          rules={[{ required: true }]}
+                        >
+                          <Input placeholder="Enter Country Code" />
+                        </Form.Item>
+
+                        <Form.Item
+                          name="selected_site"
+                          label="Enter Site"
+                          rules={[{ required: true, type: "string" }]}
+                        >
+                          <Input placeholder="Enter Site" />
+                        </Form.Item>
+                        <Row gutter={[20, 20]} justify={"space-between"}>
+                          {isAddAgents && (
+                            <Button
+                              type="primary"
+                              onClick={() => setIsAddAgents(false)}
+                            >
+                              Cancel
+                            </Button>
+                          )}
+                          <Button
+                            style={{ backgroundColor: "#73d13d" }}
+                            type="default"
+                            htmlType="submit"
+                          >
+                            Submit
+                          </Button>
+                        </Row>
+                      </Form>
+                    </Card>
+                  </Modal>
+                </>
+              )}
+
+              {modalType === "blogs" && (
+                <>
+                  {
+                    <Row
+                      justify={"end"}
+                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setIsAddBlogs(true)}
+                      >
+                        Add Blogs
+                      </Button>
+                    </Row>
+                  }
+                  <Table
+                    dataSource={blogs}
+                    columns={Blogscolumns}
+                    rowKey="id" // Replace with your unique key
+                    expandable={{
+                      expandedRowRender: (record) => (
+                        <p style={{ margin: 0, color: "white" }}>
+                          <strong>Content:</strong> {record.content}
+                        </p>
+                      ),
+                      rowExpandable: (record) => !!record.content,
+                      expandIcon: ({ expanded, onExpand, record }) =>
+                        expanded ? (
+                          <MinusCircleOutlined
+                            onClick={(e) => onExpand(record, e)}
+                            style={{ fontSize: "16px", color: "white" }}
+                          />
+                        ) : (
+                          <PlusCircleOutlined
+                            onClick={(e) => onExpand(record, e)}
+                            style={{ fontSize: "16px", color: "white" }}
+                          />
+                        ),
+                    }}
+                    style={{
+                      backgroundColor: "transparent",
+                      overflow: "scroll",
+                      msOverflowStyle: "none", // For IE and Edge
+                      scrollbarWidth: "none",
+                    }}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </>
+              )}
+
+              {modalType === "manageReels" && (
+                <>
+                  {
+                    <Row
+                      justify={"end"}
+                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setReelModal(true)}
+                      >
+                        Add Reels
+                      </Button>
+                    </Row>
+                  }
+                  <Table
+                    dataSource={reels}
+                    columns={ReelsColumns}
+                    rowKey="id" // Replace with your unique key
+                    style={{
+                      backgroundColor: "transparent",
+                      overflow: "scroll",
+                      msOverflowStyle: "none", // For IE and Edge
+                      scrollbarWidth: "none",
+                    }}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </>
+              )}
+
+              {modalType === "manageMarquee" && (
+                <>
+                  {
+                    <Row
+                      justify={"end"}
+                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setMarqueeModal(true)}
+                      >
+                        Add Reels
+                      </Button>
+                    </Row>
+                  }
+                  <Table
+                    dataSource={text}
+                    columns={Textcolumns}
+                    rowKey="id" // Replace with your unique key
+                    style={{
+                      backgroundColor: "transparent",
+                      overflow: "scroll",
+                      msOverflowStyle: "none", // For IE and Edge
+                      scrollbarWidth: "none",
+                    }}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </>
+              )}
+
+              {modalType === "manageWebsites" && (
+                <>
+                  {
+                    <Row
+                      justify={"end"}
+                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                    >
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setWebsiteModal(true)}
+                      >
+                        Add Websites
+                      </Button>
+                    </Row>
+                  }
+                  <Table
+                    dataSource={webSites}
+                    columns={webSiteColums}
+                    rowKey="id" // Replace with your unique key
+                    style={{
+                      backgroundColor: "transparent",
+                      overflow: "scroll",
+                      msOverflowStyle: "none", // For IE and Edge
+                      scrollbarWidth: "none",
+                    }}
+                    pagination={{ pageSize: 5 }}
+                  />
+                </>
+              )}
+            </div>
+          </Card>
+        </Row>
+      </div>
+
+      <Modal
+        open={isAddblogs}
+        onCancel={() => setIsAddBlogs(false)}
+        onClose={() => setIsAddBlogs(false)}
+        footer={""}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
             >
               <img
-                style={{
-                  height: "auto",
-                  width: "clamp(50px, 20%, 100px)", // Responsive image sizing
-                  maxHeight: "100%",
-                }}
-                src={image}
-                alt="Admin Overview"
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
               />
-            </Col>
-          </Row>
-
-          <Row
-            style={{ marginTop: "3vh" }}
-            justify="space-between"
-            gutter={[16, 16]}
-          >
-            {[
-              {
-                key: "images",
-                icon: <ImageAspectRatio />,
-                label: "Manage Banners",
-              },
-              {
-                key: "agents",
-                icon: <RowingOutlined />,
-                label: "Manage Clients",
-              },
-              { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
-              {
-                key: "manageReels",
-                icon: <VideoCameraOutlined />,
-                label: "Manage Reels",
-              },
-              {
-                key: "manageMarquee",
-                icon: <VideoCameraOutlined />,
-                label: "Manage Marquee",
-              },
-            ].map((tab) => (
-              <Col
-                key={tab.key}
-                onClick={() => openModal(tab.key)}
-                className={`${styles.Btn} ${
-                  modalType === tab.key ? styles.active : styles.inactive
-                }`}
-                span={4}
-              >
-                <Row justify={"center"}>
-                  <div className={styles.Icon}>{tab.icon}</div>
-                </Row>
-                <Row justify={"center"}>
-                  <div className={styles.Label}>{tab.label}</div>
-                </Row>
-              </Col>
-            ))}
-          </Row>
-
-          <Row>
-            <Card style={{ width: "100%" }}>
-              <div
-                style={{
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
-                }}
-                className="hide_scrollbar"
-              >
-                {modalType === "images" && (
-                  <div style={{ marginTop: "2vh" }}>
-                    <>
-                      <Row justify={"end"} style={{ marginBottom: "2vh" }}>
-                        <Button
-                          type="primary"
-                          icon={<PlusOutlined />}
-                          onClick={() => setImageModal(true)}
-                        >
-                          Add Banner
-                        </Button>
-                      </Row>
-                      <Table
-                        dataSource={uploadedImages}
-                        columns={Imagecolumns}
-                        rowKey="id"
-                        style={{
-                          backgroundColor: "transparent",
-                          overflow: "scroll",
-                          msOverflowStyle: "none", // For IE and Edge
-                          scrollbarWidth: "none",
-                        }}
-                        pagination={{ pageSize: 5 }}
-                      />
-                    </>
-                  </div>
-                )}
-
-                {modalType === "agents" && (
-                  <>
-                    {
-                      <Row
-                        justify={"end"}
-                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                      >
-                        <Button
-                          type="primary"
-                          icon={<PlusOutlined />}
-                          onClick={() => setIsAddAgents(true)}
-                        >
-                          Add Agent
-                        </Button>
-                      </Row>
-                    }
-                    <Table
-                      dataSource={agents}
-                      columns={columns}
-                      rowKey="id" // Replace 'id' with the unique key in your data
-                      pagination={{ pageSize: 10 }}
-                      style={{
-                        backgroundColor: "transparent",
-                        overflow: "scroll",
-                        msOverflowStyle: "none", // For IE and Edge
-                        scrollbarWidth: "none",
-                      }}
-                    />
-                    <Modal
-                      open={isAddAgents}
-                      onCancel={() => setIsAddAgents(false)}
-                      onClose={() => setIsAddAgents(false)}
-                      footer=""
-                    >
-                      <Card
-                        title={
-                          <Row
-                            justify={"center"}
-                            style={{
-                              backgroundColor: "inherit",
-                              marginBottom: "2vh",
-                            }}
-                          >
-                            <img
-                              src={logo} // Replace with the actual path to your logo
-                              alt="Polo Games Logo"
-                              style={{ height: "50px" }}
-                            />
-                          </Row>
-                        }
-                      >
-                        <Form
-                          style={{ color: "white" }}
-                          form={form}
-                          onFinish={handleAgentSubmit}
-                        >
-                          <Form.Item
-                            name="username"
-                            label="User Name"
-                            rules={[{ required: true }]}
-                          >
-                            <Input placeholder="Enter your username" />
-                          </Form.Item>
-                          <Form.Item
-                            name="phone_number"
-                            label="Phone Number"
-                            rules={[{ required: true }]}
-                          >
-                            <Input placeholder="Enter Phone Number" />
-                          </Form.Item>
-                          <Form.Item
-                            name="country_code"
-                            label="Country Code"
-                            rules={[{ required: true }]}
-                          >
-                            <Input placeholder="Enter Country Code" />
-                          </Form.Item>
-
-                          <Form.Item
-                            name="selected_site"
-                            label="Enter Site"
-                            rules={[{ required: true, type: "string" }]}
-                          >
-                            <Input placeholder="Enter Site" />
-                          </Form.Item>
-                          <Row gutter={[20, 20]} justify={"space-between"}>
-                            {isAddAgents && (
-                              <Button
-                                type="primary"
-                                onClick={() => setIsAddAgents(false)}
-                              >
-                                Cancel
-                              </Button>
-                            )}
-                            <Button
-                              style={{ backgroundColor: "#73d13d" }}
-                              type="default"
-                              htmlType="submit"
-                            >
-                              Submit
-                            </Button>
-                          </Row>
-                        </Form>
-                      </Card>
-                    </Modal>
-                  </>
-                )}
-
-                {modalType === "blogs" && (
-                  <>
-                    {
-                      <Row
-                        justify={"end"}
-                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                      >
-                        <Button
-                          type="primary"
-                          icon={<PlusOutlined />}
-                          onClick={() => setIsAddBlogs(true)}
-                        >
-                          Add Blogs
-                        </Button>
-                      </Row>
-                    }
-                    <Table
-                      dataSource={blogs}
-                      columns={Blogscolumns}
-                      rowKey="id" // Replace with your unique key
-                      expandable={{
-                        expandedRowRender: (record) => (
-                          <p style={{ margin: 0, color: "white" }}>
-                            <strong>Content:</strong> {record.content}
-                          </p>
-                        ),
-                        rowExpandable: (record) => !!record.content,
-                        expandIcon: ({ expanded, onExpand, record }) =>
-                          expanded ? (
-                            <MinusCircleOutlined
-                              onClick={(e) => onExpand(record, e)}
-                              style={{ fontSize: "16px", color: "white" }}
-                            />
-                          ) : (
-                            <PlusCircleOutlined
-                              onClick={(e) => onExpand(record, e)}
-                              style={{ fontSize: "16px", color: "white" }}
-                            />
-                          ),
-                      }}
-                      style={{
-                        backgroundColor: "transparent",
-                        overflow: "scroll",
-                        msOverflowStyle: "none", // For IE and Edge
-                        scrollbarWidth: "none",
-                      }}
-                      pagination={{ pageSize: 5 }}
-                    />
-                  </>
-                )}
-
-                {modalType === "manageReels" && (
-                  <>
-                    {
-                      <Row
-                        justify={"end"}
-                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                      >
-                        <Button
-                          type="primary"
-                          icon={<PlusOutlined />}
-                          onClick={() => setReelModal(true)}
-                        >
-                          Add Reels
-                        </Button>
-                      </Row>
-                    }
-                    <Table
-                      dataSource={reels}
-                      columns={ReelsColumns}
-                      rowKey="id" // Replace with your unique key
-                      style={{
-                        backgroundColor: "transparent",
-                        overflow: "scroll",
-                        msOverflowStyle: "none", // For IE and Edge
-                        scrollbarWidth: "none",
-                      }}
-                      pagination={{ pageSize: 5 }}
-                    />
-                  </>
-                )}
-
-                {modalType === "manageMarquee" && (
-                  <>
-                    {
-                      <Row
-                        justify={"end"}
-                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                      >
-                        <Button
-                          type="primary"
-                          icon={<PlusOutlined />}
-                          onClick={() => setMarqueeModal(true)}
-                        >
-                          Add Reels
-                        </Button>
-                      </Row>
-                    }
-                    <Table
-                      dataSource={text}
-                      columns={Textcolumns}
-                      rowKey="id" // Replace with your unique key
-                      style={{
-                        backgroundColor: "transparent",
-                        overflow: "scroll",
-                        msOverflowStyle: "none", // For IE and Edge
-                        scrollbarWidth: "none",
-                      }}
-                      pagination={{ pageSize: 5 }}
-                    />
-                  </>
-                )}
-              </div>
-            </Card>
-          </Row>
-        </div>
-
-        <Modal
-          open={isAddblogs}
-          onCancel={() => setIsAddBlogs(false)}
-          onClose={() => setIsAddBlogs(false)}
-          footer={""}
+            </Row>
+          }
         >
-          <Card
-            title={
-              <Row
-                justify={"center"}
-                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-              >
-                <img
-                  src={logo} // Replace with the actual path to your logo
-                  alt="Polo Games Logo"
-                  style={{ height: "50px" }}
-                />
-              </Row>
-            }
+          <Form
+            style={{ color: "white", marginTop: "3vh" }}
+            form={form}
+            onFinish={handleBlogSubmit}
           >
+            <Form.Item
+              name="title"
+              label="Title"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the blog title!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter blog title" />
+            </Form.Item>
+            <Form.Item
+              name="author"
+              label="Author"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the author name!",
+                },
+              ]}
+            >
+              <Input placeholder="Enter blog Author Name" />
+            </Form.Item>
+            <Form.Item
+              name="content"
+              label="Content"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter the blog content!",
+                },
+              ]}
+            >
+              <Input.TextArea placeholder="Enter blog content" />
+            </Form.Item>
+            <Form.Item>
+              <Row justify={"space-between"}>
+                <Col>
+                  <Button type="primary" onClick={() => setIsAddBlogs(false)}>
+                    Cancle
+                  </Button>
+                </Col>
+                <Col>
+                  <Button
+                    style={{ backgroundColor: "#73d13d" }}
+                    type="primary"
+                    htmlType="submit"
+                  >
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Modal>
+      <Modal
+        open={imageModal}
+        onCancel={() => setImageModal(false)}
+        onClose={() => setImageModal(false)}
+        footer={""}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"}>
+            <Upload beforeUpload={handleImageUpload} showUploadList={false}>
+              <Button
+                style={{ color: "white", marginTop: "5vh" }}
+                icon={<UploadOutlined />}
+              >
+                Upload Banner
+              </Button>
+            </Upload>
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={reelModal}
+        onCancel={() => setReelModal(false)}
+        onClose={() => setReelModal(false)}
+        footer={""}
+      >
+        <Card
+          loading={loading}
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"}>
+            <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
+              <Button
+                style={{ color: "white", marginTop: "5vh" }}
+                icon={<UploadOutlined />}
+              >
+                Upload Reels
+              </Button>
+            </Upload>
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={marqueeModal}
+        onCancel={() => setMarqueeModal(false)}
+        onClose={() => setMarqueeModal(false)}
+        footer={""}
+      >
+        <Card
+          loading={loading}
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo}
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"}>
             <Form
               style={{ color: "white", marginTop: "3vh" }}
               form={form}
-              onFinish={handleBlogSubmit}
+              onFinish={handleMarqueeSubmit}
             >
               <Form.Item
-                name="title"
-                label="Title"
+                name="Text"
+                label="Text"
                 rules={[
                   {
                     required: true,
-                    message: "Please enter the blog title!",
+                    message: "Please enter the Your text here!",
                   },
                 ]}
               >
-                <Input placeholder="Enter blog title" />
-              </Form.Item>
-              <Form.Item
-                name="author"
-                label="Author"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter the author name!",
-                  },
-                ]}
-              >
-                <Input placeholder="Enter blog Author Name" />
-              </Form.Item>
-              <Form.Item
-                name="content"
-                label="Content"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter the blog content!",
-                  },
-                ]}
-              >
-                <Input.TextArea placeholder="Enter blog content" />
+                <Input placeholder="Enter Text" />
               </Form.Item>
               <Form.Item>
                 <Row justify={"space-between"}>
                   <Col>
-                    <Button type="primary" onClick={() => setIsAddBlogs(false)}>
+                    <Button
+                      type="primary"
+                      onClick={() => setMarqueeModal(false)}
+                    >
                       Cancle
                     </Button>
                   </Col>
@@ -935,140 +1202,87 @@ const AdminPage = () => {
                 </Row>
               </Form.Item>
             </Form>
-          </Card>
-        </Modal>
-        <Modal
-          open={imageModal}
-          onCancel={() => setImageModal(false)}
-          onClose={() => setImageModal(false)}
-          footer={""}
-        >
-          <Card
-            title={
-              <Row
-                justify={"center"}
-                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-              >
-                <img
-                  src={logo} // Replace with the actual path to your logo
-                  alt="Polo Games Logo"
-                  style={{ height: "50px" }}
-                />
-              </Row>
-            }
-          >
-            <Row justify={"center"}>
-              <Upload beforeUpload={handleImageUpload} showUploadList={false}>
-                <Button
-                  style={{ color: "white", marginTop: "5vh" }}
-                  icon={<UploadOutlined />}
-                >
-                  Upload Banner
-                </Button>
-              </Upload>
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={webSiteModal}
+        onCancel={() => setWebsiteModal(false)}
+        onClose={() => setWebsiteModal(false)}
+        footer={""}
+      >
+        <Card
+          loading={loading}
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo}
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
             </Row>
-          </Card>
-        </Modal>
-        <Modal
-          open={reelModal}
-          onCancel={() => setReelModal(false)}
-          onClose={() => setReelModal(false)}
-          footer={""}
+          }
         >
-          <Card
-            loading={loading}
-            title={
-              <Row
-                justify={"center"}
-                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+          <Row justify="center">
+            <Form
+              style={{ color: "white", marginTop: "3vh" }}
+              form={form}
+              onFinish={handleLinkSubmit}
+            >
+              <Form.Item
+                name="link"
+                label="Link"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the Link here!",
+                  },
+                ]}
               >
-                <img
-                  src={logo} // Replace with the actual path to your logo
-                  alt="Polo Games Logo"
-                  style={{ height: "50px" }}
-                />
-              </Row>
-            }
-          >
-            <Row justify={"center"}>
-              <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
-                <Button
-                  style={{ color: "white", marginTop: "5vh" }}
-                  icon={<UploadOutlined />}
+                <Input placeholder="Enter Text" />
+              </Form.Item>
+              <Row justify="center">
+                <Upload
+                  beforeUpload={(file) => {
+                    handleFileChange(file);
+                    return false; // Prevent auto-upload
+                  }}
+                  showUploadList={true}
                 >
-                  Upload Reels
-                </Button>
-              </Upload>
-            </Row>
-          </Card>
-        </Modal>
-
-        <Modal
-          open={marqueeModal}
-          onCancel={() => setMarqueeModal(false)}
-          onClose={() => setMarqueeModal(false)}
-          footer={""}
-        >
-          <Card
-            loading={loading}
-            title={
-              <Row
-                justify={"center"}
-                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-              >
-                <img
-                  src={logo}
-                  alt="Polo Games Logo"
-                  style={{ height: "50px" }}
-                />
+                  <Button
+                    style={{ color: "white", marginTop: "5vh" }}
+                    icon={<UploadOutlined />}
+                  >
+                    Upload Image
+                  </Button>
+                </Upload>
               </Row>
-            }
-          >
-            <Row justify={"center"}>
-              <Form
-                style={{ color: "white", marginTop: "3vh" }}
-                form={form}
-                onFinish={handleMarqueeSubmit}
-              >
-                <Form.Item
-                  name="Text"
-                  label="Text"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter the Your text here!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="Enter Text" />
-                </Form.Item>
-                <Form.Item>
-                  <Row justify={"space-between"}>
-                    <Col>
-                      <Button
-                        type="primary"
-                        onClick={() => setMarqueeModal(false)}
-                      >
-                        Cancle
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        style={{ backgroundColor: "#73d13d" }}
-                        type="primary"
-                        htmlType="submit"
-                      >
-                        Submit
-                      </Button>
-                    </Col>
-                  </Row>
-                </Form.Item>
-              </Form>
-            </Row>
-          </Card>
-        </Modal>
-      </div>
-    </>
+              <Form.Item>
+                <Row justify="space-between">
+                  <Col>
+                    <Button type="primary" onClick={() => form.resetFields()}>
+                      Cancel
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      style={{ backgroundColor: "#73d13d" }}
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      Submit
+                    </Button>
+                  </Col>
+                </Row>
+              </Form.Item>
+            </Form>
+          </Row>
+        </Card>
+      </Modal>
+    </div>
   );
 };
 

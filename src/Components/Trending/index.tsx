@@ -1,15 +1,15 @@
-import { Col, Row, message, List } from "antd";
+import { Col, Row, message, List, Spin, Card } from "antd";
 import info from "./data.json";
 import styles from "./trending.module.scss";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
 export const News = () => {
   const location = useLocation();
 
   const [data, setData] = useState<any[]>([]);
-
+ 
   useEffect(() => {
     if (location?.pathname !== "/") {
       setData(info?.data);
@@ -64,15 +64,19 @@ export const News = () => {
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
+  const [loading , setloading] = useState(false);
 
   const getBlogs = async () => {
     try {
+      setloading(true)
       const response = await axios.get("http://localhost:8000/blogs");
       const data = response.data;
       setBlogs(data);
     } catch (error) {
       console.error(error);
       message.error("unable to fetch blogs");
+    }finally{
+      setloading(false)
     }
   };
 
@@ -89,7 +93,7 @@ export const Blogs = () => {
       }}
       className={styles.Blogs}
     >
-      <>
+      <Card loading={loading}>
         <List
           dataSource={blogs}
           renderItem={(item: any) => (
@@ -104,18 +108,20 @@ export const Blogs = () => {
             </List.Item>
           )}
         />
-      </>
+      </Card>
     </div>
   );
 };
 
 export const Reels = () => {
   const [reels, setReels] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const loaction = useLocation();
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
 
   const getReels = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         "http://localhost:8000/reels/get-reels/"
       );
@@ -125,6 +131,8 @@ export const Reels = () => {
     } catch (error) {
       console.error(error);
       message.error("Unable to fetch reels");
+    } finally{
+      setLoading(false);
     }
   };
 
@@ -160,7 +168,7 @@ export const Reels = () => {
   }, [reels]);
 
   return (
-    <>
+    <Spin spinning={loading}>
       {loaction.pathname !== "/" && (
         <h3
           style={{
@@ -202,10 +210,12 @@ export const Reels = () => {
           </video>
         </div>
       ))}
-    </>
+    </Spin>
   );
 };
 const Trending = () => {
+  const navigate = useNavigate();
+
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
@@ -214,8 +224,23 @@ const Trending = () => {
         </div>
       </div>
       <div className={styles.trendingNews}>
-        <h4>Trending News</h4>
+        <h4
+        onClick={() => {
+          navigate("/news");
+        }}
+        >Trending News</h4>
         <News></News>
+      </div>
+
+      <div className={styles.trendingNews}>
+        <h4
+          onClick={() => {
+            navigate("/blogs");
+          }}
+        >
+          Blogs
+        </h4>
+        <Blogs></Blogs>
       </div>
 
       <div className={styles.exploreMore}>
