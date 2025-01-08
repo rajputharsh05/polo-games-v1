@@ -2,15 +2,15 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: rgba(12, 46, 55, 1);
+  background-color: black;
   border-bottom: 1px solid #dcdcdc;
   padding: 0 10px;
-  height: 70px;
+  height: 10vh;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow-x: auto; 
   -ms-overflow-style: none; 
   scrollbar-width: none; 
-  z-index: 2000;
+  z-index: 4000;
 
   
   &::-webkit-scrollbar {
@@ -20,18 +20,22 @@
 
 .topbar_item {
   position: relative;
-  padding: 7px 10px;
-  margin-right: 16px;
+  margin:0px 4px;
   font-size: 16px;
   font-weight: 500;
+  height: 6vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12vw;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
-  border-radius: 4px;
+  border-radius: 50%;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: black;
-  border : 2px solid linear-gradient(180deg, #DC3939 0%, #2340FF 100%);
+  border : 5px solid rgba(12, 46, 55, 1);
  
   &:hover {
     background-color: #f0f0f0;
@@ -40,24 +44,19 @@
 
   
   &.active {
-    background-color: black;
-    color: white;
+    background-color: white;
+    color: black;
     font-weight: bold;
   }
 
-  
-  &.active::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid black; /* Matches the active background */
+
+
+  @media (min-width: 400px) and (max-width: 600px) {
+    width: 10vw;  
+    margin:0px 6px;
+    height: 5vh;  
   }
+  
 }
 
 
@@ -79,6 +78,9 @@
 }
 
 
+
+
+
 @keyframes fadeInOut {
   0%, 100% {
     opacity: 1;
@@ -88,45 +90,3 @@
   }
 }
 
-
-@media (max-width: 1024px) {
-  .topbar {
-    padding: 0 8px; 
-    height: 60px; 
-  }
-  .topbar_item {
-    font-size: 15px; 
-    margin-right: 12px; 
-  }
-}
-
-@media (max-width: 768px) {
-  .topbar {
-    padding: 0 6px;
-    height: 50px; 
-  }
-  .topbar_item {
-    font-size: 14px;
-    margin-right: 10px;
-    padding: 5px 8px; 
-  }
-}
-
-@media (max-width: 480px) {
-  .topbar {
-    padding: 0 4px;
-    height: 50px; 
-  }
-  .topbar_item {
-    font-size: 12px; 
-    margin-right: 8px;
-    padding: 4px 6px; 
-  }
-
-  .topbar_badge {
-    width: 16px;
-    height: 16px;
-    font-size: 10px; 
-    line-height: 16px;
-  }
-}

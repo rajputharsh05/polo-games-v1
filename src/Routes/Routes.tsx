@@ -10,6 +10,7 @@ import SliderComponent from "../Components/Slider";
 import MatchPage from "../Components/MatchPage";
 import { Blogs, News, Reels } from "../Components/Trending";
 import AdminPage from "../Components/Admin";
+import Pages from "../Components/Pages";
 
 interface RouteBase {
   path: string;
@@ -135,4 +136,8 @@ export const globalRoutes = [
         <Footer></Footer>
       </>
   },
+  {
+    path:"/pages",
+    element: <Pages></Pages>
+  }
 ];

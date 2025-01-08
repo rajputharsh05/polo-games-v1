@@ -110,7 +110,12 @@
   left: 2rem;
   z-index: 1100;
   height: 40%;
-  width: 13%;
+}
+
+
+
+[class^="ant-select "]{
+  background-color: white !important;
 }
 
 .marquee-container {
