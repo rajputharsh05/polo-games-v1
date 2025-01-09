@@ -30,7 +30,7 @@ import { WhatsApp } from "@mui/icons-material";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
 
   const location = useLocation();
 

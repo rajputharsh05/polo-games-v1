@@ -12,7 +12,7 @@ import { useLocation } from "react-router-dom";
 
 
 export const Reels = () => {
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const loaction = useLocation();
@@ -116,7 +116,8 @@ const SliderComponent = () => {
   const [randomIndex, setRandomIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
+  console.log(BASEURL)
   const fetchImages = useCallback(async () => {
     try {
       const response = await axios.get(`${BASEURL}/admin/images`);
