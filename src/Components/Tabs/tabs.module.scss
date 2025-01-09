@@ -105,9 +105,9 @@
   cursor: pointer;
 }
 
-@media (max-width: 600px) , (min-width:400px) {
+@media (max-width: 600px) and (min-width:300px) {
   .LiveWrapper{
-    width: 10vw;
+    width: 12vw !important;
     height: 60%;
     margin-left: 4vw;
   }
