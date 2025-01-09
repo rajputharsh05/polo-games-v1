@@ -29,6 +29,7 @@ import styles from "./admin.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import image from "../../assets/image.png";
 import axios from "axios";
+import BASEURL from "../../utils/apis";
 
 const AdminPage = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -60,7 +61,7 @@ const AdminPage = () => {
       setLoading(true);
 
       const response = await axios.get(
-        "http://localhost:8000/imagelink/items/"
+        `${BASEURL}/imagelink/items/`
       );
 
       const data = response?.data;
@@ -76,7 +77,7 @@ const AdminPage = () => {
 
   const getImages = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/admin/images");
+      const response = await axios.get(`${BASEURL}/admin/images`);
       const data = response.data;
       console.log(response.data);
       setUploadedImages(data);
@@ -89,7 +90,7 @@ const AdminPage = () => {
   const getReels = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/reels/get-reels/"
+        `${BASEURL}/reels/get-reels/`
       );
       const data = response.data;
       setReels(data);
@@ -101,7 +102,7 @@ const AdminPage = () => {
 
   const getBlogs = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/blogs");
+      const response = await axios.get(`${BASEURL}/blogs`);
       const data = response.data;
       setBlogs(data);
     } catch (error) {
@@ -112,9 +113,8 @@ const AdminPage = () => {
 
   const handleImageDelete = async (id: any) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:8000/admin/delete_image/${id}`
-      );
+    const URL =  `${BASEURL}/admin/delete_image/${id}`;
+      const response = await axios.delete(URL);
       if (response?.status === 200) {
         message.success("Banner removed Successfully");
         getImages();
@@ -131,7 +131,7 @@ const AdminPage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/admin/upload-image",
+        `${BASEURL}/admin/upload-image`,
         formData,
         {
           headers: {
@@ -163,7 +163,7 @@ const AdminPage = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:8000/reels/upload-reel",
+        `${BASEURL}/reels/upload-reel`,
         formData,
         {
           headers: {
@@ -190,7 +190,7 @@ const AdminPage = () => {
 
   const handleBlogsDelete = async (id: any) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/blogs/${id}`);
+      const response = await axios.delete(`${BASEURL}/blogs/${id}`);
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
         getBlogs();
@@ -215,7 +215,7 @@ const AdminPage = () => {
   const handleBlogSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/blogs/create_blogs",
+        `${BASEURL}/blogs/create_blogs`,
         values
       );
       if (response?.status === 200) {
@@ -233,7 +233,7 @@ const AdminPage = () => {
   const handleAgentSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/create_user",
+        `${BASEURL}/user/create_user`,
         values
       );
       if (response?.status === 200) {
@@ -251,7 +251,7 @@ const AdminPage = () => {
   const getAgents = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/user/get_all_users"
+        `${BASEURL}:8000/user/get_all_users`
       );
       const data = response.data;
       console.log(data);
@@ -265,7 +265,7 @@ const AdminPage = () => {
   const handleDeteleAgent = async (id: any) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/user/delete_user_by_phone_number/${id}`
+        `${BASEURL}/user/delete_user_by_phone_number/${id}`
       );
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
@@ -280,7 +280,7 @@ const AdminPage = () => {
   const handleDeleteReels = async (id: any) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/reels/delete-reel/${id}`
+        `${BASEURL}/reels/delete-reel/${id}`
       );
       if (response?.status === 200) {
         message.success("Reel Deleted Successfully");
@@ -295,7 +295,7 @@ const AdminPage = () => {
   const getTexts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/marqueetext/statements"
+        `${BASEURL}/marqueetext/statements`
       );
       const data = response.data;
       console.log(data);
@@ -309,7 +309,7 @@ const AdminPage = () => {
   const handleMarqueeSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/marqueetext/create-statement?content=${values?.Text}`
+        `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`
       );
       if (response?.status === 200) {
         message.success("Added Marquee SuccessFully");
@@ -326,7 +326,7 @@ const AdminPage = () => {
   const handleTextDelete = async (id: any) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8000/marqueetext/delete-statement/${id}`
+        `${BASEURL}/marqueetext/delete-statement/${id}`
       );
       if (response?.status === 200) {
         message.success("Text Deleted Successfully");
@@ -337,7 +337,6 @@ const AdminPage = () => {
       message.error("Unable to delete the Text");
     }
   };
-
 
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -357,11 +356,15 @@ const AdminPage = () => {
     formData.append("image", imageFile);
 
     try {
-      const response = await axios.post("http://localhost:8000/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(
+        `${BASEURL}/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       message.success("Data uploaded successfully!");
       console.log(response.data);

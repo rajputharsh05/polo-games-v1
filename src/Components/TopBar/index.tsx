@@ -34,6 +34,7 @@ import {
   VideoCall,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
+import BASEURL from "../../utils/apis";
 
 const TopBar = () => {
   const loaction = useLocation();
@@ -324,8 +325,8 @@ const TopBar = () => {
     { key: "reels", label: "Reels", badge: -1, icon: <VideoCall></VideoCall> },
 
     {
-      key: "demo-id",
-      label: "DemoId",
+      key: "auth",
+      label: "Demo Id",
       badge: -1,
       icon: <IdcardFilled></IdcardFilled>,
     },
@@ -334,7 +335,7 @@ const TopBar = () => {
   const handleAdminSubmit = async (values: any) => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/user/get_all_users"
+        `${BASEURL}/user/get_all_users`
       );
       const data = response?.data;
 
@@ -436,7 +437,7 @@ const TopBar = () => {
             placement="left"
             onClose={toggleDrawer}
             open={openModal}
-            width={200}
+            width={250}
             bodyStyle={{
               padding: 0,
               background: "#fff",
@@ -452,7 +453,7 @@ const TopBar = () => {
           >
             <Row
               style={{
-                width: "60vw",
+                width: "100%",
                 height: "10vh",
                 backgroundColor: "rgba(12, 46, 55, 1)",
                 display: "flex",

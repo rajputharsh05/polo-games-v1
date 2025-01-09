@@ -104,3 +104,11 @@
   margin: 1vh;
   cursor: pointer;
 }
+
+@media (max-width: 600px) , (min-width:400px) {
+  .LiveWrapper{
+    width: 10vw;
+    height: 60%;
+    margin-left: 4vw;
+  }
+}

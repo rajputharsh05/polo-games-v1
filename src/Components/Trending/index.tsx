@@ -5,78 +5,145 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
+import BASEURL from "../../utils/apis";
+import { FireFilled } from "@ant-design/icons";
+
 export const News = () => {
   const location = useLocation();
-
   const [data, setData] = useState<any[]>([]);
- 
+  const [seletedData, setSeletedData] = useState<any>(data[0]);
+
   useEffect(() => {
-    if (location?.pathname !== "/") {
-      setData(info?.data);
-    } else {
-      setData(info?.data?.slice(0, 2));
+    if (info?.data?.length > 0) {
+      if (location?.pathname !== "/") {
+        setData(info?.data);
+        setSeletedData(info?.data[0]);
+      } else {
+        setData(info?.data?.slice(0, 2));
+      }
     }
-  }, []);
+  }, [location, info]);
 
   return (
+    <>
     <div
       style={{
-        padding: "1vh",
         display: "flex",
         flexDirection: "column",
-        gap: "1vh",
-        maxHeight: "100%", // Restrict the container height
-        overflowY: "auto", // Enable vertical scrolling
-        color: "white",
-        fontSize: "16px",
+        height: "100vh", // Full height of the viewport
+        overflow: "hidden", // Prevents overflowing
       }}
-      className={styles.trending_container}
     >
-      {data?.map((ele, index) => (
-        <Row
-          key={index}
-          gutter={[16, 16]}
+      {/* Constant Header Row */}
+      {location?.pathname !== "/" && location?.pathname !== "/home" && (
+        <div
           style={{
-            paddingBottom: "1vh",
-            marginBottom: "1vh",
+            position: "sticky",
+            top: 0,
+            zIndex: 10, // Ensures it stays above other elements
+            padding: "1vh",
           }}
         >
-          <Col span={8}>
-            <img
-              style={{ width: "100%", height: "100%", borderRadius: "8px" }}
-              src={ele?.image}
-              alt=""
-            />
-          </Col>
-          <Col
-            span={16}
-            style={{ color: "white", cursor: "pointer" }}
-            title={ele?.description} // Show full description on hover
+          <Row justify={"center"}>
+            <h3
+              style={{
+                color: "white",
+                fontFamily: "Popines",
+                marginTop: "1vh",
+                marginBottom: "1vh",
+              }}
+            >
+              Trending News <FireFilled />
+            </h3>
+            <Col span={24}>
+              <Card style={{display:"flex" , justifyContent:"center", alignItems:"center"}}>
+                <img
+                  className={styles.imageStyle}
+                  src={seletedData?.image}
+                  alt=""
+                />
+              </Card>
+            </Col>
+            <Col
+              span={24}
+              style={{ color: "white", cursor: "pointer" , display:"flex" , flexDirection:"column" , justifyContent:"space-around" , alignItems:"center"}}
+              title={seletedData?.description}
+            >
+              <p>{`${seletedData?.description}`}</p>
+              <p style={{marginTop:"5px" , fontWeight:"600"}}>{seletedData?.pub_date}</p>
+            </Col>
+          </Row>
+        </div>
+      )}
+  
+      {/* Scrollable Content */}
+      <div
+        style={{
+          flex: 1, // Takes up remaining space
+          overflowY: "auto", // Enables scrolling for this section
+          padding: "1vh",
+          color: "white",
+          fontSize: "16px",
+        }}
+        className={styles.trending_container}
+      >
+        {data?.map((ele, index) => (
+          <Row
+            key={index}
+            gutter={[16, 16]}
+            style={{
+              paddingBottom: "1vh",
+              marginBottom: "1vh",
+            }}
+            onClick={() => {
+              setSeletedData(ele);
+              document
+                .querySelector(`.${styles.trending_container}`)
+                ?.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+            }}
           >
-            <p>{`${ele?.description?.substring(0, 45)}...`}</p>
-            <p>{ele?.pub_date}</p>
-          </Col>
-        </Row>
-      ))}
+            <Col span={8}>
+              <img
+                style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+                src={ele?.image}
+                alt=""
+              />
+            </Col>
+            <Col
+              span={16}
+              style={{ color: "white", cursor: "pointer" }}
+              title={ele?.description}
+            >
+              <p>{`${ele?.description?.substring(0, 45)}...`}</p>
+              <p>{ele?.pub_date}</p>
+            </Col>
+          </Row>
+        ))}
+      </div>
     </div>
+  </>
+  
   );
 };
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const [loading , setloading] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const getBlogs = async () => {
     try {
-      setloading(true)
-      const response = await axios.get("http://localhost:8000/blogs");
+      setloading(true);
+      const response = await axios.get(`${BASEURL}/blogs`);
       const data = response.data;
       setBlogs(data);
     } catch (error) {
       console.error(error);
       message.error("unable to fetch blogs");
-    }finally{
-      setloading(false)
+    } finally {
+      setloading(false);
     }
   };
 
@@ -122,16 +189,14 @@ export const Reels = () => {
   const getReels = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:8000/reels/get-reels/"
-      );
+      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
       const data = response.data;
       console.log(data);
       setReels(data);
     } catch (error) {
       console.error(error);
       message.error("Unable to fetch reels");
-    } finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -225,10 +290,12 @@ const Trending = () => {
       </div>
       <div className={styles.trendingNews}>
         <h4
-        onClick={() => {
-          navigate("/news");
-        }}
-        >Trending News</h4>
+          onClick={() => {
+            navigate("/news");
+          }}
+        >
+          Trending News
+        </h4>
         <News></News>
       </div>
 

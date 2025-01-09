@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./pages.module.scss";
 import axios from "axios";
 import { Card, Col, message, Row, Spin, Typography } from "antd";
-;
+import BASEURL from "../../utils/apis";
 
 const Pages = () => {
   const [data, setData] = useState<any[]>([]);
@@ -13,7 +13,7 @@ const Pages = () => {
       setLoading(true);
 
       const response = await axios.get(
-        "http://localhost:8000/imagelink/items/"
+        `${BASEURL}/imagelink/items/`
       );
 
       const data = response?.data;
