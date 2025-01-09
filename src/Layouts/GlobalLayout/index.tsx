@@ -13,13 +13,13 @@ import axios from "axios";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import ballAnimation from "../../assets/Ball animation.gif";
-import BASEURL from "../../utils/apis";
 
 const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
   const location = useLocation();
+  const BASEURL = import.meta.env.BASEURL
   const [text, setText] = useState([]);
 
   const getTexts = async () => {
@@ -66,13 +66,14 @@ const GlobalLayout = () => {
       style={{
         height: "100vh",
         width: "100vw",
-        background: "rgba(12, 46, 55, 1)",
+        background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
       }}
     >
       {location.pathname !== "/auth" && (
         <Header
           style={{
-            background: "rgba(12, 46, 55, 1)",
+            background:
+              "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
             position: "fixed",
             top: 0,
             width: "100vw",
@@ -127,7 +128,7 @@ const GlobalLayout = () => {
           <DynamincFooter></DynamincFooter>
         </Content>
 
-        {isSidebarVisible && (
+        {isSidebarVisible ? (
           <>
             {
               <div className={styles["marquee-container"]}>
@@ -152,6 +153,18 @@ const GlobalLayout = () => {
               <Trending></Trending>
             </Sider>
           </>
+        ) : (
+          <>
+            <Sider width={"5vw"}>
+              <div className={styles["marquee-container"]}>
+                {text?.map((ele: any, index: number) => (
+                  <div key={index} className={styles["marquee-content"]}>
+                    {ele?.content}
+                  </div>
+                ))}
+              </div>
+            </Sider>
+          </>
         )}
       </Layout>
 
@@ -159,7 +172,7 @@ const GlobalLayout = () => {
         className={styles.animated_button}
         onClick={() => setIsChatVisible(!isChatVisible)}
       >
-        <img style={{ height: "80%", width: "90%" }} src={icon}></img>
+        <img style={{ height: "70%" }} src={icon}></img>
       </div>
 
       {location.pathname !== "/auth" && (
@@ -191,7 +204,6 @@ const GlobalLayout = () => {
         </div>
       )}
 
-      {/* Option 2: WhatsApp Chat */}
       {isChatVisible && (
         <div
           onClick={() => {

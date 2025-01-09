@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
-import BASEURL from "../../utils/apis";
 import { FireFilled } from "@ant-design/icons";
 
 export const News = () => {
@@ -131,6 +130,7 @@ export const News = () => {
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
+  const BASEURL = import.meta.env.BASEURL
   const [loading, setloading] = useState(false);
 
   const getBlogs = async () => {
@@ -184,6 +184,7 @@ export const Reels = () => {
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const loaction = useLocation();
+  const BASEURL = import.meta.env.BASEURL
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
 
   const getReels = async () => {

@@ -19,7 +19,6 @@ import { WhatsAppOutlined } from "@ant-design/icons";
 import { KeySharp } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
-import BASEURL from "../../utils/apis";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -38,6 +37,7 @@ const Auth = () => {
       icon: safe,
     },
   ];
+  const BASEURL = import.meta.env.BASEURL
 
   const [phoneNumber, setPhoneNumber] = useState<number>();
   const [isOtp, setIsOtp] = useState<boolean>();
