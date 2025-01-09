@@ -130,7 +130,7 @@ export const News = () => {
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const [loading, setloading] = useState(false);
 
   const getBlogs = async () => {
@@ -184,7 +184,7 @@ export const Reels = () => {
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const loaction = useLocation();
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
 
   const getReels = async () => {

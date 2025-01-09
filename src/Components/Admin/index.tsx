@@ -31,7 +31,7 @@ import image from "../../assets/image.png";
 import axios from "axios";
 
 const AdminPage = () => {
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState("images");
   const [uploadedImages, setUploadedImages] = useState([]);

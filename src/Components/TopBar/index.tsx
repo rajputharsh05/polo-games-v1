@@ -36,7 +36,7 @@ import {
 import { useSelector } from "react-redux";
 
 const TopBar = () => {
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const loaction = useLocation();
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();

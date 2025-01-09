@@ -5,7 +5,7 @@ import { Card, Col, message, Row, Spin, Typography } from "antd";
 
 
 const Pages = () => {
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 

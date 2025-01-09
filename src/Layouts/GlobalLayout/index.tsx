@@ -19,7 +19,7 @@ const { Sider, Content, Header } = Layout;
 const GlobalLayout = () => {
   const outlet = useOutlet();
   const location = useLocation();
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
   const [text, setText] = useState([]);
 
   const getTexts = async () => {

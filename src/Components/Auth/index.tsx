@@ -37,7 +37,7 @@ const Auth = () => {
       icon: safe,
     },
   ];
-  const BASEURL = import.meta.env.BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL
 
   const [phoneNumber, setPhoneNumber] = useState<number>();
   const [isOtp, setIsOtp] = useState<boolean>();
