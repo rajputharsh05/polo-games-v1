@@ -5,9 +5,7 @@ import safe from "../../assets/100_safe.png";
 import protectedIcon from "../../assets/protected.png";
 import plue from "../../assets/18_.png";
 import { WhatsAppOutlined } from "@ant-design/icons";
-
-
-
+import { KeySharp } from "@mui/icons-material";
 
 const Auth = () => {
   const footerIcons = [
@@ -25,7 +23,7 @@ const Auth = () => {
     },
   ];
 
-  const onFinish = (values : any) => {
+  const onFinish = (values: any) => {
     console.log("Form Values:", values);
   };
 
@@ -43,56 +41,76 @@ const Auth = () => {
         </Col>
       </Row>
       <Row justify={"center"}>
-      <Form layout="vertical" onFinish={onFinish} style={{marginTop:"1vh"}}>
-         
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          style={{ marginTop: "1vh" }}
+        >
           <Form.Item
             name="mobileNumber"
-            rules={[{ required: true, message: "Please enter your mobile number!" }]}
+            label="Login with Mobile Number"
+            rules={[
+              { required: true, message: "Please enter your mobile number!" },
+            ]}
+            style={{
+              fontFamily: "Popines",
+              fontSize: "10px",
+              fontWeight: "600",
+            }}
           >
             <Input
+              prefix={<KeySharp />}
               placeholder="Enter Mobile Number"
               style={{
                 borderRadius: 24,
                 fontSize: 16,
+                backgroundColor: "white",
               }}
             />
           </Form.Item>
           {/* Generate OTP Button */}
-          <Button
-            type="primary"
-            htmlType="button"
-            style={{
-              width: "100%",
-              borderRadius: 24,
-              fontSize: 16,
-              marginBottom: 7,
-              backgroundColor: "black",
-            }}
-          >
-            Generate OTP
-          </Button>
-          {/* OTP Input */}
-          <Form.Item
-            name="otp"
-            rules={[{ required: true, message: "Please enter the OTP!" }]}
-          >
-            <Input
-              placeholder="Enter OTP"
+          <Row justify={"end"}>
+            <Button
+              type="primary"
+              htmlType="button"
               style={{
+                width: "50%",
                 borderRadius: 24,
-                padding: "6px 6px",
                 fontSize: 16,
+                marginBottom: 7,
+                backgroundColor: "black",
+                fontFamily: "Popines",
+                boxShadow: "0 0 20px 10px rgba(255, 255, 255, 0.23)",
               }}
-            />
-          </Form.Item>
-        
-          <Row justify={"center"} style={{ fontWeight: "bold" }}>OR</Row>
-         
-          <Button
-            type="default"
-            htmlType="button"
-            icon={<WhatsAppOutlined />}
-            onClick={() => {
+            >
+              Generate OTP
+            </Button>
+          </Row>
+          {/* OTP Input */}
+
+          
+
+          <div style={{ marginTop: "2vh" }}>
+            {/* Label */}
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "600",
+                marginBottom: "8px",
+                color: "white", // Customize the color of the label
+                fontFamily: "Popines",
+              }}
+            >
+              Direct Login
+            </label>
+
+           
+            <Button
+              type="default"
+              htmlType="button"
+              icon={<WhatsAppOutlined  />}
+              onClick={() => {
                 const phoneNumber = "9333333330";
                 const message = "Hello, I would like to connect with you!";
                 const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
@@ -100,31 +118,36 @@ const Auth = () => {
                 )}`;
                 window.open(whatsappURL, "_blank");
               }}
-            style={{
-              width: "100%",
-              borderRadius: 24,
-              padding: "12px 16px",
-              fontSize: 16,
-              background: "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
-              color: "black",
-            }}
-          >
-            Get ID from whatsApp ?
-          </Button>
+              style={{
+                width: "100%",
+                borderRadius: 24,
+                padding: "12px 16px",
+                fontSize: "14px",
+                fontWeight: "600",
+                backgroundColor:"white",
+                fontFamily: "Popines",
+                // background: "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
+                color: "black",
+              }}
+            >
+              Get ID from WhatsApp?
+            </Button>
+          </div>
+
           {/* Login Button */}
-        
         </Form>
-        
       </Row>
-      <Row justify={"space-between"} align={"middle"} style={{marginTop:"3vh"}}>
-        {footerIcons?.map((icon, index) => 
-           (
-            <Col key={index} span={8} className={styles.footerIcon}>
-              <img src={icon.icon} alt={icon.label}></img>
-              <p>{icon.label}</p>
-            </Col>
-          )
-        )}
+      <Row
+        justify={"space-between"}
+        align={"middle"}
+        style={{ marginTop: "3vh" }}
+      >
+        {footerIcons?.map((icon, index) => (
+          <Col key={index} span={8} className={styles.footerIcon}>
+            <img src={icon.icon} alt={icon.label}></img>
+            <p>{icon.label}</p>
+          </Col>
+        ))}
       </Row>
     </div>
   );
