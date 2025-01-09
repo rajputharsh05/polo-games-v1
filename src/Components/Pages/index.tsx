@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./pages.module.scss";
 import axios from "axios";
 import { Card, Col, message, Row, Spin, Typography } from "antd";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const Pages = () => {
   const [data, setData] = useState<any[]>([]);

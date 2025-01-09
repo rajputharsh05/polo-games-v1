@@ -27,7 +27,7 @@ import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import Cookies from "js-cookie";
 import { WhatsApp } from "@mui/icons-material";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();

@@ -19,7 +19,7 @@ import { WhatsAppOutlined } from "@ant-design/icons";
 import { KeySharp } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -95,7 +95,7 @@ const Auth = () => {
       console.error(error);
       message.error("Unable Login please check the password and username");
     }
-  };
+};
 
 
   const onFinish = (values: any) => {

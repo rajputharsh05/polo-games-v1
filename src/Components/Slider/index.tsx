@@ -6,7 +6,7 @@ import image1 from "../../../public/images/smart_soft_gaming_banner.jpg";
 import image2 from "../../../public/images/royal_gaming_banner.jpg";
 import image3 from "../../../public/images/evolution_gaming_banner.png";
 import image4 from "../../../public/images/play_tech_gaming_banner.jpg";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const SliderComponent = () => {
   const [images, setImages] = useState<{ src: string; alt: string }[]>([]);

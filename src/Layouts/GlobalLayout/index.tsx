@@ -13,7 +13,7 @@ import axios from "axios";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import ballAnimation from "../../assets/Ball animation.gif";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const { Sider, Content, Header } = Layout;
 

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 import { FireFilled } from "@ant-design/icons";
 
 export const News = () => {

@@ -29,7 +29,7 @@ import styles from "./admin.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
 import image from "../../assets/image.png";
 import axios from "axios";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const AdminPage = () => {
   const [modalVisible, setModalVisible] = useState(false);

@@ -34,7 +34,7 @@ import {
   VideoCall,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import { BASEURL } from "../../utils/apis";
+import BASEURL from "../../utils/apis";
 
 const TopBar = () => {
   const loaction = useLocation();
