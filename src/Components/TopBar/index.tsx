@@ -34,9 +34,9 @@ import {
   VideoCall,
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
-import BASEURL from "../../utils/apis";
 
 const TopBar = () => {
+  const BASEURL = import.meta.env.BASEURL
   const loaction = useLocation();
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();

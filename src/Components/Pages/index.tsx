@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import styles from "./pages.module.scss";
 import axios from "axios";
 import { Card, Col, message, Row, Spin, Typography } from "antd";
-import BASEURL from "../../utils/apis";
+
 
 const Pages = () => {
+  const BASEURL = import.meta.env.BASEURL
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 

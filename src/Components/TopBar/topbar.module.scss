@@ -10,7 +10,7 @@
   overflow-x: auto; 
   -ms-overflow-style: none; 
   scrollbar-width: none; 
-  z-index: 4000;
+  z-index: 4000 !important;
 
   
   &::-webkit-scrollbar {
@@ -35,7 +35,7 @@
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   background-color: black;
-  border : 5px solid rgba(12, 46, 55, 1);
+  border : 3px solid rgba(12, 46, 55, 1);
  
   &:hover {
     background-color: #f0f0f0;
