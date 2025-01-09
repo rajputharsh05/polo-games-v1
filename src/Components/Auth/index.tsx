@@ -44,7 +44,7 @@ const Auth = () => {
       </Row>
       <Row justify={"center"}>
       <Form layout="vertical" onFinish={onFinish} style={{marginTop:"1vh"}}>
-          {/* Mobile Number Input */}
+         
           <Form.Item
             name="mobileNumber"
             rules={[{ required: true, message: "Please enter your mobile number!" }]}
