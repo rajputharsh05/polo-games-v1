@@ -132,3 +132,17 @@
     }
   }
 }
+
+
+.imageStyle {
+  width: 40vw !important;
+  height: 30vh !important;
+  border-radius: 2vh;
+}
+
+@media (min-width: 300px) and (max-width: 600px) {
+  .imageStyle {
+    width: 60vw !important;
+    height: 14vh !important;
+  }
+}

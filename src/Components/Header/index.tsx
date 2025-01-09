@@ -27,6 +27,7 @@ import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import Cookies from "js-cookie";
 import { WhatsApp } from "@mui/icons-material";
+import { BASEURL } from "../../utils/apis";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const HeaderComponent = () => {
   const updateUserCount = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/visitors/log-visitor"
+        `${BASEURL}/visitors/log-visitor`
       );
       console.log(response);
     } catch (error) {
@@ -63,7 +64,7 @@ const HeaderComponent = () => {
   const getVisitors = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/visitors/visitor-count"
+        `${BASEURL}/visitors/visitor-count`
       );
       console.log(response);
       setVisitors(response?.data?.count);
@@ -80,7 +81,7 @@ const HeaderComponent = () => {
   const manageRegistration = async (values: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/create_user",
+        `${BASEURL}/user/create_user`,
         values
       );
       if (response?.status === 200) {
@@ -99,7 +100,7 @@ const HeaderComponent = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://localhost:8000/otp/send-otp?phone_number=${values?.phone_number}`
+        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}`
       );
       console.log(response);
       setCurrentPhoneNumber(values?.phone_number);
@@ -131,7 +132,7 @@ const HeaderComponent = () => {
   const handleOtpSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
+        `${BASEURL}/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
       );
       console.log(response);
 

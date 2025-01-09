@@ -10,7 +10,10 @@ import icon from "../../assets/ic_round-support-agent.png";
 import MobileHeader from "../../Components/MobileHeader";
 import TopBar from "../../Components/TopBar";
 import axios from "axios";
+import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
+import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import ballAnimation from "../../assets/Ball animation.gif";
+import { BASEURL } from "../../utils/apis";
 
 const { Sider, Content, Header } = Layout;
 
@@ -21,9 +24,7 @@ const GlobalLayout = () => {
 
   const getTexts = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/marqueetext/statements"
-      );
+      const response = await axios.get(`${BASEURL}/marqueetext/statements`);
       const data = response.data;
       console.log(data);
       setText(data);
@@ -116,7 +117,7 @@ const GlobalLayout = () => {
         <Content
           style={{
             overflow: "auto",
-            overflowX:"hidden",
+            overflowX: "hidden",
             background: "rgba(12, 46, 55, 1)",
           }}
           className={styles.content_wrapper}
@@ -161,52 +162,63 @@ const GlobalLayout = () => {
         <img style={{ height: "80%", width: "90%" }} src={icon}></img>
       </div>
 
-      {
-        location.pathname !== "/auth" &&
-
+      {location.pathname !== "/auth" && (
         <div className={styles.animated_id}>
-        <img
-          style={{ height: "100%", width: "100%" }}
-          src={ballAnimation}
+          <img
+            style={{ height: "100%", width: "100%" }}
+            src={ballAnimation}
           ></img>
         </div>
-      }
+      )}
 
       {isChatVisible && (
         <div
+          onClick={() => {
+            window.location.href = "tel:9333333330";
+          }}
           style={{
-            position: "fixed",
-            bottom: "0rem",
+            position: "absolute",
+            bottom: "6rem",
             right: "0rem",
-            width: "300px",
-            height: "400px",
-            background: "white",
-            borderRadius: "10px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-            zIndex: 1100,
-            padding: "1rem",
-            overflowY: "auto",
-            animation: "fadeIn 0.3s ease-in-out",
+            zIndex: 1000,
+            fontSize: "16px",
+            fontWeight: "600",
+            cursor: "pointer",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "1rem",
-            }}
-          >
-            <h3 style={{ margin: 0 }}>Chatbot</h3>
-            <Button
-              type="text"
-              onClick={() => setIsChatVisible(false)}
-              style={{ fontSize: "16px" }}
-            >
-              ✖
-            </Button>
-          </div>
-          <p>Hi there! How can I help you today?</p>
+          <img src={onlineChatImg} alt="Online Chat" style={{ width: "70%" }} />
+        </div>
+      )}
+
+      {/* Option 2: WhatsApp Chat */}
+      {isChatVisible && (
+        <div
+          onClick={() => {
+            const phoneNumber = "9333333330";
+            const message = "Hello, I would like to connect with you!";
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+              message
+            )}`;
+            window.open(whatsappURL, "_blank");
+          }}
+          style={{
+            position: "absolute",
+            bottom: "3rem",
+            right: "5rem",
+            zIndex: 1000,
+            borderRadius: "3vh",
+            fontSize: "16px",
+            fontWeight: "600",
+            cursor: "pointer",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          <img
+            src={whatsAppChatImg}
+            alt="WhatsApp Chat"
+            style={{ width: "70%" }}
+          />
         </div>
       )}
     </Layout>
