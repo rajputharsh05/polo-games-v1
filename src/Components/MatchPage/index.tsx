@@ -322,8 +322,7 @@ const MatchPage = (data: Props) => {
                 alignItems: "center",
                 fontSize: "20px",
                 borderRadius: "4vh",
-                background:
-                  "#001529",
+                background:"linear-gradient(to right, rgba(128, 0, 128, 0) 0%, purple 100%)",
               }}
               span={10}
             >

@@ -19,7 +19,7 @@ const { Sider, Content, Header } = Layout;
 const GlobalLayout = () => {
   const outlet = useOutlet();
   const location = useLocation();
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const [text, setText] = useState([]);
 
   const getTexts = async () => {
@@ -155,15 +155,17 @@ const GlobalLayout = () => {
           </>
         ) : (
           <>
-            <Sider width={"5vw"}>
-              <div className={styles["marquee-container"]}>
-                {text?.map((ele: any, index: number) => (
-                  <div key={index} className={styles["marquee-content"]}>
-                    {ele?.content}
-                  </div>
-                ))}
-              </div>
-            </Sider>
+            {(location?.pathname === "/" || location?.pathname === "/home") && (
+              <Sider width={"5vw"}>
+                <div className={styles["marquee-container"]}>
+                  {text?.map((ele: any, index: number) => (
+                    <div key={index} className={styles["marquee-content"]}>
+                      {ele?.content}
+                    </div>
+                  ))}
+                </div>
+              </Sider>
+            )}
           </>
         )}
       </Layout>
