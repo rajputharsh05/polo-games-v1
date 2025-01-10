@@ -28,12 +28,10 @@ export const News = () => {
     <div
       style={{
         display: "flex",
-        flexDirection: "column",
-        height: "100vh", // Full height of the viewport
-        overflow: "hidden", // Prevents overflowing
+        flexDirection: "column", 
+        overflow: "hidden",
       }}
     >
-      {/* Constant Header Row */}
       {location?.pathname !== "/" && location?.pathname !== "/home" && (
         <div
           style={{
@@ -295,7 +293,7 @@ const Trending = () => {
             navigate("/news");
           }}
         >
-          Trending News
+         {(location?.pathname === "/" || location?.pathname === "/home") && "Trending News"}
         </h4>
         <News></News>
       </div>
