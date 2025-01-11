@@ -12,7 +12,6 @@ import { Blogs, News, Reels } from "../Components/Trending";
 import AdminPage from "../Components/Admin";
 import Pages from "../Components/Pages";
 import Auth from "../Components/Auth";
-import OfferSection from "../Components/Offer";
 
 interface RouteBase {
   path: string;
