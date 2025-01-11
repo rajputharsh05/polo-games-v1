@@ -36,7 +36,6 @@ export const globalRoutes = [
         <SoccerSection></SoccerSection>
         <TennisSection></TennisSection>
         <HorseRidding></HorseRidding>
-        <OfferSection></OfferSection>
         <GameGallery></GameGallery>
         <CasinoGallery></CasinoGallery>
         <Footer></Footer>
