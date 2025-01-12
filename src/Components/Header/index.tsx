@@ -13,7 +13,7 @@ import {
   Spin,
 } from "antd";
 import styles from "./header.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
+import logo from "../../assets/Polo_Logo_Png[1] 1.png"
 import { SearchOutlined } from "@ant-design/icons";
 import inplay from "../../assets/inplay.png";
 import Home from "../../assets/Home.png";
@@ -216,12 +216,12 @@ const HeaderComponent = () => {
 
   return (
     <Row
-      style={{ background: "rgba(12, 46, 55, 1)", lineHeight: "0" }}
+      style={{ background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)", lineHeight: "0" }}
       gutter={[20, 20]}
       justify={"space-around"}
     >
       <Col span={2}>
-        <img src={logo} alt="Logo" />
+        <img src={logo}  style={{height:"100%",  width:"100%"}} alt="Logo" />
       </Col>
       <Col
         className={styles.Hover}

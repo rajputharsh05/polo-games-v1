@@ -1,5 +1,5 @@
 import styles from "./auth.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
+import logo from "../../assets/Polo_Logo_Png[1] 1.png"
 import {
   Button,
   Card,

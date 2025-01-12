@@ -26,12 +26,12 @@ import {
   WebStories,
 } from "@mui/icons-material";
 import styles from "./admin.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
+import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import image from "../../assets/image.png";
 import axios from "axios";
 
 const AdminPage = () => {
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState("images");
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -60,9 +60,7 @@ const AdminPage = () => {
     try {
       setLoading(true);
 
-      const response = await axios.get(
-        `${BASEURL}/imagelink/items/`
-      );
+      const response = await axios.get(`${BASEURL}/imagelink/items/`);
 
       const data = response?.data;
       console.log(data);
@@ -89,9 +87,7 @@ const AdminPage = () => {
 
   const getReels = async () => {
     try {
-      const response = await axios.get(
-        `${BASEURL}/reels/get-reels/`
-      );
+      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
       const data = response.data;
       setReels(data);
     } catch (error) {
@@ -113,7 +109,7 @@ const AdminPage = () => {
 
   const handleImageDelete = async (id: any) => {
     try {
-    const URL =  `${BASEURL}/admin/delete_image/${id}`;
+      const URL = `${BASEURL}/admin/delete_image/${id}`;
       const response = await axios.delete(URL);
       if (response?.status === 200) {
         message.success("Banner removed Successfully");
@@ -232,10 +228,7 @@ const AdminPage = () => {
 
   const handleAgentSubmit = async (values: any) => {
     try {
-      const response = await axios.post(
-        `${BASEURL}/user/create_user`,
-        values
-      );
+      const response = await axios.post(`${BASEURL}/user/create_user`, values);
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getAgents();
@@ -250,9 +243,7 @@ const AdminPage = () => {
 
   const getAgents = async () => {
     try {
-      const response = await axios.get(
-        `${BASEURL}:8000/user/get_all_users`
-      );
+      const response = await axios.get(`${BASEURL}:8000/user/get_all_users`);
       const data = response.data;
       console.log(data);
       setAgents(data);
@@ -279,9 +270,7 @@ const AdminPage = () => {
 
   const handleDeleteReels = async (id: any) => {
     try {
-      const response = await axios.delete(
-        `${BASEURL}/reels/delete-reel/${id}`
-      );
+      const response = await axios.delete(`${BASEURL}/reels/delete-reel/${id}`);
       if (response?.status === 200) {
         message.success("Reel Deleted Successfully");
         getReels();
@@ -294,9 +283,7 @@ const AdminPage = () => {
 
   const getTexts = async () => {
     try {
-      const response = await axios.get(
-        `${BASEURL}/marqueetext/statements`
-      );
+      const response = await axios.get(`${BASEURL}/marqueetext/statements`);
       const data = response.data;
       console.log(data);
       setText(data);
@@ -356,15 +343,11 @@ const AdminPage = () => {
     formData.append("image", imageFile);
 
     try {
-      const response = await axios.post(
-        `${BASEURL}/upload`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.post(`${BASEURL}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       message.success("Data uploaded successfully!");
       console.log(response.data);
@@ -626,7 +609,7 @@ const AdminPage = () => {
               style={{
                 color: "red",
                 fontWeight: "600",
-                fontSize: "clamp(20px, 3vw, 25px)", // Adjust font size for "ADMIN"
+                fontSize: "clamp(20px, 3vw, 25px)",
               }}
             >
               ADMIN
@@ -682,7 +665,7 @@ const AdminPage = () => {
             },
             {
               key: "manageWebsites",
-              icon: <WebStories></WebStories>,
+              icon: <WebStories />,
               label: "Manage Websites",
             },
           ].map((tab) => (
@@ -692,12 +675,15 @@ const AdminPage = () => {
               className={`${styles.Btn} ${
                 modalType === tab.key ? styles.active : styles.inactive
               }`}
-              span={3}
+              xs={11} // Takes half the width on extra small screens
+              sm={7} // Takes one-third the width on small screens
+              md={5} // Takes one-fourth the width on medium screens
+              lg={3} // Takes one-fifth the width on large screens
             >
-              <Row justify={"center"}>
+              <Row justify="center">
                 <div className={styles.Icon}>{tab.icon}</div>
               </Row>
-              <Row justify={"center"}>
+              <Row justify="center">
                 <div className={styles.Label}>{tab.label}</div>
               </Row>
             </Col>

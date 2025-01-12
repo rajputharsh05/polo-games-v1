@@ -1,6 +1,6 @@
 import { Layout, message } from "antd";
 import SideBar from "../../Components/SideBar";
-import { useLocation, useOutlet } from "react-router-dom";
+import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
 import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
@@ -18,6 +18,7 @@ const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
+  const navigate = useNavigate();
   const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
   const [text, setText] = useState([]);
@@ -119,7 +120,7 @@ const GlobalLayout = () => {
           style={{
             overflow: "auto",
             overflowX: "hidden",
-            background: "rgba(12, 46, 55, 1)",
+           
           }}
           className={styles.content_wrapper}
         >
@@ -155,7 +156,7 @@ const GlobalLayout = () => {
           </>
         ) : (
           <>
-            {(location?.pathname === "/" || location?.pathname === "/home") && (
+            {/* {(location?.pathname === "/" || location?.pathname === "/home") && (
               <Sider width={"5vw"}>
                 <div className={styles["marquee-container"]}>
                   {text?.map((ele: any, index: number) => (
@@ -165,7 +166,7 @@ const GlobalLayout = () => {
                   ))}
                 </div>
               </Sider>
-            )}
+            )} */}
           </>
         )}
       </Layout>
@@ -174,12 +175,20 @@ const GlobalLayout = () => {
         className={styles.animated_button}
         onClick={() => setIsChatVisible(!isChatVisible)}
       >
-        <img style={{ height: "70%" }} src={icon}></img>
+        <img style={{ height: "100%" }} src={icon}></img>
       </div>
 
       {location.pathname !== "/auth" && (
         <div className={styles.animated_id}>
           <img
+            onClick={() => {
+              if(isSidebarVisible) {
+                  
+              }else{
+                navigate("/auth")
+              }
+            } 
+          }
             style={{ height: "100%", width: "100%" }}
             src={ballAnimation}
           ></img>

@@ -1,5 +1,5 @@
 import styles from "./mobileHeader.module.scss"
-import img from "../../assets/Polo_Logo_Png[1] 1.svg"
+import img from "../../assets/Polo_Logo_Png[1] 1.png"
 
 
 const MobileHeader = () => {

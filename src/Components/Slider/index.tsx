@@ -209,7 +209,7 @@ const SliderComponent = () => {
                 <img
                   src={images[(randomIndex+2)%images?.length]?.src}
                   alt={images[randomIndex]?.alt || "Image"}
-                  style={{height:"100%" , width:"100%"}}
+                  style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
                 />
               ) : (
                 <p style={{ color: "white", textAlign: "center" }}>
@@ -217,12 +217,12 @@ const SliderComponent = () => {
                 </p>
               )}
             </Row>
-            <Row style={{height:"30%"}}>
+            <Row style={{height:"35%"}}>
               {images.length > 0 ? (
                 <img
                   src={images[randomIndex]?.src}
                   alt={images[randomIndex]?.alt || "Image"}
-                  style={{height:"100%" , width:"100%"}}
+                  style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
                 />
               ) : (
                 <p style={{ color: "white", textAlign: "center" }}>

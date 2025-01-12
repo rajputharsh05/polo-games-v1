@@ -233,7 +233,7 @@ export const Reels = () => {
 
   return (
     <Spin spinning={loading}>
-      {loaction.pathname !== "/" && (
+      {loaction.pathname !== "/" && location?.pathname !== "/home" && (
         <h3
           style={{
             padding: "1vh",

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Button,
@@ -12,10 +12,10 @@ import {
   Modal,
   Row,
 } from "antd";
-import { HomeFilled, IdcardFilled, MenuOutlined } from "@ant-design/icons";
+import { HomeOutlined, IdcardFilled, LeftOutlined, MenuOutlined, RightOutlined } from "@ant-design/icons";
 
 import styles from "./topbar.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.svg";
+import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import axios from "axios";
@@ -36,7 +36,7 @@ import {
 import { useSelector } from "react-redux";
 
 const TopBar = () => {
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const loaction = useLocation();
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();
@@ -304,39 +304,71 @@ const TopBar = () => {
     }
   };
 
+  const IconStyle = {
+    fontSize: "30px",
+  };
+
   const menuItems = [
-    { key: "home", label: "Home", badge: -1, icon: <HomeFilled></HomeFilled> },
-    { key: "auth", label: "Login", badge: -1, icon: <Person></Person> },
+    {
+      key: "/",
+      label: "Home",
+      badge: -1,
+      icon: <HomeOutlined style={IconStyle}></HomeOutlined>,
+    },
+    {
+      key: "auth",
+      label: "Login",
+      badge: -1,
+      icon: <Person style={IconStyle}></Person>,
+    },
     {
       key: "chat-support",
       label: "Chat Support",
       badge: -1,
-      icon: <Telegram></Telegram>,
+      icon: <Telegram style={IconStyle}></Telegram>,
     },
-    { key: "call-us", label: "Call us", badge: -1, icon: <Call></Call> },
+    {
+      key: "call-us",
+      label: "Call us",
+      badge: -1,
+      icon: <Call style={IconStyle}></Call>,
+    },
     {
       key: "in-play",
       label: "In Play",
       badge: -1,
-      icon: <PlayCircle></PlayCircle>,
+      icon: <PlayCircle style={IconStyle}></PlayCircle>,
     },
-    { key: "news", label: "News", badge: -1, icon: <Newspaper></Newspaper> },
-    { key: "blogs", label: "Blogs", badge: -1, icon: <BookSharp></BookSharp> },
-    { key: "reels", label: "Reels", badge: -1, icon: <VideoCall></VideoCall> },
+    {
+      key: "news",
+      label: "News",
+      badge: -1,
+      icon: <Newspaper style={IconStyle}></Newspaper>,
+    },
+    {
+      key: "blogs",
+      label: "Blogs",
+      badge: -1,
+      icon: <BookSharp style={IconStyle}></BookSharp>,
+    },
+    {
+      key: "reels",
+      label: "Reels",
+      badge: -1,
+      icon: <VideoCall style={IconStyle}></VideoCall>,
+    },
 
     {
       key: "auth",
       label: "Demo Id",
       badge: -1,
-      icon: <IdcardFilled></IdcardFilled>,
+      icon: <IdcardFilled style={IconStyle}></IdcardFilled>,
     },
   ];
 
   const handleAdminSubmit = async (values: any) => {
     try {
-      const response = await axios.get(
-        `${BASEURL}/user/get_all_users`
-      );
+      const response = await axios.get(`${BASEURL}/user/get_all_users`);
       const data = response?.data;
 
       const res = data?.filter((ele: any) => {
@@ -357,82 +389,141 @@ const TopBar = () => {
     }
   };
 
-  const renderMenuItems = (items: any) =>
-    items.map(({ key, label, badge, icon }: any) => {
-      return (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1vw !important",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <div
-            onClick={() => {
-              handleTabClick(key);
-            }}
-            key={key}
-            className={`${styles.topbar_item} ${
-              activeTab === key ? styles.active : ""
-            }`}
-          >
-            {icon}
-            {badge && badge !== -1 && (
-              <span className={styles.topbar_badge}>{badge}</span>
-            )}
-          </div>
-          <p style={{ whiteSpace: "nowrap", fontSize: "10px", color: "white" }}>
-            {label}
-          </p>
-          {label === "Chat Support" && (
-            <Dropdown
-              key={key}
-              overlay={supportMenu}
-              visible={isDropdownOpen}
-              onVisibleChange={(flag) => setIsDropdownOpen(flag)} // Sync dropdown visibility
-            >
-              <div onClick={() => handleTabClick(key)}></div>
-            </Dropdown>
-          )}
-        </div>
-      );
-    });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    const container = containerRef.current;
+    if (container) {
+      const scrollAmount = direction === "left" ? -200 : 200; // Adjust scroll distance
+      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
 
   return (
+
+  
     <>
+      
       {loaction?.pathname !== "/auth" && (
         <div className={styles.topbar}>
-          {!isSidebarVisible && loaction?.pathname !== "/auth" && (
-            <div
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {/* Left Button */}
+            <button
+              onClick={() => scroll("left")}
               style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1vw !important",
-                alignItems: "center",
-                justifyContent: "space-between",
+                background: "transparent",
+                border: "none",
+                color: "white",
+                cursor: "pointer",
               }}
             >
-              <div
-                className={styles.topbar_item}
-                onClick={toggleDrawer}
-                aria-label="Toggle Menu"
-              >
-                <MenuOutlined />
-              </div>
-              <p
-                style={{
-                  whiteSpace: "nowrap",
-                  fontSize: "10px",
-                  color: "white",
-                }}
-              >
-                {"categories"}
-              </p>
+              <LeftOutlined></LeftOutlined>
+            </button>
+
+            {/* Scrollable Menu */}
+          <div
+              ref={containerRef}
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                gap: "1vw",
+                flexGrow: 1,
+                padding: "10px 0",
+                scrollbarWidth: "none", // For Firefox
+              }}
+            >
+              {!isSidebarVisible && loaction?.pathname !== "/auth" && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1vw !important",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    className={styles.topbar_item}
+                    onClick={toggleDrawer}
+                    aria-label="Toggle Menu"
+                  >
+                    <MenuOutlined />
+                  </div>
+                  <p
+                    style={{
+                      whiteSpace: "nowrap",
+                      fontSize: "10px",
+                      color: "white",
+                    }}
+                  >
+                    {"Categories"}
+                  </p>
+                </div>
+              )}
+              {menuItems.map(({ key, label, badge, icon }: any) => (
+                <div
+                  key={key}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    onClick={() => handleTabClick(key)}
+                    className={`${styles.topbar_item} ${
+                      activeTab === key ? styles.active : ""
+                    }`}
+                  >
+                    {icon}
+                    {badge && badge !== -1 && (
+                      <span className={styles.topbar_badge}>{badge}</span>
+                    )}
+                  </div>
+                  <p
+                    style={{
+                      whiteSpace: "nowrap",
+                      fontSize: "10px",
+                      color: "white",
+                    }}
+                  >
+                    {label}
+                  </p>
+                  {label === "Chat Support" && (
+                    <Dropdown
+                      key={key}
+                      overlay={supportMenu}
+                      visible={isDropdownOpen}
+                      onVisibleChange={(flag) => setIsDropdownOpen(flag)}
+                    >
+                      <div onClick={() => handleTabClick(key)}></div>
+                    </Dropdown>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-          {renderMenuItems(menuItems)}
+
+            
+            <button
+              onClick={() => scroll("right")}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "white",
+                cursor: "pointer",  
+              }}
+            >
+              <RightOutlined></RightOutlined>
+            </button>
+          </div>
           <Drawer
             placement="left"
             onClose={toggleDrawer}
@@ -461,7 +552,7 @@ const TopBar = () => {
                 alignItems: "center",
               }}
             >
-              <img src={logo} style={{ height: "60%", width: "80%" }}></img>
+              <img src={logo} style={{ height: "80%", width: "40%" }}></img>
             </Row>
             <Row
               style={{
