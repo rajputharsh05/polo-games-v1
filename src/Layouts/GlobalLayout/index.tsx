@@ -8,7 +8,6 @@ import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
 import icon from "../../assets/ic_round-support-agent.png";
 import MobileHeader from "../../Components/MobileHeader";
-import TopBar from "../../Components/TopBar";
 import axios from "axios";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
@@ -81,6 +80,7 @@ const GlobalLayout = () => {
             zIndex: 1000,
             height: "8vh",
             padding: "0px 0px",
+            lineHeight:"17px"
           }}
         >
           {isSidebarVisible ? (
@@ -125,7 +125,7 @@ const GlobalLayout = () => {
           }}
           className={styles.content_wrapper}
         >
-          {!isSidebarVisible && <TopBar></TopBar>}
+          {/* {!isSidebarVisible && <TopBar></TopBar>} */}
           <div>{outlet}</div>
           <DynamincFooter></DynamincFooter>
         </Content>
@@ -157,7 +157,7 @@ const GlobalLayout = () => {
           </>
         ) : (
           <>
-            {/* {(location?.pathname === "/" || location?.pathname === "/home") && (
+            {(location?.pathname === "/" || location?.pathname === "/home") && (
               <Sider width={"5vw"}>
                 <div className={styles["marquee-container"]}>
                   {text?.map((ele: any, index: number) => (
@@ -167,7 +167,7 @@ const GlobalLayout = () => {
                   ))}
                 </div>
               </Sider>
-            )} */}
+            )}
           </>
         )}
       </Layout>

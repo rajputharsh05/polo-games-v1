@@ -13,7 +13,7 @@ import {
   Spin,
 } from "antd";
 import styles from "./header.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.png"
+import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import { SearchOutlined } from "@ant-design/icons";
 import inplay from "../../assets/inplay.png";
 import Home from "../../assets/Home.png";
@@ -30,7 +30,7 @@ import { WhatsApp } from "@mui/icons-material";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
 
   const location = useLocation();
 
@@ -50,11 +50,13 @@ const HeaderComponent = () => {
 
   const [form] = Form.useForm();
 
+  const AboutUsStyle = {
+    marginTop: "2vh",
+  };
+
   const updateUserCount = async () => {
     try {
-      const response = await axios.post(
-        `${BASEURL}/visitors/log-visitor`
-      );
+      const response = await axios.post(`${BASEURL}/visitors/log-visitor`);
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -63,9 +65,7 @@ const HeaderComponent = () => {
 
   const getVisitors = async () => {
     try {
-      const response = await axios.get(
-        `${BASEURL}/visitors/visitor-count`
-      );
+      const response = await axios.get(`${BASEURL}/visitors/visitor-count`);
       console.log(response);
       setVisitors(response?.data?.count);
     } catch (error) {
@@ -80,10 +80,7 @@ const HeaderComponent = () => {
 
   const manageRegistration = async (values: any) => {
     try {
-      const response = await axios.post(
-        `${BASEURL}/user/create_user`,
-        values
-      );
+      const response = await axios.post(`${BASEURL}/user/create_user`, values);
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
         setLoginModal(false);
@@ -216,12 +213,15 @@ const HeaderComponent = () => {
 
   return (
     <Row
-      style={{ background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)", lineHeight: "0" }}
+      style={{
+        background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+        lineHeight: "0",
+      }}
       gutter={[20, 20]}
       justify={"space-around"}
     >
       <Col span={2}>
-        <img src={logo}  style={{height:"100%",  width:"100%"}} alt="Logo" />
+        <img src={logo} style={{ height: "100%", width: "100%" }} alt="Logo" />
       </Col>
       <Col
         className={styles.Hover}
@@ -388,7 +388,52 @@ const HeaderComponent = () => {
           }
         >
           <Row justify={"center"} style={{ color: "white" }}>
-            World's Best Gaming Site
+            Welcome to Polo.Game, your ultimate destination for an exhilarating
+            and secure online betting experience! At Polo.Game, we bring
+            together the best in sports betting, innovative technology, and a
+            user-friendly interface to provide an unparalleled gaming
+            environment. Whether you're a seasoned bettor or a rst-time player,
+            our platform offers a variety of exciting betting options across
+            numerous sports and events. We prioritize transparency, fairness,
+            and security, ensuring that every wager you place is met with the
+            highest standards of reliability. At Polo.Game, we believe in
+            bringing the excitement of betting to you with a touch of class and
+            reliability. Established in 2016, we are a UK-based betting website
+            dedicated to providing a top-tier betting experience for all our
+            customers. Whether you're a seasoned bettor or just starting, we
+            have something for everyone
+            <h3 style={AboutUsStyle}>Our Mission</h3>
+            Our mission is simple: to offer a safe, fair, and exhilarating
+            betting environment. We strive to enhance your betting experience
+            with an intuitive platform, extensive market options, and
+            exceptional customer service.
+            <h3 style={AboutUsStyle}>What We Offer</h3>
+            <br></br>
+            Comprehensive Betting Markets: Polo.Game covers a wide range of
+            sports and events from football and horse racing to casinos and
+            beyond. We offer competitive odds and numerous betting options to
+            suit all preferences. Live Betting : Enjoy the thrill of in-play
+            betting with real-time updates and live odds. Our live betting
+            platform ensures you never miss a moment of the action. Casino
+            Games: For those who enjoy various games, our online casino features
+            multiple slots, table games, and live dealer experiences. It's the
+            perfect place to unwind and enjoy some leisure time. Promotions and
+            Bonuses: We reward our customers with generous promotions and
+            bonuses. From welcome offers to loyalty rewards, there's always
+            something to boost your betting experience at Polo.Game. Safety and
+            Security Your security is our top priority. Polo.Game operates under
+            a strict regulatory framework set by the UK Gambling Commission,
+            ensuring a fair and transparent betting environment.
+            <h3 style={AboutUsStyle}>Responsible Gambling</h3> At Polo.Game, we
+            promote responsible gambling. We provide tools and resources to help
+            you stay in control, including self-exclusion options, deposit
+            limits, and access to support organisations. Your well-being is
+            important to us, and we are committed to providing a safe and
+            enjoyable betting experience
+            <h3 style={AboutUsStyle}>Customer Support</h3> Our dedicated
+            customer support team is available 24/7. Whether you have a question
+            about your account, need help with a bet, or require technical
+            assistance, we're just a click or a call away.
           </Row>
         </Card>
       </Modal>
@@ -582,22 +627,63 @@ const HeaderComponent = () => {
                     </Row>
                   </Form>
                 </Row>
-                <Row justify={"center"} style={{fontFamily:"Poppins"}} gutter={[16,16]}>
-                  <Col style={{ color: "white", fontFamily:"Poppins",fontSize: "18px" , display:"flex" , justifyContent:"center" }} span={24}>
+                <Row
+                  justify={"center"}
+                  style={{ fontFamily: "Poppins" }}
+                  gutter={[16, 16]}
+                >
+                  <Col
+                    style={{
+                      color: "white",
+                      fontFamily: "Poppins",
+                      fontSize: "18px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    span={24}
+                  >
                     OR
                   </Col>
-                  <Col style={{ color: "white",fontFamily:"Poppins", fontSize: "16px", display:"flex" , justifyContent:"center" }} span={24}>
+                  <Col
+                    style={{
+                      color: "white",
+                      fontFamily: "Poppins",
+                      fontSize: "16px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                    span={24}
+                  >
                     Get Your Ready-Made ID From WhatsApp
                   </Col>
-                  <Col span={24} style={ {display:"flex" , justifyContent:"center"}}>
-                    <Button onClick={() => {
-                    const phoneNumber = "9333333330";
-                    const message = "Hello, I would like to connect with you!";
-                    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                      message
-                    )}`;
-                    window.open(whatsappURL, "_blank");
-                  }} style={{padding:"2vh", borderRadius:"1rem", height:"6vh",width:"100%",background: "linear-gradient(90deg, #940101 0%, #4560FD 100%)", color:"white" , fontFamily:"Poppins"}} icon={<WhatsApp></WhatsApp>} >WhatsApp Now</Button>
+                  <Col
+                    span={24}
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Button
+                      onClick={() => {
+                        const phoneNumber = "9333333330";
+                        const message =
+                          "Hello, I would like to connect with you!";
+                        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                          message
+                        )}`;
+                        window.open(whatsappURL, "_blank");
+                      }}
+                      style={{
+                        padding: "2vh",
+                        borderRadius: "1rem",
+                        height: "6vh",
+                        width: "100%",
+                        background:
+                          "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
+                        color: "white",
+                        fontFamily: "Poppins",
+                      }}
+                      icon={<WhatsApp></WhatsApp>}
+                    >
+                      WhatsApp Now
+                    </Button>
                   </Col>
                 </Row>
               </>
