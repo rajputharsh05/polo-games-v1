@@ -81,12 +81,23 @@
   background-color: rgba(151, 19, 19, 1);
 }
 
-.LiveCircle{
+.LiveCircle {
   background-color: rgba(100, 100, 100, 1);
   height: 50%;
   width: 30%;
   border-radius: 50%;
+  animation: blink 01s infinite;
 }
+
+@keyframes blink {
+  0%, 100% {
+    background-color: rgba(100, 100, 100, 1); /* Original color */
+  }
+  50% {
+    background-color: red; /* Blinking red color */
+  }
+}
+
 
 .LiveSectionSecond{
   display: flex;

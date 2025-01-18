@@ -131,7 +131,18 @@
   height: 50%;
   width: 30%;
   border-radius: 50%;
+  animation: blink 3s infinite;
 }
+
+@keyframes blink {
+  0%, 100% {
+    background-color: rgba(100, 100, 100, 1); /* Original color */
+  }
+  50% {
+    background-color: red; /* Blinking red color */
+  }
+}
+
 
 .LiveSectionSecond {
   display: flex;
