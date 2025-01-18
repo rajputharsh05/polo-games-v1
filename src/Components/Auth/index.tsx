@@ -137,7 +137,7 @@ const Auth = () => {
         </Col>
         {
           <Col className={styles.textStyle} span={24}>
-            POLO GAMES !!!
+            POLO GAME !!!
           </Col>
         }
       </Row>

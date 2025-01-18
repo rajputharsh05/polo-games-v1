@@ -12,7 +12,8 @@ import {
   Modal,
   Row,
 } from "antd";
-import { HomeOutlined, IdcardFilled, LeftOutlined, MenuOutlined, RightOutlined } from "@ant-design/icons";
+import { IdcardFilled, LeftOutlined, RightOutlined } from "@ant-design/icons";
+import hambargur from "../../assets/hamburger.png"
 
 import styles from "./topbar.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.png";
@@ -305,16 +306,10 @@ const TopBar = () => {
   };
 
   const IconStyle = {
-    fontSize: "30px",
+    fontSize: "35px",
   };
 
   const menuItems = [
-    {
-      key: "/",
-      label: "Home",
-      badge: -1,
-      icon: <HomeOutlined style={IconStyle}></HomeOutlined>,
-    },
     {
       key: "auth",
       label: "Login",
@@ -454,7 +449,7 @@ const TopBar = () => {
                     onClick={toggleDrawer}
                     aria-label="Toggle Menu"
                   >
-                    <MenuOutlined />
+                    <img src={hambargur}></img>
                   </div>
                   <p
                     style={{

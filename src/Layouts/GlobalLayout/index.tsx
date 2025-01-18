@@ -96,7 +96,7 @@ const GlobalLayout = () => {
       <Layout
         style={
           location.pathname !== "/auth"
-            ? { marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }
+            ? { marginTop: windowWidth < 390 ? "12vh" : "10vh", background: "rgba(12, 46, 55, 1)" }
             : { background: "rgba(12, 46, 55, 1)" }
         }
       >
@@ -110,6 +110,7 @@ const GlobalLayout = () => {
               overflowY: "scroll",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
+              marginTop:"2vh"
             }}
           >
             <SideBar />
@@ -202,7 +203,7 @@ const GlobalLayout = () => {
           }}
           style={{
             position: "absolute",
-            bottom: "6rem",
+            bottom: "9rem",
             right: "0rem",
             zIndex: 1000,
             fontSize: "16px",

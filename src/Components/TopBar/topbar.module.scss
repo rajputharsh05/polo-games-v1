@@ -22,11 +22,11 @@
   margin:0px 4px;
   font-size: 16px;
   font-weight: 500;
-  height: 6vh;
+  height: 7vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 12vw;
+  width: 15vw;
   color: white;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -49,13 +49,16 @@
   }
 
 
+  @media (max-width:400) {
+    height: 7vh;
+    width: 15vw;
+  }
 
   @media (min-width: 400px) and (max-width: 600px) {
-    width: 10vw;  
+    width: 13vw;  
     margin:0px 6px;
-    height: 5vh;  
+    height: 6vh;  
   }
-  
 }
 
 
