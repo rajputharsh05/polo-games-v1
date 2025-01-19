@@ -45,6 +45,9 @@
   }
   
   @media (max-width: 768px) {
+    .tableWrapper, .tableWrapperHeader {
+      border-radius: 50px !important;
+    }
     .tableHeader {
       display: block;
     }
@@ -52,4 +55,5 @@
       display: none;
     }
   }
+  
   

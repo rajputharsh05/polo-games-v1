@@ -50,6 +50,10 @@
 }
 
 @media (max-width: 768px) {
+  .tableWrapper, .tableWrapperHeader {
+    border-radius: 50px !important;
+    margin: 10px 8px 0px 8px !important;
+  }
   .tableHeader {
     display: block;
   }

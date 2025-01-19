@@ -121,7 +121,7 @@ const GlobalLayout = () => {
           style={{
             overflow: "auto",
             overflowX: "hidden",
-           
+            marginTop: "66px",
           }}
           className={styles.content_wrapper}
         >
