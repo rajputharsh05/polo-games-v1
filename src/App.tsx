@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import GlobalRouter from "./Routes/GlobalRouter";
@@ -7,6 +8,15 @@ import store from "./Redux/Store";
 import { AdminRouter } from "./Routes/AdminRoutes";
 
 function App() {
+  useEffect(() => {
+    const disableContextMenu = (e: any) => e.preventDefault();
+    document.addEventListener('contextmenu', disableContextMenu);
+
+    return () => {
+      document.removeEventListener('contextmenu', disableContextMenu);
+    };
+  }, []);
+
   return (
     <>
       <Provider store={store}>
