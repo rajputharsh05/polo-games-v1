@@ -12,6 +12,7 @@ import { Blogs, News, Reels } from "../Components/Trending";
 import AdminPage from "../Components/Admin";
 import Pages from "../Components/Pages";
 import Auth from "../Components/Auth";
+import OfferGallery from "../Components/OfferGallery";
 
 interface RouteBase {
   path: string;
@@ -35,6 +36,7 @@ export const globalRoutes = [
         <SoccerSection></SoccerSection>
         <TennisSection></TennisSection>
         <HorseRidding></HorseRidding>
+        <OfferGallery></OfferGallery>
         <GameGallery></GameGallery>
         <CasinoGallery></CasinoGallery>
         <Footer></Footer>
@@ -50,6 +52,7 @@ export const globalRoutes = [
         <SoccerSection></SoccerSection>
         <TennisSection></TennisSection>
         <HorseRidding></HorseRidding>
+        <OfferGallery></OfferGallery>
         <GameGallery></GameGallery>
         <CasinoGallery></CasinoGallery>
         <Footer></Footer>
