@@ -16,7 +16,7 @@ import OfferGallery from "../Components/OfferGallery";
 import { Row } from "antd";
 import img from "../assets/WhatsApp Image 2025-01-18 at 2.08.04 AM.jpeg";
 import img2 from "../assets/cp_modes_wallets.png";
-import img3 from "../assets/safeGamble.jpeg";
+
 
 interface RouteBase {
   path: string;
