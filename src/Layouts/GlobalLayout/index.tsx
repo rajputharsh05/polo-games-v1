@@ -110,7 +110,7 @@ const GlobalLayout = () => {
               scrollbarWidth: "none",
               msOverflowStyle: "none",
               marginTop:"2vh",
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.5), 0px -4px 8px rgba(0, 0, 0, 0.5), 4px 0px 8px rgba(0, 0, 0, 0.5), -4px 0px 8px rgba(0, 0, 0, 0.5)',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.5), 0px -4px 4px rgba(0, 0, 0, 0.5), 4px 0px 4px rgba(0, 0, 0, 0.5), -4px 0px 4px rgba(0, 0, 0, 0.5)',
             }}
           >
             <SideBar />

@@ -6,6 +6,8 @@ import image1 from "../../../public/images/smart_soft_gaming_banner.jpg";
 import image2 from "../../../public/images/royal_gaming_banner.jpg";
 import image3 from "../../../public/images/evolution_gaming_banner.png";
 import image4 from "../../../public/images/play_tech_gaming_banner.jpg";
+import image11 from "../../assets/01.jpg";
+import image22 from "../../assets/02.jpg";
 
 import { useLocation } from "react-router-dom";
 
@@ -207,8 +209,8 @@ const SliderComponent = () => {
             <Row style={{height:"60%"}}>
               {images.length > 0 ? (
                 <img
-                  src={images[(randomIndex+2)%images?.length]?.src}
-                  alt={images[randomIndex]?.alt || "Image"}
+                  src={image11}
+                  alt={images[0]?.alt || "Image"}
                   style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
                 />
               ) : (
@@ -220,8 +222,8 @@ const SliderComponent = () => {
             <Row style={{height:"35%"}}>
               {images.length > 0 ? (
                 <img
-                  src={images[randomIndex]?.src}
-                  alt={images[randomIndex]?.alt || "Image"}
+                  src={image22}
+                  alt={images[1]?.alt || "Image"}
                   style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
                 />
               ) : (

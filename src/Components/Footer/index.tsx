@@ -246,6 +246,17 @@ const Footer = () => {
     </Row>
   );
 
+  const FeedBack = (
+    <Row style={{ color: "white", fontFamily: "Popins" }} justify={"center"}>
+      <h1>Give us Feedback</h1>
+      <p>
+        All of us at Polo.Game want to ensure you have the best possible
+        experience whilst using our site. If you have any comments, please feel
+        free to get in touch customerservice@polo.game
+      </p>
+    </Row>
+  );
+
   const Terms = (
     <div style={{ padding: "20px" }}>
       <Row gutter={[16, 16]} justify={"center"}>
@@ -1116,6 +1127,184 @@ const Footer = () => {
     </Row>
   );
 
+  const Betting = (
+    <Row justify={"center"}  style={{color:"white" , fontFamily:"Popins"}}>
+      <h1>General Sports Betting Rules</h1>
+
+      <section>
+        <h2>Abandoned Matches and Changes to Scheduled Play</h2>
+        <p>
+          In the case of abandoned matches, or matches where the original scheduled amount of play is changed (e.g., a reduction in the number of overs in a cricket match), except where specifically stated otherwise, bets will be settled on the current result if further play could not affect that result. For example, if a football match has been abandoned but the number of corners has already exceeded the maximum number specified, then further play could not affect that result.
+        </p>
+      </section>
+
+      <section>
+        <h2>Multiple Bets</h2>
+        <p>
+          Any multiple bet reduced by a void, abandoned, or postponed match will stand for the remaining selections, irrespective of the minimum number of selections required.
+        </p>
+      </section>
+
+      <section>
+        <h2>Place Terms</h2>
+        <p>
+          Place terms on sports betting are those that were relevant at the time that the bet was placed. If you place an each-way bet and are uncertain about the current place terms, confirm them at the time. Place terms on horse and greyhound racing, with the exception of ante-post, are those that were relevant at the start of the race.
+        </p>
+      </section>
+
+      <section>
+        <h2>Changes in Scheduled Sets or Legs</h2>
+        <p>
+          In the event that the number of scheduled sets/legs to be played is changed (e.g., a match originally scheduled for five sets is reduced to three), match bets will stand, but set betting will be void.
+        </p>
+      </section>
+
+      <section>
+        <h2>Ties, Draws, and Dead Heats</h2>
+        <p>
+          Unless specifically stated otherwise, bets on any two-runner market that ends in a tie, draw, or exact number of points quoted, where no price was offered for that outcome, will be void and stakes returned. Dead heat rules apply for markets with three or more runners unless stated otherwise.
+        </p>
+      </section>
+
+      <section>
+        <h2>Abandoned or Postponed Matches</h2>
+        <p>
+          With the exception of ante-post markets, unless stated otherwise, bets on abandoned or postponed matches or races will be void unless rescheduled for the next day. Bets on postponed events or tournaments will stand for one full week from the original start date, after which they will be void.
+        </p>
+      </section>
+
+      <section>
+        <h2>Set, Frame, and Leg Markets</h2>
+        <p>
+          The full number of sets, frames, or legs required to win must be achieved. If the match is awarded before this is achieved, then set/frame/leg betting will be void.
+        </p>
+      </section>
+
+      <section>
+        <h2>Handicaps</h2>
+        <p>
+          The handicap is added to the team after the final result.
+        </p>
+      </section>
+
+      <section>
+        <h2>Change of Opponent</h2>
+        <p>
+          In the event of a change of opponent, all bets are void.
+        </p>
+      </section>
+
+      <section>
+        <h2>Betting Suspension and Ambiguities</h2>
+        <p>
+          We reserve the right to refuse or void ambiguous bets and to suspend betting on a market at any time without notice.
+        </p>
+      </section>
+
+      <section>
+        <h2>In-Play Betting</h2>
+        <p>
+          If a match is not completed, all bets will be void unless further play could not affect the result.
+        </p>
+      </section>
+
+      <section>
+        <h2>Errors and Corrections</h2>
+        <p>
+          Polo.Game strives to avoid errors in prices, handicaps, lines, or terms. However, if an error occurs, bets will be settled at the correct terms. If settlement has occurred, adjustments will be made to the account. Erroneous bets indicating unachievable results will be void.
+        </p>
+      </section>
+
+      <section>
+        <h2>Bets on Ongoing Events</h2>
+        <p>
+          Bets placed on events that have already started will be void unless In-Play betting is offered. If no significant action has occurred, bets may stand.
+        </p>
+      </section>
+
+      <section>
+        <h2>Polo.Game Rights</h2>
+        <ul>
+          <li>Polo.Game reserves the right to void bets placed after the event outcome is known or after significant events affecting the chances of winning.</li>
+          <li>Polo.Game reserves the right to recover any overpaid returns, including Cash Out payments.</li>
+        </ul>
+      </section>
+
+    </Row>
+  );
+
+  const Privacy = (
+    <Row justify={"center"} style={{ fontFamily: "Popins" }}>
+      <h1>Privacy Policy</h1>
+      <p>
+        This Privacy Policy ("Policy") (together with our Terms and Conditions
+        and any other documents referred to on it) sets out the basis on which
+        any Information we collect from you, or that you provide to us, will be
+        processed by us to enable us to manage your relationship with Polo.Game.
+        By submitting your Information to us and/or using Polo.Game services,
+        you confirm your consent to the use of your Information as set out in
+        this Policy.
+      </p>
+      <h2>Purpose</h2>
+      <p>
+        The purpose of this privacy policy is to give you a broader
+        understanding of:
+      </p>
+      <ul>
+        <li>What information we collect</li>
+        <li>How we use that information</li>
+        <li>How this information is shared</li>
+        <li>Your rights</li>
+        <li>Other useful privacy and security-related matters</li>
+      </ul>
+      <h2>Information Collection</h2>
+      <p>
+        Polo.Game may collect and process the following Information about you:
+      </p>
+      <ul>
+        <li>
+          Information that you enter when registering for a Polo.Game account,
+          posting material, or requesting further services.
+        </li>
+        <li>
+          If you contact us, we may keep a record of that correspondence.
+          Telephone calls to and from our Call Centre are recorded for training
+          and security purposes along with the resolution of any queries arising
+          from the service you receive.
+        </li>
+        <li>
+          Details of transactions you carry out in respect of our services and
+          of the fulfillment of your transactions.
+        </li>
+        <li>
+          Details of your visits to our website (including, but not limited to,
+          traffic data, location data, cookies, weblogs, IP Addresses, and other
+          communication data) and any other resources that you access.
+        </li>
+        <li>Social Media engagement.</li>
+      </ul>
+      <h2>How Information is Used</h2>
+      <p>
+        We may use your Information together with other information for the
+        purposes of:
+      </p>
+      <ul>
+        <li>Creating and managing your accounts.</li>
+        <li>Improving and personalizing the services that we offer you.</li>
+        <li>Processing your transactions, wagers, and winnings.</li>
+        <li>Complying with our duties under applicable law and regulations.</li>
+        <li>Building personal profiles.</li>
+        <li>
+          Providing you with marketing information and information concerning
+          promotional offers by post, email, telephone, and other means. Please
+          adjust your account settings if you do not wish to receive any or all
+          of these services.
+        </li>
+      </ul>
+      {/* Add the rest of the policy similarly */}
+    </Row>
+  );
+
   const handleItemClick = (type: string) => {
     setClickedItem(type);
     setIsModalOpen(true);
@@ -1133,6 +1322,12 @@ const Footer = () => {
         return AboutUs;
       case "Terms":
         return Terms;
+      case "Privacy":
+        return Privacy;
+      case "Betting":
+        return Betting;
+      case "FeedBack":
+        return FeedBack;  
       default:
         return AboutUs;
     }
@@ -1193,17 +1388,6 @@ const Footer = () => {
                   textAlign: "center",
                 }}
                 href="#"
-                onClick={() => handleItemClick("KYC")}
-              >
-                KYC Policy
-              </Typography.Link>
-              <Typography.Link
-                style={{
-                  color: "#fff",
-                  whiteSpace: "nowrap",
-                  textAlign: "center",
-                }}
-                href="#"
                 onClick={() => handleItemClick("Responsible")}
               >
                 Responsible Gaming
@@ -1218,6 +1402,51 @@ const Footer = () => {
                 onClick={() => handleItemClick("FAQ")}
               >
                 FAQ'S
+              </Typography.Link>
+              <Typography.Link
+                style={{
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                }}
+                href="#"
+                onClick={() => handleItemClick("Privacy")}
+              >
+                Privacy Policy
+              </Typography.Link>
+
+              <Typography.Link
+                style={{
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                }}
+                href="#"
+                onClick={() => handleItemClick("Betting")}
+              >
+                Betting Rules
+              </Typography.Link>
+              <Typography.Link
+                style={{
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                }}
+                href="#"
+                onClick={() => handleItemClick("FeedBack")}
+              >
+                Give us Feedback
+              </Typography.Link>
+              <Typography.Link
+                style={{
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  textAlign: "center",
+                }}
+                href="#"
+                onClick={() => handleItemClick("FAQ")}
+              >
+                Cookie settings
               </Typography.Link>
             </Space>
           </Col>

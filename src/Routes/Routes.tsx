@@ -13,6 +13,10 @@ import AdminPage from "../Components/Admin";
 import Pages from "../Components/Pages";
 import Auth from "../Components/Auth";
 import OfferGallery from "../Components/OfferGallery";
+import { Row } from "antd";
+import img from "../assets/WhatsApp Image 2025-01-18 at 2.08.04 AM.jpeg";
+import img2 from "../assets/cp_modes_wallets.png";
+import img3 from "../assets/safeGamble.jpeg";
 
 interface RouteBase {
   path: string;
@@ -22,7 +26,7 @@ interface RouteBase {
 export const proctectedRoutes: RouteBase[] = [
   {
     path: "/admin",
-    element: <AdminPage></AdminPage>
+    element: <AdminPage></AdminPage>,
   },
 ];
 
@@ -39,7 +43,34 @@ export const globalRoutes = [
         <OfferGallery></OfferGallery>
         <GameGallery></GameGallery>
         <CasinoGallery></CasinoGallery>
+        <Row style={{ width: "100%", height: "100%" }}>
+          <img
+            style={{ width: "100%", borderRadius: "3vh", height: "100%" }}
+            src={img}
+          ></img>
+        </Row>
+        <Row
+          style={{
+            width: "100%",
+            height: "100%",
+            margin: "3vh 3vh",
+            marginTop: "3vh",
+          }}
+        >
+          <img style={{ width: "90%", height: "100%" }} src={img2}></img>
+        </Row>
+        <Row
+          style={{
+            width: "100%",
+            height: "100%",
+            margin: "3vh 3vh",
+            marginTop: "3vh",
+          }}
+        >
+          
+        </Row>
         <Footer></Footer>
+        
       </>
     ),
   },
@@ -55,6 +86,22 @@ export const globalRoutes = [
         <OfferGallery></OfferGallery>
         <GameGallery></GameGallery>
         <CasinoGallery></CasinoGallery>
+        <Row style={{ width: "100%", height: "100%" }}>
+          <img
+            style={{ width: "100%", borderRadius: "3vh", height: "100%" }}
+            src={img}
+          ></img>
+        </Row>
+        <Row
+          style={{
+            width: "100%",
+            height: "100%",
+            margin: "3vh 3vh",
+            marginTop: "3vh",
+          }}
+        >
+          <img style={{ width: "90%", height: "100%" }} src={img2}></img>
+        </Row>
         <Footer></Footer>
       </>
     ),
@@ -73,79 +120,91 @@ export const globalRoutes = [
   },
   {
     path: "cricket",
-    element: <>
-      <CricketSection></CricketSection>
-      <Footer></Footer>
-    </>
+    element: (
+      <>
+        <CricketSection></CricketSection>
+        <Footer></Footer>
+      </>
+    ),
   },
   {
     path: "cricket/:id",
-    element: <>
-      <MatchPage apiurl={"https://data.shamexch.xyz/getbm"}></MatchPage>
-      <Footer></Footer>
-    </>
+    element: (
+      <>
+        <MatchPage apiurl={"https://data.shamexch.xyz/getbm"}></MatchPage>
+        <Footer></Footer>
+      </>
+    ),
   },
   {
     path: "games/:id",
-    element: <>
-      <MatchPage apiurl={"https://pro.shamexch.xyz/getdatasports"}></MatchPage>
-      <Footer></Footer>
-    </>
+    element: (
+      <>
+        <MatchPage
+          apiurl={"https://pro.shamexch.xyz/getdatasports"}
+        ></MatchPage>
+        <Footer></Footer>
+      </>
+    ),
   },
   {
     path: "soccer",
-    element:
+    element: (
       <>
-        <SoccerSection></SoccerSection>,
-        <Footer></Footer>
+        <SoccerSection></SoccerSection>,<Footer></Footer>
       </>
+    ),
   },
   {
     path: "tennis",
-    element:
+    element: (
       <>
-        <TennisSection></TennisSection>,
-        <Footer></Footer>
+        <TennisSection></TennisSection>,<Footer></Footer>
       </>
+    ),
   },
   {
     path: "horse-racing",
-    element:
+    element: (
       <>
         <HorseRidding></HorseRidding>
         <Footer></Footer>
       </>
+    ),
   },
   {
     path: "news",
-    element:
+    element: (
       <>
-       <News></News>
+        <News></News>
         <Footer></Footer>
       </>
+    ),
   },
   {
     path: "blogs",
-    element:
+    element: (
       <>
         <Blogs></Blogs>
         <Footer></Footer>
       </>
+    ),
   },
   {
     path: "reels",
-    element:
+    element: (
       <>
         <Reels></Reels>
         <Footer></Footer>
       </>
+    ),
   },
   {
-    path:"/pages",
-    element: <Pages></Pages>
+    path: "/pages",
+    element: <Pages></Pages>,
   },
   {
-    path:"/auth",
-    element: <Auth></Auth>
-  }
+    path: "/auth",
+    element: <Auth></Auth>,
+  },
 ];

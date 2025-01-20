@@ -62,11 +62,6 @@ const images = [
     src: "/images/royal_gaming_banner.jpg",
     alt: "AuraEGaming",
   },
-  {
-    id: 13,
-    src: "/images/smart_soft_gaming_banner.jpg",
-    alt: "SmartsoftGaming",
-  },
 ];
 
 const GameGallery = () => {

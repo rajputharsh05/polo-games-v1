@@ -251,6 +251,9 @@ export const Reels = () => {
             padding: "1vh",
             color: "white",
             fontSize: "16px",
+            display:"flex",
+            justifyContent:"center",
+            
           }}
         >
           <video
@@ -258,8 +261,8 @@ export const Reels = () => {
             width="100%"
             height="360"
             style={{
-              height: "50vh",
-              width: "100%",
+              height: "75vh",
+              width: "90%",
               objectFit: "cover",
               borderRadius: "10px",
             }}

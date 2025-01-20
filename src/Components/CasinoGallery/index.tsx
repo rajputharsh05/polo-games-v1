@@ -38,7 +38,7 @@ const CasinoGallery = () => {
     { src: '/images/Worli+Matka.webp', title: 'Worli+Matka' },
     { src: '/images/Roulette.webp', title: 'Roulette' },
     { src: '/images/Sicbo.webp', title: 'Sicbo' },
-    { src: '/images/dream_catcher.avif', title: 'dream_catcher' },
+    
   ];
 
   const virtualImages = [
@@ -65,6 +65,7 @@ const CasinoGallery = () => {
     { src: '/virtual_casino_images/Poker++(Virtual).webp', title: 'Poker++(Virtual)' },
     { src: '/virtual_casino_images/Six+player+poker+(Virtual).webp', title: 'Six+player+poker+(Virtual)' },
     { src: '/virtual_casino_images/Roulette+(Virtual).webp', title: 'Roulette+(Virtual)' },
+    { src: '/images/dream_catcher.avif', title: 'dream_catcher' },
 
   ];
 

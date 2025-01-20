@@ -67,7 +67,7 @@ const HeaderComponent = () => {
     try {
       const response = await axios.get(`${BASEURL}/visitors/visitor-count`);
       console.log(response);
-      setVisitors(response?.data?.count);
+      setVisitors(response?.data?.count + 1000);
     } catch (error) {
       console.error(error);
     }
@@ -390,7 +390,10 @@ const HeaderComponent = () => {
             </Row>
           }
         >
-          <Row justify="center" style={{ color: "white" , fontFamily:"Popins" }}>
+          <Row
+            justify="center"
+            style={{ color: "white", fontFamily: "Popins" }}
+          >
             <h1>Welcome to Polo.Game</h1>
             <p>
               Your ultimate destination for an exhilarating and secure online
@@ -508,22 +511,28 @@ const HeaderComponent = () => {
                       form={form}
                       onFinish={handleFormSubmit}
                     >
-                      <Form.Item
-                        name="phone_number"
-                        label="Phone Number"
-                        rules={[{ required: true }]}
-                      >
-                        <Input placeholder="Enter Phone Number" />
-                      </Form.Item>
-                      <Row gutter={[20, 20]} justify={"space-between"}>
-                        {true && (
-                          <Button
-                            type="primary"
-                            onClick={() => setLoginModal(false)}
+                      <Row justify={"space-around"}>
+                        <Col span={10}>
+                          <Form.Item
+                            name="code"
+                            label="Country Code"
+                            rules={[{ required: true }]}
                           >
-                            Cancel
-                          </Button>
-                        )}
+                            <Input placeholder="+ 91" />
+                          </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                          <Form.Item
+                            name="phone_number"
+                            label="Phone Number"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="9999999999" />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                      <Row gutter={[20, 20]} justify={"end"}>
+                        
                         <Button
                           style={{ backgroundColor: "#73d13d", color: "white" }}
                           type="default"
@@ -533,6 +542,35 @@ const HeaderComponent = () => {
                         </Button>
                       </Row>
                     </Form>
+                    <Row style={{marginTop:"3vh" , marginBottom:"3vh"}}>
+                    <Button
+                      onClick={() => {
+                        const phoneNumber = "9333333330";
+                        const message =
+                          "Hello, I would like to connect with you!";
+                        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                          message
+                        )}`;
+                        window.open(whatsappURL, "_blank");
+                      }}
+                      style={{
+                        padding: "2vh",
+                        borderRadius: "1rem",
+                        height: "6vh",
+                        width: "100%",
+                        background:
+                          "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
+                        color: "white",
+                        fontFamily: "Poppins",
+                      }}
+                      icon={<WhatsApp></WhatsApp>}
+                    >
+                      WhatsApp Now
+                    </Button>
+                    </Row>
+                    <Row justify={"center"} style={{color:"white" , fontFamily:"Popins"}}>
+                    <p>Don't have an account ? <span onClick={() => setLoginOrRegister(true)} style={{color:"#940101" , fontSize:"16px" , fontWeight:600 , cursor:"pointer"}}>Register</span></p>
+                    </Row>
                   </Spin>
                 )}
 
