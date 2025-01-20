@@ -76,8 +76,16 @@
   width: 60% !important;
   background-color: white !important;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+}
+
+.marker{
+  height: 70%;
+  width: 15%;
+  color:white !important;
+  background-color: black;
+  animation: blink 01s infinite;
 }
 
 .LiveSectionSecond{

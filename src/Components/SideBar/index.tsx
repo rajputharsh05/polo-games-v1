@@ -1,12 +1,8 @@
 import { Layout, Menu } from "antd";
-import {
-  PlayCircleOutlined,
-  TrophyOutlined,
-  RadarChartOutlined,
-} from "@ant-design/icons";
 import styles from "./sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Icon } from "@iconify/react";
 
 const { Sider } = Layout;
 
@@ -20,13 +16,15 @@ const SideBar = () => {
   const menuItems: any = [
     {
       key: "in-play",
-      icon: <PlayCircleOutlined />,
+      icon: <Icon icon="heroicons:play" width="24" height="24" />,
       label: (
         <div className={styles.menuItem}>
           <span>In Play</span>
           <div className={styles.LiveWrapper}>
             <div className={styles.LiveSectionFirst}>
+              <div className={styles.marker}>.</div>
               <div className={styles.LiveCircle}></div>
+              <div className={styles.marker}>.</div>
             </div>
             <div className={styles.LiveSectionSecond}>
               {cricket + soccer + tennis}
@@ -37,13 +35,15 @@ const SideBar = () => {
     },
     {
       key: "cricket",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="mdi:cricket" width="24" height="24" />,
       label: (
         <div className={styles.menuItem}>
           <span>Cricket</span>
           <div className={styles.LiveWrapper}>
             <div className={styles.LiveSectionFirst}>
+              <div className={styles.marker}>.</div>
               <div className={styles.LiveCircle}></div>
+              <div className={styles.marker}>.</div>
             </div>
             <div className={styles.LiveSectionSecond}>{cricket}</div>
           </div>
@@ -52,13 +52,15 @@ const SideBar = () => {
     },
     {
       key: "soccer",
-      icon: <RadarChartOutlined />,
+      icon: <Icon icon="fluent-mdl2:soccer" width="24" height="24" />,
       label: (
         <div className={styles.menuItem}>
           <span>Soccer</span>
           <div className={styles.LiveWrapper}>
             <div className={styles.LiveSectionFirst}>
+              <div className={styles.marker}>.</div>
               <div className={styles.LiveCircle}></div>
+              <div className={styles.marker}>.</div>
             </div>
             <div className={styles.LiveSectionSecond}>{soccer}</div>
           </div>
@@ -67,13 +69,15 @@ const SideBar = () => {
     },
     {
       key: "tennis",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="solar:tennis-bold-duotone" width="24" height="24" />,
       label: (
         <div className={styles.menuItem}>
           <span>Tennis</span>
           <div className={styles.LiveWrapper}>
             <div className={styles.LiveSectionFirst}>
+              <div className={styles.marker}>.</div>
               <div className={styles.LiveCircle}></div>
+              <div className={styles.marker}>.</div>
             </div>
             <div className={styles.LiveSectionSecond}>{tennis}</div>
           </div>
@@ -82,77 +86,83 @@ const SideBar = () => {
     },
     {
       key: "horse-racing",
-      icon: <TrophyOutlined />, 
+      icon: <Icon icon="la:horse-head" width="24" height="24" />,
       label: "Horse Racing",
     },
     {
       key: "rugby-union",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="mdi:rugby" width="24" height="24" />,
       label: "Rugby Union",
     },
     {
       key: "golf",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="ph:golf-light" width="24" height="24" />,
       label: "Golf",
     },
     {
       key: "esports",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="streamline:esports" width="24" height="24" />,
       label: "Esports",
     },
     {
       key: "mma",
-      icon: <TrophyOutlined />,
+      icon: (
+        <Icon
+          icon="material-symbols-light:sports-mma-outline"
+          width="24"
+          height="24"
+        />
+      ),
       label: "MMA",
     },
     {
       key: "gaelic-games",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="arcticons:puzzel-cc" width="24" height="24" />,
       label: "Gaelic Games",
     },
     {
       key: "volleyball",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="solar:volleyball-broken" width="24" height="24" />,
       label: "Volleyball",
     },
     {
       key: "handball",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="mdi:handball" width="24" height="24" />,
       label: "Handball",
     },
     {
       key: "australian-rules",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="fluent-mdl2:australian-rules" width="24" height="24" />,
       label: "Australian Rules",
     },
     {
       key: "ice-hockey",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="hugeicons:ice-hockey" width="24" height="24" />,
       label: "Ice Hockey",
     },
     {
       key: "snooker",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="mdi:snooker-rack" width="24" height="24" />,
       label: "Snooker",
     },
     {
       key: "darts",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="arcticons:pro-darts" width="24" height="24" />,
       label: "Darts",
     },
     {
       key: "cycling",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="solar:bicycling-outline" width="24" height="24" />,
       label: "Cycling",
     },
     {
       key: "special-bets",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="token:bets" width="24" height="24" />,
       label: "Special Bets",
     },
     {
       key: "table-tennis",
-      icon: <TrophyOutlined />,
+      icon: <Icon icon="la:table-tennis" width="24" height="24" />,
       label: "Table Tennis",
     },
   ];

@@ -171,7 +171,11 @@ const HeaderComponent = () => {
   };
 
   const supportMenu = (
-    <Menu>
+    <Menu
+      style={{
+        background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+      }}
+    >
       <Menu.Item key="1">
         <div
           style={{
@@ -214,7 +218,6 @@ const HeaderComponent = () => {
   return (
     <Row
       style={{
-        background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
         lineHeight: "0",
       }}
       gutter={[20, 20]}
@@ -387,53 +390,85 @@ const HeaderComponent = () => {
             </Row>
           }
         >
-          <Row justify={"center"} style={{ color: "white" }}>
-            Welcome to Polo.Game, your ultimate destination for an exhilarating
-            and secure online betting experience! At Polo.Game, we bring
-            together the best in sports betting, innovative technology, and a
-            user-friendly interface to provide an unparalleled gaming
-            environment. Whether you're a seasoned bettor or a rst-time player,
-            our platform offers a variety of exciting betting options across
-            numerous sports and events. We prioritize transparency, fairness,
-            and security, ensuring that every wager you place is met with the
-            highest standards of reliability. At Polo.Game, we believe in
-            bringing the excitement of betting to you with a touch of class and
-            reliability. Established in 2016, we are a UK-based betting website
-            dedicated to providing a top-tier betting experience for all our
-            customers. Whether you're a seasoned bettor or just starting, we
-            have something for everyone
+          <Row justify="center" style={{ color: "white" , fontFamily:"Popins" }}>
+            <h1>Welcome to Polo.Game</h1>
+            <p>
+              Your ultimate destination for an exhilarating and secure online
+              betting experience! At Polo.Game, we bring together the best in
+              sports betting, innovative technology, and a user-friendly
+              interface to provide an unparalleled gaming environment. Whether
+              you're a seasoned bettor or a first-time player, our platform
+              offers a variety of exciting betting options across numerous
+              sports and events.
+            </p>
+            <p>
+              We prioritize transparency, fairness, and security, ensuring that
+              every wager you place is met with the highest standards of
+              reliability. At Polo.Game, we believe in bringing the excitement
+              of betting to you with a touch of class and reliability.
+              Established in 2016, we are a UK-based betting website dedicated
+              to providing a top-tier betting experience for all our customers.
+              Whether you're a seasoned bettor or just starting, we have
+              something for everyone.
+            </p>
+
             <h3 style={AboutUsStyle}>Our Mission</h3>
-            Our mission is simple: to offer a safe, fair, and exhilarating
-            betting environment. We strive to enhance your betting experience
-            with an intuitive platform, extensive market options, and
-            exceptional customer service.
+            <p>
+              Our mission is simple: to offer a safe, fair, and exhilarating
+              betting environment. We strive to enhance your betting experience
+              with an intuitive platform, extensive market options, and
+              exceptional customer service.
+            </p>
+
             <h3 style={AboutUsStyle}>What We Offer</h3>
-            <br></br>
-            Comprehensive Betting Markets: Polo.Game covers a wide range of
-            sports and events from football and horse racing to casinos and
-            beyond. We offer competitive odds and numerous betting options to
-            suit all preferences. Live Betting : Enjoy the thrill of in-play
-            betting with real-time updates and live odds. Our live betting
-            platform ensures you never miss a moment of the action. Casino
-            Games: For those who enjoy various games, our online casino features
-            multiple slots, table games, and live dealer experiences. It's the
-            perfect place to unwind and enjoy some leisure time. Promotions and
-            Bonuses: We reward our customers with generous promotions and
-            bonuses. From welcome offers to loyalty rewards, there's always
-            something to boost your betting experience at Polo.Game. Safety and
-            Security Your security is our top priority. Polo.Game operates under
-            a strict regulatory framework set by the UK Gambling Commission,
-            ensuring a fair and transparent betting environment.
-            <h3 style={AboutUsStyle}>Responsible Gambling</h3> At Polo.Game, we
-            promote responsible gambling. We provide tools and resources to help
-            you stay in control, including self-exclusion options, deposit
-            limits, and access to support organisations. Your well-being is
-            important to us, and we are committed to providing a safe and
-            enjoyable betting experience
-            <h3 style={AboutUsStyle}>Customer Support</h3> Our dedicated
-            customer support team is available 24/7. Whether you have a question
-            about your account, need help with a bet, or require technical
-            assistance, we're just a click or a call away.
+            <ul>
+              <li>
+                <strong>Comprehensive Betting Markets:</strong> Polo.Game covers
+                a wide range of sports and events from football and horse racing
+                to casinos and beyond. We offer competitive odds and numerous
+                betting options to suit all preferences.
+              </li>
+              <li>
+                <strong>Live Betting:</strong> Enjoy the thrill of in-play
+                betting with real-time updates and live odds. Our live betting
+                platform ensures you never miss a moment of the action.
+              </li>
+              <li>
+                <strong>Casino Games:</strong> For those who enjoy various
+                games, our online casino features multiple slots, table games,
+                and live dealer experiences. It's the perfect place to unwind
+                and enjoy some leisure time.
+              </li>
+              <li>
+                <strong>Promotions and Bonuses:</strong> We reward our customers
+                with generous promotions and bonuses. From welcome offers to
+                loyalty rewards, there's always something to boost your betting
+                experience at Polo.Game.
+              </li>
+            </ul>
+
+            <h3 style={AboutUsStyle}>Safety and Security</h3>
+            <p>
+              Your security is our top priority. Polo.Game operates under a
+              strict regulatory framework set by the UK Gambling Commission,
+              ensuring a fair and transparent betting environment.
+            </p>
+
+            <h3 style={AboutUsStyle}>Responsible Gambling</h3>
+            <p>
+              At Polo.Game, we promote responsible gambling. We provide tools
+              and resources to help you stay in control, including
+              self-exclusion options, deposit limits, and access to support
+              organisations. Your well-being is important to us, and we are
+              committed to providing a safe and enjoyable betting experience.
+            </p>
+
+            <h3 style={AboutUsStyle}>Customer Support</h3>
+            <p>
+              Our dedicated customer support team is available 24/7. Whether you
+              have a question about your account, need help with a bet, or
+              require technical assistance, we're just a click or a call away.
+            </p>
           </Row>
         </Card>
       </Modal>

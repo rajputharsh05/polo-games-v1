@@ -97,7 +97,9 @@ const TennisSection = () => {
           <h3 style={{ margin: 0 }}>Tennis</h3>
           <div className={styles.LiveWrapper}>
             <div className={styles.LiveSectionFirst}>
+              <div className={styles.marker}>.</div>
               <div className={styles.LiveCircle}></div>
+              <div className={styles.marker}>.</div>
             </div>
             <div className={styles.LiveSectionSecond}>{LiveCount}</div>
           </div>

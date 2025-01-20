@@ -117,8 +117,16 @@
   width: 60% !important;
   background-color: white !important;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+}
+
+.marker{
+  height: 70%;
+  width: 15%;
+  color:transparent !important;
+  background-color: black;
+  animation: blink 01s infinite;
 }
 
 .LiveSectionSecond {
@@ -131,7 +139,7 @@
   height: 50%;
   width: 30%;
   border-radius: 50%;
-  animation: blink 3s infinite;
+  animation: blink 1s infinite;
 }
 
 @keyframes blink {
