@@ -66,6 +66,7 @@ const GlobalLayout = () => {
       style={{
         height: "100vh",
         width: "100vw",
+        overflow:"hidden",
         background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
       }}
     >
@@ -78,8 +79,8 @@ const GlobalLayout = () => {
             zIndex: 1000,
             height: "8vh",
             padding: "0px 0px",
-            lineHeight:"17px",
-            backgroundColor:"inherit"
+            lineHeight: "17px",
+            backgroundColor: "inherit",
           }}
         >
           {isSidebarVisible ? (
@@ -95,7 +96,11 @@ const GlobalLayout = () => {
       <Layout
         style={
           location.pathname !== "/auth"
-            ? { marginTop: windowWidth < 390 ? "12vh" : "10vh", background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)" }
+            ? {
+                marginTop: windowWidth < 390 ? "12vh" : "10vh",
+                background:
+                  "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+              }
             : { background: "rgba(12, 46, 55, 1)" }
         }
       >
@@ -109,8 +114,9 @@ const GlobalLayout = () => {
               overflowY: "scroll",
               scrollbarWidth: "none",
               msOverflowStyle: "none",
-              marginTop:"2vh",
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.5), 0px -4px 4px rgba(0, 0, 0, 0.5), 4px 0px 4px rgba(0, 0, 0, 0.5), -4px 0px 4px rgba(0, 0, 0, 0.5)',
+              marginTop: "2vh",
+              boxShadow:
+                "0px 4px 4px rgba(0, 0, 0, 0.5), 0px -4px 4px rgba(0, 0, 0, 0.5), 4px 0px 4px rgba(0, 0, 0, 0.5), -4px 0px 4px rgba(0, 0, 0, 0.5)",
             }}
           >
             <SideBar />
@@ -121,12 +127,14 @@ const GlobalLayout = () => {
           style={{
             overflow: "auto",
             overflowX: "hidden",
-            margin:"1vh"
+            margin: "1vh",
           }}
           className={styles.content_wrapper}
         >
           {/* {!isSidebarVisible && <TopBar></TopBar>} */}
-          <div style={isSidebarVisible ? {} : {marginTop:"66px"}}>{outlet}</div>
+          <div style={isSidebarVisible ? {} : { marginTop: "66px" }}>
+            {outlet}
+          </div>
           <DynamincFooter></DynamincFooter>
         </Content>
 
@@ -134,9 +142,15 @@ const GlobalLayout = () => {
           <>
             {
               <div className={styles["marquee-container"]}>
-                {text?.map((ele: any, index: number) => (
-                  <div key={index} className={styles["marquee-content"]}>
-                    {ele?.content}
+                {[
+                  "Game On: Place Your Bets with Polo.Game 💰      Variety of Betting      Markets: Offer a wide range of betting options such as sports betting, esports, virtual games, and casino games💸💥       Live Odds & In-Play Betting: Place bets on live events with dynamic odds 🎯💵         Multiple Payment Options: Upi, Imps, Neft, Rtgs, CDM, cryptocurrencies, e-wallets, and bank transfers💵💵           Instant Deposits and Withdrawals 💸💥           Secure Payment Gateways ⚡🏇  24/7 Live Chat    Email & Phone Support      Mobile-Friendly Website",
+                ].map((ele, index) => (
+                  <div
+                    key={index}
+                    className={styles["marquee-content"]}
+                    
+                  >
+                    {ele}
                   </div>
                 ))}
               </div>
@@ -183,13 +197,11 @@ const GlobalLayout = () => {
         <div className={styles.animated_id}>
           <img
             onClick={() => {
-              if(isSidebarVisible) {
-                  
-              }else{
-                navigate("/auth")
+              if (isSidebarVisible) {
+              } else {
+                navigate("/auth");
               }
-            } 
-          }
+            }}
             style={{ height: "100%", width: "100%" }}
             src={ballAnimation}
           ></img>
