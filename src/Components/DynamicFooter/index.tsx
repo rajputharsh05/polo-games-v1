@@ -9,7 +9,9 @@ const DynamincFooter = () => {
 
   return (
     <div className={styles.footer}>
-      <div className={styles.footer_item}>
+      <div className={styles.footer_item} onClick={() => {
+        navigate("/offers")
+      }}>
         <img src={offers}  className={styles.footer_icon}></img>
         <span>Offers</span>
       </div>

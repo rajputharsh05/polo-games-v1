@@ -206,4 +206,8 @@ export const globalRoutes = [
     path: "/auth",
     element: <Auth></Auth>,
   },
+  {
+    path : "/offers",
+    element :<OfferGallery></OfferGallery>
+  }
 ];
