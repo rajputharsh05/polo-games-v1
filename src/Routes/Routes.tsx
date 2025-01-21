@@ -13,10 +13,9 @@ import AdminPage from "../Components/Admin";
 import Pages from "../Components/Pages";
 import Auth from "../Components/Auth";
 import OfferGallery from "../Components/OfferGallery";
-import { Row } from "antd";
+import { Col, Row } from "antd";
 import img from "../assets/WhatsApp Image 2025-01-18 at 2.08.04 AM.jpeg";
-import img2 from "../assets/cp_modes_wallets.png";
-
+import img2 from "../assets/Payment Methods Icon Png.png";
 
 interface RouteBase {
   path: string;
@@ -55,22 +54,22 @@ export const globalRoutes = [
             height: "100%",
             margin: "3vh 3vh",
             marginTop: "3vh",
+            color: "white",
+            fontFamily: "Popins",
           }}
+          justify={"center"}
         >
-          <img style={{ width: "90%", height: "100%" }} src={img2}></img>
+          <Col>
+            <h3 style={{fontFamily:"Popins"}}>NO STRESS DEPOSITS</h3>
+          </Col>
+          <Col style={{marginTop:"2vh" , fontFamily:"Popins"}}>
+            We accept most major payment methods and work with some of the most
+            trusted payments companies in the world.
+          </Col>
+          <img style={{ width: "90%", height: "100%" , marginRight:"1vw" }} src={img2}></img>
         </Row>
-        <Row
-          style={{
-            width: "100%",
-            height: "100%",
-            margin: "3vh 3vh",
-            marginTop: "3vh",
-          }}
-        >
-          
-        </Row>
+
         <Footer></Footer>
-        
       </>
     ),
   },
