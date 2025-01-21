@@ -174,7 +174,7 @@ const SliderComponent = () => {
 
   const fetchImages = useCallback(async () => {
     try {
-      const response = await axios.get(`${BASEURL}/admin/images`);
+      const response = await axios.get(`${BASEURL}/bannerimage/images`);
       const formattedImages = response?.data?.map((img: any) => ({
         src: img?.content,
         alt: img?.name,
