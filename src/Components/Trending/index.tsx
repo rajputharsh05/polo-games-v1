@@ -192,7 +192,7 @@ export const Blogs = () => {
   );
 };
 
-export const Reels = ({trackState} : any) => {
+export const Reels = ({ trackState  , setTrackState}: any) => {
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -206,6 +206,9 @@ export const Reels = ({trackState} : any) => {
       const data = response.data;
       console.log(data);
       setReels(data);
+      setTimeout(() => {
+        setTrackState(false);
+      },5000)
     } catch (error) {
       console.error(error);
       message.error("Unable to fetch reels");
@@ -246,8 +249,6 @@ export const Reels = ({trackState} : any) => {
     };
   }, [reels]);
 
-
-
   return (
     <Spin spinning={loading}>
       {trackState && !loading && (
@@ -256,11 +257,12 @@ export const Reels = ({trackState} : any) => {
             position: "absolute",
             top: 80,
             left: 25,
-            width: "12%",
+            width: "10%",
             height: "20%",
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
+            justifyContent:"center",
             background:
               "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
             color: "white",
@@ -273,7 +275,6 @@ export const Reels = ({trackState} : any) => {
           <div
             style={{
               display: "flex",
-              gap: "20px",
               animation: "scroll-down 2s ease-in-out infinite",
               whiteSpace: "nowrap",
             }}
@@ -292,10 +293,10 @@ export const Reels = ({trackState} : any) => {
             {`
         @keyframes scroll-down {
           0% {
-            transform: translateY(120%);
+            transform: translateY(100%);
           }
           100% {
-            transform: translateY(-120%);
+            transform: translateY(-200%);
           }
         }
       `}
@@ -318,7 +319,6 @@ export const Reels = ({trackState} : any) => {
         {reels?.map((ele, index) => (
           <div
             key={index}
-           
             style={{
               padding: "1vh",
               color: "white",
@@ -332,7 +332,6 @@ export const Reels = ({trackState} : any) => {
               ref={(el) => (videoRefs.current[index] = el)}
               width="100%"
               height="360"
-             
               style={{
                 height: "75vh",
                 width: "90%",
@@ -369,8 +368,8 @@ const Trending = () => {
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
-        <div onScroll={handleScroll}  className={styles.imageWrapper}>
-          <Reels trackState={trackState}></Reels>
+        <div onScroll={handleScroll} className={styles.imageWrapper}>
+          <Reels trackState={trackState} setTrackState={setTrackState}></Reels>
         </div>
       </div>
       <div className={styles.trendingNews}>
