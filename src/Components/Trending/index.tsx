@@ -144,13 +144,18 @@ export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
   const BASEURL = import.meta.env.VITE_BASEURL;
   const [loading, setloading] = useState(false);
+  const location = useLocation();
 
   const getBlogs = async () => {
     try {
       setloading(true);
       const response = await axios.get(`${BASEURL}/blogs`);
       const data = response.data;
-      setBlogs(data);
+      if (location.pathname === "/") {
+        setBlogs(data?.slice(0, 1));
+      } else {
+        setBlogs(data);
+      }
     } catch (error) {
       console.error(error);
       message.error("unable to fetch blogs");
@@ -172,27 +177,29 @@ export const Blogs = () => {
       }}
       className={styles.Blogs}
     >
-      <Card loading={loading}>
-        <List
-          dataSource={blogs}
-          renderItem={(item: any) => (
-            <List.Item>
-              <div style={{ flex: 1, color: "white" }}>
-                <h3>{item?.title}</h3>
-                <p style={{ margin: 0 }}>{item?.content}</p>
-                <p style={{ margin: 0 }}>
-                  <strong>Author:</strong> {item?.author}
-                </p>
-              </div>
-            </List.Item>
-          )}
-        />
-      </Card>
+      <Spin spinning={loading}>
+        <Card>
+          <List
+            dataSource={blogs}
+            renderItem={(item: any) => (
+              <List.Item>
+                <div style={{ flex: 1, color: "white" }}>
+                  <h3>{item?.title}</h3>
+                  <p style={{ margin: 0 }}>{item?.content}</p>
+                  <p style={{ margin: 0 }}>
+                    <strong>Author:</strong> {item?.author}
+                  </p>
+                </div>
+              </List.Item>
+            )}
+          />
+        </Card>
+      </Spin>
     </div>
   );
 };
 
-export const Reels = ({ trackState  , setTrackState}: any) => {
+export const Reels = ({ trackState, setTrackState }: any) => {
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -208,7 +215,7 @@ export const Reels = ({ trackState  , setTrackState}: any) => {
       setReels(data);
       setTimeout(() => {
         setTrackState(false);
-      },5000)
+      }, 5000);
     } catch (error) {
       console.error(error);
       message.error("Unable to fetch reels");
@@ -262,7 +269,7 @@ export const Reels = ({ trackState  , setTrackState}: any) => {
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
-            justifyContent:"center",
+            justifyContent: "center",
             background:
               "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
             color: "white",
@@ -358,8 +365,18 @@ const Trending = () => {
   const navigate = useNavigate();
   const [trackState, setTrackState] = useState<boolean>(true);
 
-  const handleScroll = () => {
-    console.log("heyyy");
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const container = event.currentTarget;
+    const videoHeight = container.scrollHeight / 2;
+    const scrollPosition = container.scrollTop;
+
+    const nearestVideoIndex = Math.round(scrollPosition / videoHeight);
+
+    container.scrollTo({
+      top: nearestVideoIndex * videoHeight,
+      behavior: "smooth",
+    });
+
     if (trackState) {
       setTrackState(false);
     }

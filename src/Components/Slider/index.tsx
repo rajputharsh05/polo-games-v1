@@ -237,12 +237,23 @@ const SliderComponent = () => {
     fetchImages();
   }, [fetchImages]);
 
-  const handleScroll = () => {
-    console.log("heyyy");
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    const container = event.currentTarget;
+    const videoHeight = container.scrollHeight / 2; 
+    const scrollPosition = container.scrollTop;
+    
+    const nearestVideoIndex = Math.round(scrollPosition / videoHeight);
+  
+    container.scrollTo({
+      top: nearestVideoIndex * videoHeight,
+      behavior: "smooth",
+    });
+  
     if (trackState) {
       setTrackState(false);
     }
   };
+  
 
   return (
     <div>

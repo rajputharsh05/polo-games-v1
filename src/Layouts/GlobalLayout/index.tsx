@@ -173,13 +173,13 @@ const GlobalLayout = () => {
         ) : (
           <>
             {(location?.pathname === "/" || location?.pathname === "/home") && (
-              <Sider width={"5vw"}>
+              <Sider width={"8dvw"}>
                 <div className={styles["marquee-container"]}>
                   {[
                   "Game On: Place Your Bets with Polo.Game 💰      Variety of Betting      Markets: Offer a wide range of betting options such as sports betting, esports, virtual games, and casino games💸💥       Live Odds & In-Play Betting: Place bets on live events with dynamic odds 🎯💵         Multiple Payment Options: Upi, Imps, Neft, Rtgs, CDM, cryptocurrencies, e-wallets, and bank transfers💵💵           Instant Deposits and Withdrawals 💸💥           Secure Payment Gateways ⚡🏇  24/7 Live Chat    Email & Phone Support      Mobile-Friendly Website",
                 ]?.map((ele: any, index: number) => (
                     <div key={index} className={styles["marquee-content"]}>
-                      {ele?.content}
+                      {ele}
                     </div>
                   ))}
                 </div>
