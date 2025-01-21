@@ -256,7 +256,7 @@ export const Reels = ({trackState} : any) => {
             position: "absolute",
             top: 80,
             left: 25,
-            width: "17%",
+            width: "12%",
             height: "20%",
             overflow: "hidden",
             display: "flex",
@@ -280,8 +280,8 @@ export const Reels = ({trackState} : any) => {
           >
             <div
               style={{
-                height: "3dvw",
-                width: "3dvw",
+                height: "2dvw",
+                width: "2dvw",
                 color: "black",
                 background: "rgba(31, 31, 31, 1)",
                 borderRadius: "50%",

@@ -10,6 +10,7 @@ interface Props {
 
 const MatchPage = (data: Props) => {
   const { id } = useParams();
+  const BASEURL = import.meta.env.VITE_BASEURL;
 
   const [datasource, setDataSource] = useState([
     {
@@ -285,7 +286,10 @@ const MatchPage = (data: Props) => {
     try {
       setLoading(true);
       const URL = `${data?.apiurl}?eventId=${id}`;
-      const response = await axios.get(URL);
+      const BaseURL = `${BASEURL}/match/fetch-data`
+      const response = await axios.post(BaseURL , {
+        "url" : URL
+      });
       const ApiData = response?.data;
       if (ApiData?.success === true) {
         setDataSource(ApiData?.data);

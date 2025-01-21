@@ -67,7 +67,7 @@ const HeaderComponent = () => {
     try {
       const response = await axios.get(`${BASEURL}/visitors/visitor-count`);
       console.log(response);
-      setVisitors(response?.data?.count + 1000);
+      setVisitors(response?.data?.count + 150000);
     } catch (error) {
       console.error(error);
     }

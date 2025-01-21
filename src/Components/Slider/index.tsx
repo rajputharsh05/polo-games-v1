@@ -253,6 +253,7 @@ const SliderComponent = () => {
               <img
                 src={images[randomIndex]?.src}
                 alt={images[randomIndex]?.alt || "Image"}
+                style={{borderRadius:"2vh"}}
                 className="game-image"
               />
             ) : (
