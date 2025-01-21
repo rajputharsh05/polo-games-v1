@@ -364,16 +364,33 @@ export const Reels = ({ trackState, setTrackState }: any) => {
 const Trending = () => {
   const navigate = useNavigate();
   const [trackState, setTrackState] = useState<boolean>(true);
-
+  let lastVal = 0;
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const container = event.currentTarget;
     const videoHeight = container.scrollHeight / 2;
     const scrollPosition = container.scrollTop;
 
-    const nearestVideoIndex = Math.round(scrollPosition / videoHeight);
+    if (Math.abs(scrollPosition - lastVal) < 50) {
+      return;
+    }
+
+    const isScrollingDown = scrollPosition > lastVal;
+    lastVal = scrollPosition;
+
+    const currentIndex = Math.round(scrollPosition / videoHeight);
+    let targetIndex = currentIndex;
+
+    if (isScrollingDown) {
+      targetIndex = Math.min(
+        currentIndex + 1,
+        Math.floor(container.scrollHeight / videoHeight) - 1
+      ); // Limit to last reel
+    } else {
+      targetIndex = Math.max(currentIndex - 1, 0);
+    }
 
     container.scrollTo({
-      top: nearestVideoIndex * videoHeight,
+      top: targetIndex * videoHeight,
       behavior: "smooth",
     });
 

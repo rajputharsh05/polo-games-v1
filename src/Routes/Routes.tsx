@@ -62,7 +62,7 @@ export const globalRoutes = [
           <Col>
             <h3 style={{fontFamily:"Popins"}}>NO STRESS DEPOSITS</h3>
           </Col>
-          <Col style={{marginTop:"2vh" , fontFamily:"Popins"}}>
+          <Col style={{marginTop:"2vh"  ,marginRight:"2vh"  , fontFamily:"Popins"}}>
             We accept most major payment methods and work with some of the most
             trusted payments companies in the world.
           </Col>
