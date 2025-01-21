@@ -25,110 +25,124 @@ export const News = () => {
 
   return (
     <>
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column", 
-        overflow: "hidden",
-      }}
-    >
-      {location?.pathname !== "/" && location?.pathname !== "/home" && (
-        <div
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 10, // Ensures it stays above other elements
-            padding: "1vh",
-          }}
-        >
-          <Row justify={"center"}>
-            <h3
-              style={{
-                color: "white",
-                fontFamily: "Popines",
-                marginTop: "1vh",
-                marginBottom: "1vh",
-              }}
-            >
-              Trending News <FireFilled />
-            </h3>
-            <Col span={24}>
-              <Card style={{display:"flex" , justifyContent:"center", alignItems:"center"}}>
-                <img
-                  className={styles.imageStyle}
-                  src={seletedData?.image}
-                  alt=""
-                />
-              </Card>
-            </Col>
-            <Col
-              span={24}
-              style={{ color: "white", cursor: "pointer" , display:"flex" , flexDirection:"column" , justifyContent:"space-around" , alignItems:"center"}}
-              title={seletedData?.description}
-            >
-              <p>{`${seletedData?.description}`}</p>
-              <p style={{marginTop:"5px" , fontWeight:"600"}}>{seletedData?.pub_date}</p>
-            </Col>
-          </Row>
-        </div>
-      )}
-  
-      {/* Scrollable Content */}
       <div
         style={{
-          flex: 1, // Takes up remaining space
-          overflowY: "auto", // Enables scrolling for this section
-          padding: "1vh",
-          color: "white",
-          fontSize: "16px",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
         }}
-        className={styles.trending_container}
       >
-        {data?.map((ele, index) => (
-          <Row
-            key={index}
-            gutter={[16, 16]}
+        {location?.pathname !== "/" && location?.pathname !== "/home" && (
+          <div
             style={{
-              paddingBottom: "1vh",
-              marginBottom: "1vh",
-            }}
-            onClick={() => {
-              setSeletedData(ele);
-              document
-                .querySelector(`.${styles.trending_container}`)
-                ?.scrollTo({
-                  top: 0,
-                  behavior: "smooth",
-                });
+              position: "sticky",
+              top: 0,
+              zIndex: 10, // Ensures it stays above other elements
+              padding: "1vh",
             }}
           >
-            <Col span={8}>
-              <img
-                style={{ width: "100%", height: "100%", borderRadius: "8px" }}
-                src={ele?.image}
-                alt=""
-              />
-            </Col>
-            <Col
-              span={16}
-              style={{ color: "white", cursor: "pointer" }}
-              title={ele?.description}
+            <Row justify={"center"}>
+              <h3
+                style={{
+                  color: "white",
+                  fontFamily: "Popines",
+                  marginTop: "1vh",
+                  marginBottom: "1vh",
+                }}
+              >
+                Trending News <FireFilled />
+              </h3>
+              <Col span={24}>
+                <Card
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <img
+                    className={styles.imageStyle}
+                    src={seletedData?.image}
+                    alt=""
+                  />
+                </Card>
+              </Col>
+              <Col
+                span={24}
+                style={{
+                  color: "white",
+                  cursor: "pointer",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                }}
+                title={seletedData?.description}
+              >
+                <p>{`${seletedData?.description}`}</p>
+                <p style={{ marginTop: "5px", fontWeight: "600" }}>
+                  {seletedData?.pub_date}
+                </p>
+              </Col>
+            </Row>
+          </div>
+        )}
+
+        {/* Scrollable Content */}
+        <div
+          style={{
+            flex: 1, // Takes up remaining space
+            overflowY: "auto", // Enables scrolling for this section
+            padding: "1vh",
+            color: "white",
+            fontSize: "16px",
+          }}
+          className={styles.trending_container}
+        >
+          {data?.map((ele, index) => (
+            <Row
+              key={index}
+              gutter={[16, 16]}
+              style={{
+                paddingBottom: "1vh",
+                marginBottom: "1vh",
+              }}
+              onClick={() => {
+                setSeletedData(ele);
+                document
+                  .querySelector(`.${styles.trending_container}`)
+                  ?.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+              }}
             >
-              <p>{`${ele?.description?.substring(0, 45)}...`}</p>
-              <p>{ele?.pub_date}</p>
-            </Col>
-          </Row>
-        ))}
+              <Col span={8}>
+                <img
+                  style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+                  src={ele?.image}
+                  alt=""
+                />
+              </Col>
+              <Col
+                span={16}
+                style={{ color: "white", cursor: "pointer" }}
+                title={ele?.description}
+              >
+                <p>{`${ele?.description?.substring(0, 45)}...`}</p>
+                <p>{ele?.pub_date}</p>
+              </Col>
+            </Row>
+          ))}
+        </div>
       </div>
-    </div>
-  </>
-  
+    </>
   );
 };
 
 export const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const [loading, setloading] = useState(false);
 
   const getBlogs = async () => {
@@ -178,11 +192,11 @@ export const Blogs = () => {
   );
 };
 
-export const Reels = () => {
+export const Reels = ({trackState} : any) => {
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const loaction = useLocation();
-  const BASEURL = import.meta.env.VITE_BASEURL
+
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
 
   const getReels = async () => {
@@ -213,6 +227,7 @@ export const Reels = () => {
             video.play();
           } else {
             video.pause();
+
             video.currentTime = 0;
           }
         });
@@ -231,9 +246,64 @@ export const Reels = () => {
     };
   }, [reels]);
 
+
+
   return (
     <Spin spinning={loading}>
-      {loaction.pathname !== "/" && location?.pathname !== "/home" && (
+      {trackState && !loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 80,
+            left: 25,
+            width: "17%",
+            height: "20%",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            background:
+              "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
+            color: "white",
+            borderRadius: "10px",
+            padding: "5px",
+            zIndex: 10,
+            opacity: "1",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              animation: "scroll-down 2s ease-in-out infinite",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <div
+              style={{
+                height: "3dvw",
+                width: "3dvw",
+                color: "black",
+                background: "rgba(31, 31, 31, 1)",
+                borderRadius: "50%",
+              }}
+            ></div>
+          </div>
+          <style>
+            {`
+        @keyframes scroll-down {
+          0% {
+            transform: translateY(120%);
+          }
+          100% {
+            transform: translateY(-120%);
+          }
+        }
+      `}
+          </style>
+        </div>
+      )}
+
+      {location.pathname !== "/" && location?.pathname !== "/home" && (
         <h3
           style={{
             padding: "1vh",
@@ -244,50 +314,63 @@ export const Reels = () => {
           Reels Section
         </h3>
       )}
-      {reels?.map((ele, index) => (
-        <div
-          key={index}
-          style={{
-            padding: "1vh",
-            color: "white",
-            fontSize: "16px",
-            display:"flex",
-            justifyContent:"center",
-            
-          }}
-        >
-          <video
-            ref={(el) => (videoRefs.current[index] = el)}
-            width="100%"
-            height="360"
+      <div>
+        {reels?.map((ele, index) => (
+          <div
+            key={index}
+           
             style={{
-              height: "75vh",
-              width: "90%",
-              objectFit: "cover",
-              borderRadius: "10px",
+              padding: "1vh",
+              color: "white",
+              fontSize: "16px",
+              display: "flex",
+              justifyContent: "center",
+              position: "relative",
             }}
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
           >
-            <source src={ele} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      ))}
+            <video
+              ref={(el) => (videoRefs.current[index] = el)}
+              width="100%"
+              height="360"
+             
+              style={{
+                height: "75vh",
+                width: "90%",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+            >
+              <source src={ele} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        ))}
+      </div>
     </Spin>
   );
 };
+
 const Trending = () => {
   const navigate = useNavigate();
+  const [trackState, setTrackState] = useState<boolean>(true);
+
+  const handleScroll = () => {
+    console.log("heyyy");
+    if (trackState) {
+      setTrackState(false);
+    }
+  };
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
-        <div className={styles.imageWrapper}>
-          <Reels></Reels>
+        <div onScroll={handleScroll}  className={styles.imageWrapper}>
+          <Reels trackState={trackState}></Reels>
         </div>
       </div>
       <div className={styles.trendingNews}>
@@ -296,7 +379,8 @@ const Trending = () => {
             navigate("/news");
           }}
         >
-         {(location?.pathname === "/" || location?.pathname === "/home") && "Trending News"}
+          {(location?.pathname === "/" || location?.pathname === "/home") &&
+            "Trending News"}
         </h4>
         <News></News>
       </div>

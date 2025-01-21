@@ -11,10 +11,8 @@ import image22 from "../../assets/02.jpg";
 
 import { useLocation } from "react-router-dom";
 
-
-
-export const Reels = () => {
-  const BASEURL = import.meta.env.VITE_BASEURL
+export const Reels = ({ trackState }: any) => {
+  const BASEURL = import.meta.env.VITE_BASEURL;
   const [reels, setReels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const loaction = useLocation();
@@ -68,6 +66,59 @@ export const Reels = () => {
 
   return (
     <Spin spinning={loading}>
+      {trackState && !loading && (
+        <div
+          style={{
+            position: "absolute",
+            top: 80,
+            left: 25,
+            width: "17%",
+            height: "20%",
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            background:
+              "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
+            color: "white",
+            borderRadius: "10px",
+            padding: "5px",
+            zIndex: 10,
+            opacity: "1",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              animation: "scroll-down 2s ease-in-out infinite",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <div
+              style={{
+                height: "6dvw",
+                width: "6dvw",
+                color: "black",
+                background: "rgba(31, 31, 31, 1)",
+                borderRadius: "50%",
+              }}
+            ></div>
+          </div>
+          <style>
+            {`
+        @keyframes scroll-down {
+          0% {
+            transform: translateY(120%);
+          }
+          100% {
+            transform: translateY(-120%);
+          }
+        }
+      `}
+          </style>
+        </div>
+      )}
+
       {loaction.pathname !== "/" && (
         <h3
           style={{
@@ -119,7 +170,8 @@ const SliderComponent = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const BASEURL = import.meta.env.VITE_BASEURL;
-  console.log(BASEURL)
+  const [trackState, setTrackState] = useState<boolean>(true);
+
   const fetchImages = useCallback(async () => {
     try {
       const response = await axios.get(`${BASEURL}/admin/images`);
@@ -185,6 +237,13 @@ const SliderComponent = () => {
     fetchImages();
   }, [fetchImages]);
 
+  const handleScroll = () => {
+    console.log("heyyy");
+    if (trackState) {
+      setTrackState(false);
+    }
+  };
+
   return (
     <div>
       {isSidebarVisible ? (
@@ -205,36 +264,40 @@ const SliderComponent = () => {
         </Row>
       ) : (
         <Row>
-          <Col span={10} style={{height:"40vh", display:"flex" , justifyContent:"space-around" , flexDirection:"column"}}>
-            <Row style={{height:"60%"}}>
-              {images.length > 0 ? (
+          <Col
+            span={10}
+            style={{
+              height: "40vh",
+              display: "flex",
+              justifyContent: "space-around",
+              flexDirection: "column",
+            }}
+          >
+            <Row style={{ height: "60%" }}>
+              {(
                 <img
                   src={image11}
                   alt={images[0]?.alt || "Image"}
-                  style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
+                  style={{ height: "100%", width: "100%", borderRadius: "5px" }}
                 />
-              ) : (
-                <p style={{ color: "white", textAlign: "center" }}>
-                  No images available
-                </p>
-              )}
+              ) }
             </Row>
-            <Row style={{height:"35%"}}>
-              {images.length > 0 ? (
+            <Row style={{ height: "35%" }}>
+              {(
                 <img
                   src={image22}
                   alt={images[1]?.alt || "Image"}
-                  style={{height:"100%" , width:"100%" , borderRadius:"5px"}}
-                />
-              ) : (
-                <p style={{ color: "white", textAlign: "center" }}>
-                  No images available
-                </p>
+                  style={{ height: "100%", width: "100%", borderRadius: "5px" }}
+                /> 
               )}
             </Row>
           </Col>
-          <Col span={14} style={{ height: "40vh", overflow: "scroll" }}>
-            <Reels></Reels>
+          <Col
+            onScroll={handleScroll}
+            span={14}
+            style={{ height: "40vh", overflow: "scroll" }}
+          >
+            <Reels trackState={trackState}></Reels>
           </Col>
         </Row>
       )}
