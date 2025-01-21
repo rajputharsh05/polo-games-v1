@@ -242,7 +242,11 @@ const SliderComponent = () => {
     const container = event.currentTarget;
     const videoHeight = container.scrollHeight / 2;
     const scrollPosition = container.scrollTop;
-  
+    
+    if(Math.abs(scrollPosition - lastVal) < 5) {
+      return;
+    }
+
     const isScrollingDown = scrollPosition > lastVal;
     lastVal = scrollPosition; 
 
