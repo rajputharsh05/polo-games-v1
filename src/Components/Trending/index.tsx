@@ -340,9 +340,8 @@ export const Reels = ({ trackState, setTrackState }: any) => {
               width="100%"
               height="360"
               style={{
-                height: "75vh",
                 width: "90%",
-                objectFit: "cover",
+                objectFit: "scale-down",
                 borderRadius: "10px",
               }}
               autoPlay
