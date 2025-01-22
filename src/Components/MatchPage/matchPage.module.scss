@@ -45,7 +45,7 @@
   }
   
   @media (max-width: 768px) {
-    .tableWrapper, .tableWrapperHeader {
+    .tableWrapper {
       border-radius: 50px !important;
     }
     .tableHeader {
@@ -53,6 +53,10 @@
     }
     .tagIcon {
       display: none;
+    }
+    .tableWrapperHeader{
+      border-radius: 5vw;
+      margin-bottom: 3vh;
     }
   }
   

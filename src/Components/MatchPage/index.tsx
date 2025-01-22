@@ -62,14 +62,15 @@ const MatchPage = (data: Props) => {
           <div>
             <Spin spinning={loading}>
               <div className={styles.tableWrapperHeader}>
-                <Row style={{ height: "30%", width: "100%" }}>
+                <Row style={{ height: "40%", width: "100%" }}>
                   <Col
                     style={{
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      fontSize: "20px",
+                      fontSize: "18px",
                       borderRadius: "4vh",
+                      fontFamily:"Popins",
                       background:
                         "linear-gradient(to right, rgba(128, 0, 128, 0) 0%, purple 100%)",
                     }}
@@ -84,6 +85,7 @@ const MatchPage = (data: Props) => {
                       justifyContent: "center",
                       alignItems: "center",
                       fontSize: "24px",
+                      fontFamily:"Popins"
                     }}
                     span={4}
                   >
@@ -94,8 +96,9 @@ const MatchPage = (data: Props) => {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      fontSize: "20px",
+                      fontSize: "18px",
                       borderRadius: "4vh",
+                      fontFamily:"Popins",
                       background:
                         "linear-gradient(to right, purple 0%, rgba(128, 0, 128, 0) 100%)",
                     }}
@@ -112,7 +115,7 @@ const MatchPage = (data: Props) => {
               return (
                 <>
                   <div className={styles.tableWrapper}>
-                    <h3 style={{ margin: 0 }}>
+                    <h3 style={{ margin: 0 , fontFamily:"Popins" }}>
                       {value?.mname?.replaceAll("_", " ")}
                     </h3>
                   </div>
