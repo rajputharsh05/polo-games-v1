@@ -1,19 +1,29 @@
 .casino-gallery {
-    padding: 16px;
-    background-color: rgba(12, 46, 55, 1);
+  padding: 16px;
+  background-color: rgba(12, 46, 55, 1);
+}
+
+.ant-card-body {
+  padding: 0px !important;
+}
+
+.live-casino-image {
+  height: 120px;
+  /* border-radius: 8px !important; */
+  border: 4px solid transparent;
+  border-image: linear-gradient(to right, #b87333, #f0d6a1) 1;
+}
+
+.ant-card-cover {
+  border-radius: 8px !important;
+}
+
+.mitunClass {
+  display: none;
+}
+
+@media (min-width: 200px) and (max-width: 540px) {
+  .mitunClass {
+    display: flex;
   }
-
-.ant-card-body{
-    padding: 0px !important;
-}
-
-.live-casino-image{
-    height: 120px;
-    /* border-radius: 8px !important; */
-    border: 4px solid transparent; 
-    border-image: linear-gradient(to right, #b87333, #f0d6a1) 1;
-}
-
-.ant-card-cover{
-    border-radius: 8px !important;
 }

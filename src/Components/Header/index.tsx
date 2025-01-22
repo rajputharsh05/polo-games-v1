@@ -48,10 +48,22 @@ const HeaderComponent = () => {
 
   const [visitors, setVisitors] = useState(0);
 
+  const [logoData, setLogodata] = useState<any>([]);
+
   const [form] = Form.useForm();
 
   const AboutUsStyle = {
     marginTop: "2vh",
+  };
+
+  const getLogos = async () => {
+    try {
+      const response = await axios.get(`${BASEURL}/socialmedia/items`);
+      console.log(response);
+      setLogodata(response?.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const updateUserCount = async () => {
@@ -76,6 +88,7 @@ const HeaderComponent = () => {
   useEffect(() => {
     updateUserCount();
     getVisitors();
+    getLogos();
   }, []);
 
   const manageRegistration = async (values: any) => {
@@ -289,7 +302,7 @@ const HeaderComponent = () => {
         </div>
       </Col>
       <Col
-        span={9}
+        span={12}
         style={{
           display: "flex",
           justifyContent: "space-around",
@@ -297,12 +310,36 @@ const HeaderComponent = () => {
         }}
         className={styles.Hover}
       >
+        {logoData?.map((item: any) => {
+          return (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+
+                color: "white",
+                fontSize: "20px",
+                fontWeight: "500",
+              }}
+              onClick={() => {
+                window.open(item?.link, "_blank"); // Opens in a new tab
+                // Or use window.location.href = "https://www.example.com"; // Opens in the same tab
+              }}
+            >
+              <img
+                src={`data:image/png;base64,${item.image_base64}`}
+                alt="Play Icon"
+                style={{ width: "25px" }}
+              />
+            </div>
+          );
+        })}
         {location.pathname !== "/admin" && (
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              marginRight: "2rem",
+
               color: "white",
               fontSize: "16px",
               fontWeight: "500",
@@ -326,7 +363,7 @@ const HeaderComponent = () => {
             style={{
               display: "flex",
               alignItems: "center",
-              marginRight: "2rem",
+
               color: "white",
               fontSize: "16px",
               fontWeight: "500",
@@ -532,7 +569,6 @@ const HeaderComponent = () => {
                         </Col>
                       </Row>
                       <Row gutter={[20, 20]} justify={"end"}>
-                        
                         <Button
                           style={{ backgroundColor: "#73d13d", color: "white" }}
                           type="default"
@@ -542,34 +578,50 @@ const HeaderComponent = () => {
                         </Button>
                       </Row>
                     </Form>
-                    <Row style={{marginTop:"3vh" , marginBottom:"3vh"}}>
-                    <Button
-                      onClick={() => {
-                        const phoneNumber = "9333333330";
-                        const message =
-                          "Hello, I would like to connect with you!";
-                        const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                          message
-                        )}`;
-                        window.open(whatsappURL, "_blank");
-                      }}
-                      style={{
-                        padding: "2vh",
-                        borderRadius: "1rem",
-                        height: "6vh",
-                        width: "100%",
-                        background:
-                          "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
-                        color: "white",
-                        fontFamily: "Poppins",
-                      }}
-                      icon={<WhatsApp></WhatsApp>}
-                    >
-                      WhatsApp Now
-                    </Button>
+                    <Row style={{ marginTop: "3vh", marginBottom: "3vh" }}>
+                      <Button
+                        onClick={() => {
+                          const phoneNumber = "9333333330";
+                          const message =
+                            "Hello, I would like to connect with you!";
+                          const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                            message
+                          )}`;
+                          window.open(whatsappURL, "_blank");
+                        }}
+                        style={{
+                          padding: "2vh",
+                          borderRadius: "1rem",
+                          height: "6vh",
+                          width: "100%",
+                          background:
+                            "linear-gradient(90deg, #940101 0%, #4560FD 100%)",
+                          color: "white",
+                          fontFamily: "Poppins",
+                        }}
+                        icon={<WhatsApp></WhatsApp>}
+                      >
+                        WhatsApp Now
+                      </Button>
                     </Row>
-                    <Row justify={"center"} style={{color:"white" , fontFamily:"Popins"}}>
-                    <p>Don't have an account ? <span onClick={() => setLoginOrRegister(true)} style={{color:"#940101" , fontSize:"16px" , fontWeight:600 , cursor:"pointer"}}>Register</span></p>
+                    <Row
+                      justify={"center"}
+                      style={{ color: "white", fontFamily: "Popins" }}
+                    >
+                      <p>
+                        Don't have an account ?{" "}
+                        <span
+                          onClick={() => setLoginOrRegister(true)}
+                          style={{
+                            color: "#940101",
+                            fontSize: "16px",
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Register
+                        </span>
+                      </p>
                     </Row>
                   </Spin>
                 )}
