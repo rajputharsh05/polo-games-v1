@@ -135,7 +135,7 @@ const GlobalLayout = () => {
           className={styles.content_wrapper}
         >
           {/* {!isSidebarVisible && <TopBar></TopBar>} */}
-          <div style={isSidebarVisible ? {} : { marginTop: "66px" }}>
+          <div style={isSidebarVisible ? {} : { marginTop: "9vh" }}>
             {outlet}
           </div>
           <DynamincFooter></DynamincFooter>
