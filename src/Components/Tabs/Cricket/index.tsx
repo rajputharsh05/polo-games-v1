@@ -27,7 +27,7 @@ const CricketSection = () => {
         status: ele?.inPlay === "True" ? "live" : "upcoming",
         time: tempSplit[1],
         gameId: ele?.gameId,
-        odds: [
+      odds: [
           {
             key: "1",
             value: ele?.back1,

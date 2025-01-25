@@ -114,7 +114,7 @@
 
   @media (min-width: 300px) and (max-width: 600px) {
     height: 8vh;
-    right : 1rem;
+    right: 1rem;
   }
 }
 
@@ -124,18 +124,21 @@
   left: 25vh;
   z-index: 1100;
   height: 60%;
-  display: flex;
-  width: "10vw";
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
 
   @media (min-width: 200px) and (max-width: 700px) {
     left: -5vh;
     height: 50%;
     bottom: 35px;
   }
+}
 
+.IphoneStyle {
+  height: 100%;
+  @media (min-width: 200px) and (max-width: 700px) {
+    height: 100%;
+    width: 80%;
+    margin-left: 10dvw;
+  }
 }
 
 [class^="ant-select "] {
@@ -167,7 +170,6 @@
   font-size: 16px;
   animation: scrollUp 50s linear infinite;
 }
-
 
 @keyframes scrollUp {
   0% {
