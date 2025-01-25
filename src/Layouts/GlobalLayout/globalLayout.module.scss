@@ -140,38 +140,40 @@
   background-color: white !important;
 }
 
-.marquee-container {
-  position: relative;
-  overflow: hidden;
-  height: 550vh;
-  width: 2vw;
-  display: flex;
-  flex-direction: column;
-  background-color: black;
-  overflow-x: auto;
 
-  @media (min-width: 300px) and (max-width: 600px) {
+.marquee-wrapper {
+  height: 100%; 
+  width: 2vw; 
+  left: 0; 
+  overflow: hidden; 
+  background-color: black;
+
+    @media (min-width: 300px) and (max-width: 600px) {
     width: 5vw;
   }
 }
 
 .marquee-content {
   color: white;
-  writing-mode: vertical-lr; /* Display text vertically */
-  text-orientation: sideways;
-  white-space: nowrap; /* Prevent wrapping of letters */
-  height: 100%;
   text-align: center;
-  font-size: 16px;
-  animation: scrollUp 50s linear infinite;
+  animation: scrollUp 25s linear infinite; 
+  text-transform: uppercase;
 }
 
+.marquee-text {
+  transform: rotate(-180deg); 
+  writing-mode: vertical-lr; 
+  margin: 0 0 40px 0; 
+  color: inherit;
+  background: transparent;
+  text-shadow: 0 0 10px rgba(252, 61, 61, 0.759);
+}
 
 @keyframes scrollUp {
   0% {
-    transform: translateY(10%); /* Start from below */
+    transform: translateY(0); 
   }
   100% {
-    transform: translateY(-100%); /* End above */
+    transform: translateY(-50%); 
   }
 }
