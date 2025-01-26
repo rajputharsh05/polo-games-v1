@@ -1,4 +1,4 @@
-import { Layout, message } from "antd";
+import { Layout } from "antd";
 import SideBar from "../../Components/SideBar";
 import { useLocation, useNavigate, useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
