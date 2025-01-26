@@ -148,6 +148,7 @@ const GlobalLayout = () => {
                   {text.map((item : any, index : number) => (
                     <h4 key={index} className={styles["marquee-text"]}>
                       {item.content}
+                      <div style={{margin: "0 20px 0 0"}} className={styles["marquee-text"]}>{"|"}</div>
                     </h4>
                   ))}
                   {text.map((item : any, index : number) => (
