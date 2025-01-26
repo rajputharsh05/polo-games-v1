@@ -297,7 +297,6 @@ const TopBar = () => {
 
   const toggleDrawer = () => {
     setModalOpen((prev) => !prev);
-    console.log(ballState,"Heyyy")
     dispatch(updateBall(!ballState));
   }
 

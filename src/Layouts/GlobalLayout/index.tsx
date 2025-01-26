@@ -69,7 +69,6 @@ const GlobalLayout = () => {
       style={{
         height: "100vh",
         width: "100vw",
-        overflow: "hidden",
         background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
       }}
     >
@@ -135,7 +134,7 @@ const GlobalLayout = () => {
           className={styles.content_wrapper}
         >
           {/* {!isSidebarVisible && <TopBar></TopBar>} */}
-          <div style={isSidebarVisible ? {} : { marginTop: "9vh" }}>
+          <div style={isSidebarVisible ? {} : { marginTop: "9dvh" }}>
             {outlet}
           </div>
           <DynamincFooter></DynamincFooter>
