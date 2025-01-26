@@ -168,13 +168,13 @@
 .marquee-content {
   color: white;
   text-align: center;
-  animation: scrollUp 30s linear infinite; 
+  animation: scrollUp 55s linear infinite; 
   text-transform: uppercase;
   
 }
 
 .marquee-text {
-  transform: rotate(-180deg); 
+   
   writing-mode: vertical-lr; 
   margin: 0 0 40px 0; 
   color: inherit;
