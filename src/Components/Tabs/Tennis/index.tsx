@@ -83,8 +83,8 @@ const TennisSection = () => {
     getApiData();
   }, []);
 
-  const handleRowClick = (id: any) => {
-    navigate(`/cricket/${id}`);
+  const handleRowClick = (id: any , item : any) => {
+    navigate(`/games/${id}` , {state : item});
   };
 
   return (
@@ -108,7 +108,7 @@ const TennisSection = () => {
         <div className={styles.table}>
           {datasource.map((item: any) => (
             <div
-              onClick={() => handleRowClick(item?.gameId)}
+              onClick={() => handleRowClick(item?.gameId , item)}
               key={item.key}
               className={styles.tableHeader}
             >

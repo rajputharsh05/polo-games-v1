@@ -11,7 +11,6 @@ const SideBar = () => {
   const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
   const tennis = useSelector((state: any) => state?.match?.tennis);
   const soccer = useSelector((state: any) => state?.match?.soccer);
-  console.log(cricket);
 
   const menuItems: any = [
     {

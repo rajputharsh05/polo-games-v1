@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Button,
@@ -30,7 +30,8 @@ import {
   Telegram,
   VideoCall,
 } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateBall } from "../../Redux/ballSlice";
 
 const TopBar = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
@@ -38,6 +39,8 @@ const TopBar = () => {
   const [activeTab, setActiveTab] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const ballState = useSelector((state :any) => state?.ball?.value)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
 
@@ -45,7 +48,6 @@ const TopBar = () => {
   const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
   const tennis = useSelector((state: any) => state?.match?.tennis);
   const soccer = useSelector((state: any) => state?.match?.soccer);
-  console.log(cricket);
 
   const menuItemsSideBar: any = [
     {
@@ -292,9 +294,12 @@ const TopBar = () => {
     setActiveTab(location.pathname.substring(1));
   }, [location]);
 
-  const toggleDrawer = useCallback(() => {
+
+  const toggleDrawer = () => {
     setModalOpen((prev) => !prev);
-  }, []);
+    console.log(ballState,"Heyyy")
+    dispatch(updateBall(!ballState));
+  }
 
   const handleTabClick = (key: any) => {
     if (key === "admin") {

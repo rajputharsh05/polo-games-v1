@@ -12,6 +12,7 @@ import axios from "axios";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import ballAnimation from "../../assets/Ball animation.gif";
+import { useSelector } from "react-redux";
 
 const { Sider, Content, Header } = Layout;
 
@@ -20,7 +21,8 @@ const GlobalLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
-  const [text, setText] = useState<{ content: string }[]>([]);
+  const ballState = useSelector((state:any) => state?.ball?.value)
+  const [text, setText] = useState([]);
 
   const getTexts = async () => {
     try {
@@ -204,7 +206,7 @@ const GlobalLayout = () => {
         <img style={{ height: "100%" }} src={icon}></img>
       </div>
 
-      {location.pathname !== "/auth" && (
+      {location.pathname !== "/auth" && ballState === true && (
         <div className={styles.animated_id}>
           <img
             onClick={() => {
@@ -213,7 +215,7 @@ const GlobalLayout = () => {
                 navigate("/auth");
               }
             }}
-            style={{ height: "100%", width: "100%" }}
+            className={styles.IphoneStyle}
             src={ballAnimation}
           ></img>
         </div>

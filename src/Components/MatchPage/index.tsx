@@ -1,7 +1,7 @@
 import axios from "axios";
 import styles from "./matchPage.module.scss";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Col, Row, Spin } from "antd";
 
 interface Props {
@@ -10,9 +10,11 @@ interface Props {
 
 const MatchPage = (data: Props) => {
   const { id } = useParams();
+  const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
 
   const [datasource, setDataSource] = useState<any>([]);
+  const [matchData, setMatchData] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
@@ -46,6 +48,8 @@ const MatchPage = (data: Props) => {
 
   useEffect(() => {
     getApiData(id);
+    console.log(location?.state)
+    setMatchData(location?.state);
   }, []);
 
   return (
@@ -62,6 +66,11 @@ const MatchPage = (data: Props) => {
           <div>
             <Spin spinning={loading}>
               <div className={styles.tableWrapperHeader}>
+                <Row justify={"center"} style={{marginBottom:"2vh" , fontFamily:"Popins"}}>
+                  <Col span={24}>
+                    <h3>{!loading && matchData?.time}</h3>
+                  </Col>
+                </Row>
                 <Row style={{ height: "40%", width: "100%" }}>
                   <Col
                     style={{
@@ -70,7 +79,7 @@ const MatchPage = (data: Props) => {
                       alignItems: "center",
                       fontSize: "18px",
                       borderRadius: "4vh",
-                      fontFamily:"Popins",
+                      fontFamily: "Popins",
                       background:
                         "linear-gradient(to right, rgba(128, 0, 128, 0) 0%, purple 100%)",
                     }}
@@ -85,7 +94,7 @@ const MatchPage = (data: Props) => {
                       justifyContent: "center",
                       alignItems: "center",
                       fontSize: "24px",
-                      fontFamily:"Popins"
+                      fontFamily: "Popins",
                     }}
                     span={4}
                   >
@@ -98,7 +107,7 @@ const MatchPage = (data: Props) => {
                       alignItems: "center",
                       fontSize: "18px",
                       borderRadius: "4vh",
-                      fontFamily:"Popins",
+                      fontFamily: "Popins",
                       background:
                         "linear-gradient(to right, purple 0%, rgba(128, 0, 128, 0) 100%)",
                     }}
@@ -115,7 +124,7 @@ const MatchPage = (data: Props) => {
               return (
                 <>
                   <div className={styles.tableWrapper}>
-                    <h3 style={{ margin: 0 , fontFamily:"Popins" }}>
+                    <h3 style={{ margin: 0, fontFamily: "Popins" }}>
                       {value?.mname?.replaceAll("_", " ")}
                     </h3>
                   </div>
@@ -184,68 +193,3 @@ const MatchPage = (data: Props) => {
 };
 
 export default MatchPage;
-
-{
-  /* <div className={styles.table}>
-          <div className={styles.tableWrapper}>
-            <h3 style={{ margin: 0 }}>Match Odds</h3>
-          </div>
-          {datasource[0]?.section?.map((item: any) => (
-            <div key={item.key} className={styles.tableHeader}>
-              <div
-                style={{
-                  flex: 2,
-                  marginRight: "16px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  color: "white",
-                }}
-              >
-                <div>
-                  <div
-                    style={{
-                      fontWeight: "bold",
-                      color: "white",
-                      marginBottom: "1vh",
-                    }}
-                  >
-                    {item?.nat?.length > 25
-                      ? `${item?.nat?.substr(0, 25)}...`
-                      : item?.nat}
-                  </div>
-                </div>
-              </div>
-
-              <Row
-                gutter={8}
-                style={{ flex: 3, justifyContent: "space-between" }}
-              >
-                {item.odds.map((item: any, index: number) => (
-                  <Col
-                    span={3}
-                    key={index}
-                    style={{
-                      background: colors[index],
-                      padding: "8px",
-                      textAlign: "center",
-                      borderRadius: "2vh",
-                      color: "white",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold" }}>{item.odds}</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>
-                      {item.size}
-                    </div>
-                  </Col>
-                ))}
-              </Row>
-            </div>
-          ))}
-         
-          <div className={styles.tableWrapper}>
-            <h3 style={{ margin: 0 }}>BookMaker</h3>
-          </div>
-          
-        </div> */
-}

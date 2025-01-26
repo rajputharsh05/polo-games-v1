@@ -27,7 +27,7 @@ const CricketSection = () => {
         status: ele?.inPlay === "True" ? "live" : "upcoming",
         time: tempSplit[1],
         gameId: ele?.gameId,
-        odds: [
+      odds: [
           {
             key: "1",
             value: ele?.back1,
@@ -83,8 +83,8 @@ const CricketSection = () => {
     getApiData();
   }, []);
 
-  const handleRowClick = (id: any) => {
-    navigate(`/cricket/${id}`);
+  const handleRowClick = (id: any , item : any) => {
+    navigate(`/cricket/${id}`,{ state: item });
   };
 
   return (
@@ -108,7 +108,7 @@ const CricketSection = () => {
         <div className={styles.table}>
           {datasource?.map((item: any) => (
             <div
-              onClick={() => handleRowClick(item?.gameId)}
+              onClick={() => handleRowClick(item?.gameId , item)}
               key={item.key}
               className={styles.tableHeader}
             >

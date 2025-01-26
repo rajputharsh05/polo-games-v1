@@ -114,7 +114,7 @@
 
   @media (min-width: 300px) and (max-width: 600px) {
     height: 8vh;
-    right : 1rem;
+    right: 1rem;
   }
 }
 
@@ -124,16 +124,28 @@
   left: 25vh;
   z-index: 1100;
   height: 60%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 
   @media (min-width: 200px) and (max-width: 700px) {
     left: -5vh;
     height: 50%;
     bottom: 35px;
   }
+}
 
+.IphoneStyle {
+  height: 100%;
+
+  @media (min-width: 200px) and (max-width: 389px) {
+    height: 100%;
+    width: 25dvw;
+    margin-left: 10dvw;
+  }
+
+  @media (min-width: 390px) and (max-width: 700px) {
+    height: 100%;
+    width: 30dvw;
+    margin-left: 11dvw;
+  }
 }
 
 [class^="ant-select "] {

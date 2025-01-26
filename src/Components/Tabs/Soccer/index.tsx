@@ -79,8 +79,8 @@ const SoccerSection = () => {
     }
   };
 
-  const handleRowClick = (id: any) => {
-    navigate(`/games/${id}`);
+  const handleRowClick = (id: any , item : any) => {
+    navigate(`/games/${id}` , {state : item});
   };
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const SoccerSection = () => {
         <div className={styles.table}>
           {datasource.map((item: any) => (
             <div
-              onClick={() => handleRowClick(item?.gameId)}
+              onClick={() => handleRowClick(item?.gameId , item)}
               key={item.key}
               className={styles.tableHeader}
             >
