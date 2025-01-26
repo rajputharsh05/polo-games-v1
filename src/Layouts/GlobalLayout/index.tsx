@@ -70,6 +70,7 @@ const GlobalLayout = () => {
         height: "100vh",
         width: "100vw",
         overflow: "hidden",
+        overflow: "hidden",
         background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
       }}
     >
