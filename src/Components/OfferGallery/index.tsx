@@ -150,7 +150,7 @@ const OfferSection = () => {
 
   return (
     <div className="offer-section">
-      {offers.length !== 0 && <h1 className="offer-title">Exclusive Offers</h1>}
+      {offers.length !== 0 && <h1 className="offer-title">EXCLUSIVE OFFERS</h1>}
       {loading ? (
         <div className="loading-container">
           <Spin size="large" />

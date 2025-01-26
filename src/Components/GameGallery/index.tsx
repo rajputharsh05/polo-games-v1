@@ -67,6 +67,7 @@ const images = [
 const GameGallery = () => {
   return (
     <div className="game-gallery">
+      {images.length !== 0 && <h1 className="offer-title">THIS WEEK TOP GAME'S</h1>}
       <Row gutter={[10, 10]} justify="center">
         {images.map((image) => (
           <Col key={image.id} xs={24} sm={24} md={12} lg={12}>
