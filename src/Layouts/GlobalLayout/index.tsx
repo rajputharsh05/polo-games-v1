@@ -22,7 +22,7 @@ const GlobalLayout = () => {
   const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
   const ballState = useSelector((state:any) => state?.ball?.value)
-  const [text, setText] = useState([]);
+  const [text, setText] = useState<any>([]);
 
   const getTexts = async () => {
     try {
@@ -69,7 +69,7 @@ const GlobalLayout = () => {
       style={{
         height: "100vh",
         width: "100vw",
-        overflow:"hidden",
+        overflow: "hidden",
         background: "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
       }}
     >
@@ -100,10 +100,10 @@ const GlobalLayout = () => {
         style={
           location.pathname !== "/auth"
             ? {
-                marginTop: windowWidth < 390 ? "12vh" : "10vh",
-                background:
-                  "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
-              }
+              marginTop: windowWidth < 390 ? "12vh" : "10vh",
+              background:
+                "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+            }
             : { background: "rgba(12, 46, 55, 1)" }
         }
       >
@@ -144,19 +144,22 @@ const GlobalLayout = () => {
         {isSidebarVisible ? (
           <>
             {
-              <div className={styles["marquee-container"]}>
-                {[
-                  "Game On: Place Your Bets with Polo.Game 💰      Variety of Betting      Markets: Offer a wide range of betting options such as sports betting, esports, virtual games, and casino games💸💥       Live Odds & In-Play Betting: Place bets on live events with dynamic odds 🎯💵         Multiple Payment Options: Upi, Imps, Neft, Rtgs, CDM, cryptocurrencies, e-wallets, and bank transfers💵💵           Instant Deposits and Withdrawals 💸💥           Secure Payment Gateways ⚡🏇  24/7 Live Chat    Email & Phone Support      Mobile-Friendly Website",
-                ].map((ele, index) => (
-                  <div
-                    key={index}
-                    className={styles["marquee-content"]}
-                    
-                  >
-                    {ele}
-                  </div>
-                ))}
+              <div className={styles["marquee-wrapper"]}>
+                <div className={styles["marquee-content"]}>
+                  {text.map((item : any, index : number) => (
+                    <h4 key={index} className={styles["marquee-text"]}>
+                      {item.content}
+                    </h4>
+                  ))}
+                  {text.map((item : any, index : number) => (
+                    <h4 key={`duplicate-${index}`} className={styles["marquee-text"]}>
+                      {item.content}
+                    </h4>
+                  ))}
+                </div>
               </div>
+
+
             }
             <Sider
               style={{
@@ -176,14 +179,19 @@ const GlobalLayout = () => {
           <>
             {(location?.pathname === "/" || location?.pathname === "/home") && (
               <Sider width={"5dvw"}>
-                <div className={styles["marquee-container"]}>
-                  {[
-                  "Game On: Place Your Bets with Polo.Game 💰      Variety of Betting      Markets: Offer a wide range of betting options such as sports betting, esports, virtual games, and casino games💸💥       Live Odds & In-Play Betting: Place bets on live events with dynamic odds 🎯💵         Multiple Payment Options: Upi, Imps, Neft, Rtgs, CDM, cryptocurrencies, e-wallets, and bank transfers💵💵           Instant Deposits and Withdrawals 💸💥           Secure Payment Gateways ⚡🏇  24/7 Live Chat    Email & Phone Support      Mobile-Friendly Website",
-                ]?.map((ele: any, index: number) => (
-                    <div key={index} className={styles["marquee-content"]}>
-                      {ele}
-                    </div>
-                  ))}
+                <div className={styles["marquee-wrapper"]}>
+                  <div className={styles["marquee-content"]}>
+                    {text.map((item : any, index : number) => (
+                      <h4 key={index} className={styles["marquee-text"]}>
+                        {item.content}
+                      </h4>
+                    ))}
+                    {text.map((item : any, index : number) => (
+                      <h4 key={`duplicate-${index}`} className={styles["marquee-text"]}>
+                        {item.content}
+                      </h4>
+                    ))}
+                  </div>
                 </div>
               </Sider>
             )}
