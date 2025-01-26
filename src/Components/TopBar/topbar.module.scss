@@ -106,8 +106,9 @@
 }
 
 .LiveWrapper {
-  height: 3vh;
+  // height: 3vh;
   width: 25%;
+  aspect-ratio: 5/2;
   display: flex;
   margin-left: 1vw;
   border-radius: 1vh;
