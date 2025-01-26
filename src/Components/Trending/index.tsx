@@ -158,7 +158,6 @@ export const Blogs = () => {
       }
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch blogs");
     } finally {
       setloading(false);
     }

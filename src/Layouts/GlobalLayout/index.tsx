@@ -33,7 +33,6 @@ const GlobalLayout = () => {
       console.log(text)
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch texts");
     }
   };
 
