@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Tabs, Row, Col, Card } from "antd";
 import "./yoyo.css";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -12,10 +13,10 @@ const CasinoGallery = () => {
   const getLogos = async () => {
     try {
       const response = await axios.get(`${BASEURL}/socialmedia/items`);
-      console.log(response);
+      console.log(response, "errorTest");
       setLogodata(response?.data);
     } catch (error) {
-      console.error(error);
+      console.error(error , "errorTest");
     }
   };
 
@@ -147,6 +148,17 @@ const CasinoGallery = () => {
     },
     { src: "/images/dream_catcher.avif", title: "dream_catcher" },
   ];
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.querySelector(location.hash);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" }); // Scroll to the section
+      }
+    }
+  }, [location]);
+
 
   useEffect(() => {
     getLogos();
@@ -157,7 +169,7 @@ const CasinoGallery = () => {
 
   return (
     <>
-      <Row className="mitunClass" justify={"space-around"} style={{backgroundColor:"rgba(12, 46, 55, 1)"}}>
+      <Row id="target-section" className="mitunClass" justify={"space-around"} style={{backgroundColor:"rgba(12, 46, 55, 1)"}}>
         <Col span={24} style={{display:"flex" , justifyContent:"center" , alignItems:"center" , fontFamily:"Popins" , color:"white" , fontSize:"20px" , marginBottom:"2vh"}}>
           Follow us on 
         </Col>

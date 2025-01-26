@@ -6,7 +6,7 @@ import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
-import icon from "../../assets/ic_round-support-agent.png";
+import icon from "../../assets/POLO clogo.png";
 import MobileHeader from "../../Components/MobileHeader";
 import axios from "axios";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";

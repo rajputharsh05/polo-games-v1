@@ -94,12 +94,11 @@
 // Button Style
 .animated_button {
   position: fixed;
-  bottom: 4rem;
+  bottom: 2rem;
   right: 1rem;
-  height: 13vh;
+  height: 15vh;
   z-index: 1100;
   border-radius: 1vh;
-  background-color: rgba(0, 49, 7, 1);
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -113,8 +112,9 @@
   }
 
   @media (min-width: 300px) and (max-width: 600px) {
-    height: 8vh;
+    height: 10dvh;
     right: 1rem;
+    bottom: 4rem;
   }
 }
 

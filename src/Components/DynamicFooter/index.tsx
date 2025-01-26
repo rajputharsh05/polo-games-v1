@@ -7,6 +7,10 @@ import offers from "../../assets/offers.png"
 const DynamincFooter = () => {
   const navigate = useNavigate();
 
+  const handleNavigation = () => {
+    navigate("/#target-section"); // Navigate to the page and section
+  };
+
   return (
     <div className={styles.footer}>
       <div className={styles.footer_item} onClick={() => {
@@ -30,7 +34,7 @@ const DynamincFooter = () => {
         <TrophyOutlined className={styles.footer_icon} />
         <span>Aviator</span>
       </div>
-      <div className={styles.footer_item}>
+      <div className={styles.footer_item} onClick={handleNavigation}>
         <SmileOutlined className={styles.footer_icon} />
         <span>Casino</span>
       </div>
