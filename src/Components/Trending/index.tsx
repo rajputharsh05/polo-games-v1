@@ -14,7 +14,7 @@ export const News = () => {
 
   useEffect(() => {
     if (info?.data?.length > 0) {
-      if (location?.pathname !== "/") {
+      if (location?.pathname === "/news") {
         setData(info?.data);
         setSeletedData(info?.data[0]);
       } else {
@@ -151,7 +151,7 @@ export const Blogs = () => {
       setloading(true);
       const response = await axios.get(`${BASEURL}/blogs`);
       const data = response.data;
-      if (location.pathname === "/") {
+      if (location.pathname !== "blogs") {
         setBlogs(data?.slice(0, 1));
       } else {
         setBlogs(data);
@@ -310,7 +310,7 @@ export const Reels = ({ trackState, setTrackState }: any) => {
         </div>
       )}
 
-      {location.pathname !== "/" && location?.pathname !== "/home" && (
+      {location.pathname === "reels" && (
         <h3
           style={{
             padding: "1vh",
