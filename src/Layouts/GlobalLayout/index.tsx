@@ -177,7 +177,7 @@ const GlobalLayout = () => {
           <>
             {(location?.pathname === "/" || location?.pathname === "/home") && (
               <Sider width={"5dvw"}>
-                <div style={{marginTop:"10vh"}} className={styles["marquee-wrapper"]}>
+                <div style={{marginTop:"8dvh"}} className={styles["marquee-wrapper"]}>
                   <div className={styles["marquee-content"]}>
                     {text.map((item : any, index : number) => (
                       <h4 key={index} className={styles["marquee-text"]}>
