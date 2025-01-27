@@ -27,6 +27,8 @@ import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
 import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import Cookies from "js-cookie";
 import { WhatsApp } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import { updateState } from "../../Redux/loginModalSlice";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
@@ -34,9 +36,13 @@ const HeaderComponent = () => {
 
   const location = useLocation();
 
+  const dispatch = useDispatch();
+  const loginModal = useSelector((state: any) => state?.login?.value);
+
   const [isOpen, setIsOpen] = useState(false);
 
-  const [loginModal, setLoginModal] = useState(false);
+  // const [loginModal, setLoginModal] = useState(false);
+
 
   const [enterOtp, setEnterOtp] = useState(false);
 
@@ -96,7 +102,7 @@ const HeaderComponent = () => {
       const response = await axios.post(`${BASEURL}/user/create_user`, values);
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
-        setLoginModal(false);
+        dispatch(updateState(false));
         setLoginOrRegister(!loginOrRegister);
         form.resetFields();
       }
@@ -148,7 +154,7 @@ const HeaderComponent = () => {
 
       if (response?.status === 200) {
         message.success("Login Success");
-        setLoginModal(false);
+        dispatch(updateState(false));
         form.resetFields();
         Cookies.set("userRole", response?.data?.role, { expires: 1 });
         Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
@@ -401,11 +407,7 @@ const HeaderComponent = () => {
               Logout
             </Button>
           ) : (
-            <img src="./images/login-image.png" alt="Login"  onClick={() => setLoginModal(true)} style={{height: '30px', boxShadow: '0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)', borderRadius: '1rem'}} />
-   
-            // <Button type="primary" onClick={() => setLoginModal(true)}>
-            //   Login
-            // </Button>
+            <img src="./images/login-image.png" alt="Login"  onClick={() => dispatch(updateState(true))} style={{height: '30px', boxShadow: '0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)', borderRadius: '1rem'}} />
           )}
         </div>
       </Col>
@@ -518,11 +520,11 @@ const HeaderComponent = () => {
         open={loginModal}
         onClose={() => {
           setEnterOtp(false);
-          setLoginModal(false);
+          dispatch(updateState(false));
         }}
         onCancel={() => {
           setEnterOtp(false);
-          setLoginModal(false);
+          dispatch(updateState(false));
         }}
         footer={""}
       >
@@ -740,7 +742,7 @@ const HeaderComponent = () => {
                     <Row gutter={[20, 20]} justify={"space-between"}>
                       <Button
                         type="primary"
-                        onClick={() => setLoginModal(false)}
+                        onClick={() =>  dispatch(updateState(false))}
                       >
                         Cancel
                       </Button>

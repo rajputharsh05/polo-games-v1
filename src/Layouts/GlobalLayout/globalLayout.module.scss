@@ -134,16 +134,15 @@
 
 .IphoneStyle {
   height: 100%;
+  aspect-ratio: 3 / 11;
 
   @media (min-width: 200px) and (max-width: 389px) {
-    height: 100%;
-    width: 23dvw;
-    margin-left: 10dvw;
+    
+    margin-left: 13dvw;
   }
 
   @media (min-width: 390px) and (max-width: 700px) {
-    height: 100%;
-    width: 30dvw;
+    
     margin-left: 11dvw;
   }
 }

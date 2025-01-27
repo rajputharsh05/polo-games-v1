@@ -132,7 +132,6 @@ const GlobalLayout = () => {
           }}
           className={styles.content_wrapper}
         >
-          {/* {!isSidebarVisible && <TopBar></TopBar>} */}
           <div style={isSidebarVisible ? {} : { marginTop: "9dvh" }}>
             {outlet}
           </div>

@@ -126,7 +126,25 @@
   font-size: 12;
   margin: 1vh;
   cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
+
+.ArrowBlink{
+  animation: blinkArrow 01s infinite;
+}
+
+
+@keyframes blinkArrow {
+  0%, 100% {
+    color: white; /* Original color */
+  }
+  50% {
+      color: red; /* Blinking red color */
+  }
+}
+
 
 @media (max-width: 600px) and (min-width:300px) {
   .LiveWrapper{

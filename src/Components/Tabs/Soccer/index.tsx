@@ -6,6 +6,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateSoccer } from "../../../Redux/lineMatchesSlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const SoccerSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
@@ -201,7 +202,8 @@ const SoccerSection = () => {
               }}
               className={styles.showMoreButton}
             >
-              view more ?
+              <p>view more</p>
+              <Icon className={styles.ArrowBlink} icon="hugeicons:arrow-down-double" width="24" height="24" />
             </p>
           </Row>
         )}

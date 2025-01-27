@@ -1,8 +1,9 @@
 import { Layout, Menu } from "antd";
 import styles from "./sidebar.module.scss";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
+import { updateState } from "../../Redux/loginModalSlice";
 
 const { Sider } = Layout;
 
@@ -11,7 +12,7 @@ const SideBar = () => {
   const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
   const tennis = useSelector((state: any) => state?.match?.tennis);
   const soccer = useSelector((state: any) => state?.match?.soccer);
-
+  const dispatch = useDispatch();
   const menuItems: any = [
     {
       key: "in-play",
@@ -176,6 +177,8 @@ const SideBar = () => {
     ].findIndex((ele) => ele === data?.key);
     if (res != -1) {
       navigation(`/${data?.key}`);
+    } else {
+      dispatch(updateState(true));
     }
   };
 

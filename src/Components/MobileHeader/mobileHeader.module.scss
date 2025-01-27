@@ -1,15 +1,27 @@
-.headerWrapper{
-   
+.headerWrapper {
     width: 100%;
-    justify-content: center;
-    align-items: center;
+    height: 60px; /* Adjust height as needed */
     display: flex;
+    align-items: center;
+    position: relative; /* Needed for absolute positioning of the second image */
     background: linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%);
-
-    img{
-        height: 100%;
-        width: 35%;
-        margin-right: 3vw;
+  
+    .img {
+      height: 120%;
+      width: 35%;
+      margin: 0 auto; /* Centers the first image */
+      position: absolute;
+      left: 50%; /* Center horizontally */
+      transform: translateX(-50%); /* Adjust for true centering */
     }
-}
-
+  
+    .rightImage {
+      position: absolute;
+      right: 10px; /* Position the second image in the right corner */
+      height: 30px;
+      box-shadow: 0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3);
+      border-radius: 1rem;
+      width: 20dvw;
+    }
+  }
+  
