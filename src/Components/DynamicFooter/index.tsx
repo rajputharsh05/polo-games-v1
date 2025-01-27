@@ -3,7 +3,6 @@ import styles from "./footer.module.scss"
 import { useNavigate } from "react-router-dom";
 import offers from "../../assets/offers.png"
 
-
 const DynamincFooter = () => {
   const navigate = useNavigate();
 
@@ -30,7 +29,7 @@ const DynamincFooter = () => {
       }} className={`${styles.footer_item} ${styles.top_icon}`}>
         <HomeOutlined className={styles.footer_icon} />
       </div>
-      <div className={styles.footer_item}>
+      <div className={styles.footer_item} onClick={() => {navigate("/auth")}}>
         <TrophyOutlined className={styles.footer_icon} />
         <span>Aviator</span>
       </div>

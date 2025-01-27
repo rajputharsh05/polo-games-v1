@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateCriket } from "../../../Redux/lineMatchesSlice";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const CricketSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
@@ -27,7 +28,7 @@ const CricketSection = () => {
         status: ele?.inPlay === "True" ? "live" : "upcoming",
         time: tempSplit[1],
         gameId: ele?.gameId,
-      odds: [
+        odds: [
           {
             key: "1",
             value: ele?.back1,
@@ -57,7 +58,7 @@ const CricketSection = () => {
       setDataSource(ModifiedData);
     }
     setLiveCount(count);
-    dispatch(updateCriket(count))
+    dispatch(updateCriket(count));
   };
 
   const getApiData = async () => {
@@ -83,8 +84,8 @@ const CricketSection = () => {
     getApiData();
   }, []);
 
-  const handleRowClick = (id: any , item : any) => {
-    navigate(`/cricket/${id}`,{ state: item });
+  const handleRowClick = (id: any, item: any) => {
+    navigate(`/cricket/${id}`, { state: item });
   };
 
   return (
@@ -108,7 +109,7 @@ const CricketSection = () => {
         <div className={styles.table}>
           {datasource?.map((item: any) => (
             <div
-              onClick={() => handleRowClick(item?.gameId , item)}
+              onClick={() => handleRowClick(item?.gameId, item)}
               key={item.key}
               className={styles.tableHeader}
             >
@@ -199,7 +200,8 @@ const CricketSection = () => {
               }}
               className={styles.showMoreButton}
             >
-              view more ?
+              <p>view more</p>
+              <Icon className={styles.ArrowBlink} icon="hugeicons:arrow-down-double" width="24" height="24" />
             </p>
           </Row>
         )}

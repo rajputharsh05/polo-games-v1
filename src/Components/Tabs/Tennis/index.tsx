@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { updateTennis } from "../../../Redux/lineMatchesSlice";
 import { useDispatch } from "react-redux";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 const TennisSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
@@ -202,7 +203,8 @@ const TennisSection = () => {
                 }}
                 className={styles.showMoreButton}
               >
-                view more ?
+               <p>view more</p>
+               <Icon className={styles.ArrowBlink} icon="hugeicons:arrow-down-double" width="24" height="24" />
               </p>
             </Row>
           )}

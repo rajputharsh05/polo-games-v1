@@ -32,6 +32,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBall } from "../../Redux/ballSlice";
+import { updateState } from "../../Redux/loginModalSlice";
 
 const TopBar = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
@@ -40,7 +41,7 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const ballState = useSelector((state :any) => state?.ball?.value)
+  const ballState = useSelector((state: any) => state?.ball?.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
 
@@ -48,7 +49,6 @@ const TopBar = () => {
   const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
   const tennis = useSelector((state: any) => state?.match?.tennis);
   const soccer = useSelector((state: any) => state?.match?.soccer);
-
   const menuItemsSideBar: any = [
     {
       key: "in-play",
@@ -213,6 +213,8 @@ const TopBar = () => {
     ].findIndex((ele) => ele === data?.key);
     if (res != -1) {
       navigation(`/${data?.key}`);
+    } else {
+      dispatch(updateState(true));
     }
   };
 
@@ -294,11 +296,10 @@ const TopBar = () => {
     setActiveTab(location.pathname.substring(1));
   }, [location]);
 
-
   const toggleDrawer = () => {
     setModalOpen((prev) => !prev);
     dispatch(updateBall(!ballState));
-  }
+  };
 
   const handleTabClick = (key: any) => {
     if (key === "admin") {

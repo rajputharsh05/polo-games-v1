@@ -12,8 +12,10 @@ const CasinoGallery = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
   const getLogos = async () => {
     try {
-      const response = await axios.get(`${BASEURL}/socialmedia/items`);
+      console.log(BASEURL)
+      const response = await axios.get(`https://backend.polo.game/api/socialmedia/items`);
       console.log(response, "errorTest");
+      console.log(BASEURL)
       setLogodata(response?.data);
     } catch (error) {
       console.error(error , "errorTest");
