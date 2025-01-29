@@ -27,9 +27,6 @@ const ProtectedLayout = () => {
 
     if (userRole && userToken) {
       try {
-        console.log("User Role:", userRole);
-        console.log("User Token:", userToken);
-        console.log("User Permissions:", userPermissions);
 
         let parsedPermissions = {};
 
@@ -50,8 +47,10 @@ const ProtectedLayout = () => {
             "You don't have access to this page. Please login first with proper credentials."
           );
         }
+        setBeforePageLoad(false);
       } catch (e) {
         console.error("Error:", e);
+        setBeforePageLoad(false);
       }
     } else {
       navigate("/");
