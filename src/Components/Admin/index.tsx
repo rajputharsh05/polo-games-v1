@@ -29,11 +29,12 @@ import styles from "./admin.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import image from "../../assets/image.png";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AdminPage = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState("images");
+  const [modalType, setModalType] = useState("bannerimage");
   const [uploadedImages, setUploadedImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
   const [isAddblogs, setIsAddBlogs] = useState(false);
@@ -47,8 +48,27 @@ const AdminPage = () => {
   const [marqueeModal, setMarqueeModal] = useState(false);
   const [text, setText] = useState([]);
   const [webSiteModal, setWebsiteModal] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const AUTH = useSelector((state: any) => state.auth);
 
   const [form] = Form.useForm();
+
+  const validateUser = (type: string) => {
+    console.log(
+      AUTH.permissions[type]?.read,
+      AUTH.permissions[type]?.write,
+      AUTH.permissions[type]?.delete
+    );
+    if (
+      AUTH.permissions[type]?.read === true &&
+      AUTH.permissions[type]?.write === true &&
+      AUTH.permissions[type]?.delete === true
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const openModal = (type: any) => {
     console.log(modalVisible);
@@ -59,14 +79,10 @@ const AdminPage = () => {
   const getWebsites = async () => {
     try {
       setLoading(true);
-
       const response = await axios.get(`${BASEURL}/imagelink/items/`);
-
       const data = response?.data;
-      console.log(data);
       setWebsites(data);
     } catch (error) {
-      message.error("Unable to fetch data");
       console.error(error);
     } finally {
       setLoading(false);
@@ -81,7 +97,6 @@ const AdminPage = () => {
       setUploadedImages(data);
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch blogs");
     }
   };
 
@@ -92,7 +107,6 @@ const AdminPage = () => {
       setReels(data);
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch blogs");
     }
   };
 
@@ -103,7 +117,6 @@ const AdminPage = () => {
       setBlogs(data);
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch blogs");
     }
   };
 
@@ -117,7 +130,6 @@ const AdminPage = () => {
       }
     } catch (error) {
       console.error(error);
-      message.error("Unable to delete the banners");
     }
   };
 
@@ -144,7 +156,6 @@ const AdminPage = () => {
       }
     } catch (error: any) {
       console.error("Error uploading Banner:", error);
-      message.error(error?.response?.data?.detail);
     } finally {
       setImageModal(false);
     }
@@ -249,7 +260,6 @@ const AdminPage = () => {
       setAgents(data);
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch blogs");
     }
   };
 
@@ -289,7 +299,6 @@ const AdminPage = () => {
       setText(data);
     } catch (error) {
       console.error(error);
-      message.error("unable to fetch texts");
     }
   };
 
@@ -324,8 +333,6 @@ const AdminPage = () => {
       message.error("Unable to delete the Text");
     }
   };
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const handleFileChange = (file: File) => {
     setImageFile(file);
@@ -536,6 +543,35 @@ const AdminPage = () => {
     },
   ];
 
+  const Options = [
+    {
+      key: "bannerimage",
+      icon: <ImageAspectRatio />,
+      label: "Manage Banners",
+    },
+    {
+      key: "user",
+      icon: <RowingOutlined />,
+      label: "Manage Clients",
+    },
+    { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
+    {
+      key: "reels",
+      icon: <VideoCameraOutlined />,
+      label: "Manage Reels",
+    },
+    {
+      key: "marqueetext",
+      icon: <TextSnippet />,
+      label: "Manage Marquee",
+    },
+    {
+      key: "imagelink",
+      icon: <WebStories />,
+      label: "Manage Websites",
+    },
+  ];
+
   function getLastSegment(url: string) {
     try {
       const urlObj = new URL(url);
@@ -641,34 +677,11 @@ const AdminPage = () => {
           justify="space-between"
           gutter={[16, 16]}
         >
-          {[
-            {
-              key: "images",
-              icon: <ImageAspectRatio />,
-              label: "Manage Banners",
-            },
-            {
-              key: "agents",
-              icon: <RowingOutlined />,
-              label: "Manage Clients",
-            },
-            { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
-            {
-              key: "manageReels",
-              icon: <VideoCameraOutlined />,
-              label: "Manage Reels",
-            },
-            {
-              key: "manageMarquee",
-              icon: <TextSnippet />,
-              label: "Manage Marquee",
-            },
-            {
-              key: "manageWebsites",
-              icon: <WebStories />,
-              label: "Manage Websites",
-            },
-          ].map((tab) => (
+          {Options?.filter((item: any) => {
+            if (validateUser(item.key)) {
+              return item;
+            }
+          }).map((tab) => (
             <Col
               key={tab.key}
               onClick={() => openModal(tab.key)}
@@ -699,7 +712,7 @@ const AdminPage = () => {
               }}
               className="hide_scrollbar"
             >
-              {modalType === "images" && (
+              {modalType === "bannerimage" && (
                 <div style={{ marginTop: "2vh" }}>
                   <>
                     <Row justify={"end"} style={{ marginBottom: "2vh" }}>
@@ -727,7 +740,7 @@ const AdminPage = () => {
                 </div>
               )}
 
-              {modalType === "agents" && (
+              {modalType === "user" && (
                 <>
                   {
                     <Row
@@ -886,7 +899,7 @@ const AdminPage = () => {
                 </>
               )}
 
-              {modalType === "manageReels" && (
+              {modalType === "reels" && (
                 <>
                   {
                     <Row
@@ -917,7 +930,7 @@ const AdminPage = () => {
                 </>
               )}
 
-              {modalType === "manageMarquee" && (
+              {modalType === "marqueetext" && (
                 <>
                   {
                     <Row
@@ -948,7 +961,7 @@ const AdminPage = () => {
                 </>
               )}
 
-              {modalType === "manageWebsites" && (
+              {modalType === "imagelink" && (
                 <>
                   {
                     <Row

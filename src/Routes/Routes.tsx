@@ -27,6 +27,10 @@ export const proctectedRoutes: RouteBase[] = [
     path: "/admin",
     element: <AdminPage></AdminPage>,
   },
+  {
+    path: "/pages",
+    element: <Pages></Pages>,
+  },
 ];
 
 export const globalRoutes = [
@@ -60,13 +64,22 @@ export const globalRoutes = [
           justify={"center"}
         >
           <Col>
-            <h3 style={{fontFamily:"Popins"}}>NO STRESS DEPOSITS</h3>
+            <h3 style={{ fontFamily: "Popins" }}>NO STRESS DEPOSITS</h3>
           </Col>
-          <Col style={{marginTop:"2vh"  ,marginRight:"2vh"  , fontFamily:"Popins"}}>
+          <Col
+            style={{
+              marginTop: "2vh",
+              marginRight: "2vh",
+              fontFamily: "Popins",
+            }}
+          >
             We accept most major payment methods and work with some of the most
             trusted payments companies in the world.
           </Col>
-          <img style={{ width: "90%", height: "100%" , marginRight:"1vw" }} src={img2}></img>
+          <img
+            style={{ width: "90%", height: "100%", marginRight: "1vw" }}
+            src={img2}
+          ></img>
         </Row>
 
         <Footer></Footer>
@@ -199,15 +212,11 @@ export const globalRoutes = [
     ),
   },
   {
-    path: "/pages",
-    element: <Pages></Pages>,
-  },
-  {
     path: "/auth",
     element: <Auth></Auth>,
   },
   {
-    path : "/offers",
-    element :<OfferGallery></OfferGallery>
-  }
+    path: "/offers",
+    element: <OfferGallery></OfferGallery>,
+  },
 ];

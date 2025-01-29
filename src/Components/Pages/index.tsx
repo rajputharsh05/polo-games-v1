@@ -8,6 +8,7 @@ const Pages = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+
   const getApiData = async () => {
     try {
       setLoading(true);

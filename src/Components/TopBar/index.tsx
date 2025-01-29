@@ -13,7 +13,6 @@ import {
   Row,
 } from "antd";
 import { IdcardFilled, LeftOutlined, RightOutlined } from "@ant-design/icons";
-import hambargur from "../../assets/hamburger.png";
 
 import styles from "./topbar.module.scss";
 import logo from "../../assets/Polo_Logo_Png[1] 1.png";
@@ -461,7 +460,11 @@ const TopBar = () => {
                     onClick={toggleDrawer}
                     aria-label="Toggle Menu"
                   >
-                    <img src={hambargur}></img>
+                    <Icon
+                      icon="carbon:collapse-categories"
+                      width="32"
+                      height="32"
+                    />
                   </div>
                   <p
                     style={{

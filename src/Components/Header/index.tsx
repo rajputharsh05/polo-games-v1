@@ -29,9 +29,12 @@ import Cookies from "js-cookie";
 import { WhatsApp } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
+import { login, logout } from "../../Redux/AuthSlice";
+import logoutIMG from "../../assets/Logout.png";
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
+  const AUTH = useSelector((state: any) => state?.auth);
   const BASEURL = import.meta.env.VITE_BASEURL;
 
   const location = useLocation();
@@ -43,12 +46,13 @@ const HeaderComponent = () => {
 
   // const [loginModal, setLoginModal] = useState(false);
 
-
   const [enterOtp, setEnterOtp] = useState(false);
 
   const [loginOrRegister, setLoginOrRegister] = useState(false);
 
   const [currentPHoneNumber, setCurrentPhoneNumber] = useState<number>();
+
+  const [countryCode, setCountryCode] = useState<any>();
 
   const [loading, setLoading] = useState(false);
 
@@ -116,24 +120,19 @@ const HeaderComponent = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}`
+        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${values?.country_code}`
       );
       console.log(response);
       setCurrentPhoneNumber(values?.phone_number);
+      setCountryCode(values?.country_code);
       setEnterOtp(true);
+      message.success("OTP sent successfully");
     } catch (error: any) {
       console.error(error);
-      if (error?.status === 404) {
-        message.warning("user not registered please register before login");
-        form.resetFields();
-        setLoginOrRegister(!loginOrRegister);
-      } else {
-        setEnterOtp(true);
-        setCurrentPhoneNumber(values?.phone_number);
-        message.error("Unable to send OTP please check the phone number");
-      }
+      message.warning("user not registered please register before login");
     } finally {
       setLoading(false);
+      form.resetFields();
     }
   };
 
@@ -146,9 +145,11 @@ const HeaderComponent = () => {
   };
 
   const handleOtpSubmit = async (values: any) => {
+    console.log(values, currentPHoneNumber, countryCode, "Heyy");
+    const data = countryCode;
     try {
       const response = await axios.post(
-        `${BASEURL}/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}`
+        `${BASEURL}/otp/verify-otp?phone_number=${currentPHoneNumber}&otp=${values?.otp}&country_code=${data}`
       );
       console.log(response);
 
@@ -156,8 +157,28 @@ const HeaderComponent = () => {
         message.success("Login Success");
         dispatch(updateState(false));
         form.resetFields();
+
         Cookies.set("userRole", response?.data?.role, { expires: 1 });
         Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
+
+        if (response?.data?.role === "Admin") {
+          dispatch(
+            login({
+              role: response?.data?.role,
+              permissions: response?.data?.permissions,
+            })
+          );
+
+          // ✅ Ensure permissions are stored as a valid JSON string
+          Cookies.set(
+            "permissions",
+            JSON.stringify(response?.data?.permissions || {}),
+            { expires: 1 }
+          );
+        } else {
+          dispatch(login({ role: response?.data?.role, permissions: {} }));
+        }
+
         if (response?.data?.role !== "User") {
           navigate("/admin");
         } else if (response?.data?.role === "User") {
@@ -183,6 +204,7 @@ const HeaderComponent = () => {
   };
 
   const handleLogout = () => {
+    dispatch(logout());
     Cookies.remove("userRole");
     Cookies.remove("userToken");
     navigate("/");
@@ -402,12 +424,30 @@ const HeaderComponent = () => {
           About Us
         </div>
         <div>
-          {location.pathname === "/admin" ? (
-            <Button type="primary" onClick={handleLogout}>
-              Logout
-            </Button>
+          {AUTH?.logIn ? (
+            <img
+              src={logoutIMG}
+              alt="Login"
+              onClick={handleLogout}
+              style={{
+                height: "30px",
+                boxShadow:
+                  "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
+                borderRadius: "1rem",
+              }}
+            />
           ) : (
-            <img src="./images/login-image.png" alt="Login"  onClick={() => dispatch(updateState(true))} style={{height: '30px', boxShadow: '0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)', borderRadius: '1rem'}} />
+            <img
+              src="./images/login-image.png"
+              alt="Login"
+              onClick={() => dispatch(updateState(true))}
+              style={{
+                height: "30px",
+                boxShadow:
+                  "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
+                borderRadius: "1rem",
+              }}
+            />
           )}
         </div>
       </Col>
@@ -555,7 +595,7 @@ const HeaderComponent = () => {
                       <Row justify={"space-around"}>
                         <Col span={10}>
                           <Form.Item
-                            name="code"
+                            name="country_code"
                             label="Country Code"
                             rules={[{ required: true }]}
                           >
@@ -683,11 +723,6 @@ const HeaderComponent = () => {
                               required: true,
                               message: "Country Code is required",
                             },
-                            {
-                              pattern: /^\+\d+$/,
-                              message:
-                                "Country Code must start with '+' followed by numbers",
-                            },
                           ]}
                         >
                           <Input placeholder="+1" />
@@ -742,7 +777,7 @@ const HeaderComponent = () => {
                     <Row gutter={[20, 20]} justify={"space-between"}>
                       <Button
                         type="primary"
-                        onClick={() =>  dispatch(updateState(false))}
+                        onClick={() => dispatch(updateState(false))}
                       >
                         Cancel
                       </Button>

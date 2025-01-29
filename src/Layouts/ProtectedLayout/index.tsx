@@ -1,5 +1,5 @@
 import { Layout, message, Spin } from "antd";
-import { useOutlet } from "react-router-dom";
+import { useLocation, useOutlet } from "react-router-dom";
 import HeaderComponent from "../../Components/Header";
 const { Content, Header } = Layout;
 import styles from "../GlobalLayout/globalLayout.module.scss";
@@ -7,10 +7,14 @@ import { useEffect, useState } from "react";
 import MobileHeader from "../../Components/MobileHeader";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { login, logout } from "../../Redux/AuthSlice";
 
 const ProtectedLayout = () => {
   const outlet = useOutlet();
+  const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [beforePageLoad, setBeforePageLoad] = useState(true);
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -19,19 +23,48 @@ const ProtectedLayout = () => {
   useEffect(() => {
     const userRole = Cookies.get("userRole");
     const userToken = Cookies.get("userToken");
+    const userPermissions = Cookies.get("permissions");
 
     if (userRole && userToken) {
-      console.log("User Role:", userRole);
-      console.log("User Token:", userToken);
+      try {
+        console.log("User Role:", userRole);
+        console.log("User Token:", userToken);
+        console.log("User Permissions:", userPermissions);
+
+        let parsedPermissions = {};
+
+        if (userPermissions) {
+          try {
+            parsedPermissions = JSON.parse(userPermissions);
+          } catch (error) {
+            console.error("Error parsing permissions:", error);
+            parsedPermissions = {}; // Fallback to empty object
+          }
+        }
+
+        dispatch(login({ role: userRole, permissions: parsedPermissions }));
+
+        if (userRole !== "Admin" && location.pathname === "/admin") {
+          navigate("/");
+          message.warning(
+            "You don't have access to this page. Please login first with proper credentials."
+          );
+        }
+      } catch (e) {
+        console.error("Error:", e);
+      }
     } else {
       navigate("/");
       setBeforePageLoad(false);
-      message.warning("You don't have access to this page. Please login first with proper credentials.");
+      dispatch(logout());
+      message.warning(
+        "You don't have access to this page. Please login first with proper credentials."
+      );
     }
 
     return () => {
       setBeforePageLoad(false);
-    }
+    };
   }, []);
 
   useEffect(() => {
@@ -55,7 +88,6 @@ const ProtectedLayout = () => {
 
   return (
     <Spin spinning={beforePageLoad} tip="Wait while we verify you...">
-     
       <Layout
         style={{
           minHeight: "100vh",
@@ -64,7 +96,6 @@ const ProtectedLayout = () => {
         }}
       >
         <Header
-        
           style={{
             background: "rgba(12, 46, 55, 1)",
             position: "fixed",
@@ -87,7 +118,6 @@ const ProtectedLayout = () => {
           style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}
         >
           <Content
-            
             style={{
               overflow: "auto",
               background: "rgba(12, 46, 55, 1)",
