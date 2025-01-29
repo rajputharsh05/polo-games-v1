@@ -145,7 +145,6 @@ const HeaderComponent = () => {
   };
 
   const handleOtpSubmit = async (values: any) => {
-    console.log(values, currentPHoneNumber, countryCode, "Heyy");
     const data = countryCode;
     try {
       const response = await axios.post(
@@ -304,14 +303,18 @@ const HeaderComponent = () => {
             fontWeight: "500",
           }}
           className={styles.Hover}
-          onClick={() => navigate("/")}
+          onClick={() => {
+            AUTH?.logIn && location?.pathname !== "/" ? navigate("/") : navigate("pages")
+          }}
         >
           <img
             src={Home}
             alt="Play Icon"
             style={{ width: "20px", marginRight: "0.5rem" }}
           />
-          Home
+          {
+            AUTH?.logIn && location?.pathname !== "/" ? "Home" : "Sites"
+          }
         </div>
         {location.pathname !== "/admin" && (
           <div className={styles.searchBarWrapper}>
