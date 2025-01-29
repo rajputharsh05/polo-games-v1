@@ -304,7 +304,7 @@ const HeaderComponent = () => {
           }}
           className={styles.Hover}
           onClick={() => {
-            AUTH?.logIn && location?.pathname !== "/" ? navigate("/") : navigate("pages")
+            AUTH?.logIn ? location?.pathname !== "/" ? navigate("/") : navigate("pages") : navigate("/")
           }}
         >
           <img
@@ -313,7 +313,7 @@ const HeaderComponent = () => {
             style={{ width: "20px", marginRight: "0.5rem" }}
           />
           {
-            AUTH?.logIn && location?.pathname !== "/" ? "Home" : "Sites"
+            AUTH?.logIn ? location?.pathname !== "/" ? "Home" : "Sites" : "Home"
           }
         </div>
         {location.pathname !== "/admin" && (
