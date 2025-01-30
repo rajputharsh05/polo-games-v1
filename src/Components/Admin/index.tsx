@@ -30,6 +30,8 @@ import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import image from "../../assets/image.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { AuthStateType } from "../../Redux/AuthSlice";
+import { RootState } from "../../Redux/Store";
 
 const AdminPage = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
@@ -49,16 +51,19 @@ const AdminPage = () => {
   const [text, setText] = useState([]);
   const [webSiteModal, setWebsiteModal] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const AUTH = useSelector((state: any) => state.auth);
+  const GETREELSURL: string = `${BASEURL}/reels/get-reels/`;
+  const GETBLOGSURL: string = `${BASEURL}/blogs`;
+  const GETIMAGELINK: string = `${BASEURL}/imagelink/items/`;
+  const GETTEXTURL: string = `${BASEURL}/marqueetext/statements`;
+  const GETUSERURL: string = `${BASEURL}/user/get_all_users`;
+  const GETADMINIMAGEURL: string = `${BASEURL}/bannerimage/images`;
+  const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs`;
+
+  const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
 
   const [form] = Form.useForm();
 
   const validateUser = (type: string) => {
-    console.log(
-      AUTH.permissions[type]?.read,
-      AUTH.permissions[type]?.write,
-      AUTH.permissions[type]?.delete
-    );
     if (
       AUTH.permissions[type]?.read === true &&
       AUTH.permissions[type]?.write === true &&
@@ -76,49 +81,84 @@ const AdminPage = () => {
     setModalVisible(true);
   };
 
-  const getWebsites = async () => {
+  const getData = async (url: string, type: string) => {
     try {
-      setLoading(true);
-      const response = await axios.get(`${BASEURL}/imagelink/items/`);
-      const data = response?.data;
-      setWebsites(data);
+      const response = await axios.get(url);
+      const data = response.data;
+
+      switch (type) {
+        case "images":
+          setUploadedImages(data);
+          break;
+        case "agents":
+          setAgents(data);
+          break;
+        case "blogs":
+          setBlogs(data);
+          break;
+        case "reels":
+          setReels(data);
+          break;
+        case "marqueetext":
+          setText(data);
+          break;
+        case "imagelink":
+          setWebsites(data);
+          break;
+        default:
+          console.warn(`Unhandled type: ${type}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const createData = async (values: any, url: string, type: string) => {
+    try {
+      const response = await axios.post(url, values, { 
+        headers : {
+          Authorization : `Bearer ${AUTH?.token}`
+        }
+       });
+      if (response?.status === 200) {
+        message.success("Added Blogs SuccessFully");
+        switch (type) {
+          case "images":
+            break;
+          case "agents":
+            break;
+          case "blogs":
+            getData(GETBLOGSURL, "blogs");
+            setIsAddBlogs(false);
+            break;
+          case "reels":
+            break;
+          case "marqueetext":
+            break;
+          case "imagelink":
+            break;
+          default:
+            console.warn(`Unhandled type: ${type}`);
+        }
+        getData(GETBLOGSURL, "blogs");
+        setIsAddBlogs(false);
+        form.resetFields();
+      }
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      form.resetFields();
     }
   };
 
-  const getImages = async () => {
-    try {
-      const response = await axios.get(`${BASEURL}/admin/images`);
-      const data = response.data;
-      console.log(response.data);
-      setUploadedImages(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getReels = async () => {
-    try {
-      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
-      const data = response.data;
-      setReels(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getBlogs = async () => {
-    try {
-      const response = await axios.get(`${BASEURL}/blogs`);
-      const data = response.data;
-      setBlogs(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    getData(GETBLOGSURL, "blogs");
+    getData(GETUSERURL, "agents");
+    getData(GETADMINIMAGEURL, "images");
+    getData(GETREELSURL, "reels");
+    getData(GETTEXTURL, "marqueetext");
+    getData(GETIMAGELINK, "imagelink");
+  }, []);
 
   const handleImageDelete = async (id: any) => {
     try {
@@ -126,7 +166,7 @@ const AdminPage = () => {
       const response = await axios.delete(URL);
       if (response?.status === 200) {
         message.success("Banner removed Successfully");
-        getImages();
+        getData(GETADMINIMAGEURL, "images");
       }
     } catch (error) {
       console.error(error);
@@ -149,7 +189,7 @@ const AdminPage = () => {
       );
 
       if (response.status === 200) {
-        getImages();
+        getData(GETADMINIMAGEURL, "images");
         message.success("Banner uploaded successfully!");
       } else {
         message.error("Failed to upload Banner. Please try again.");
@@ -180,7 +220,7 @@ const AdminPage = () => {
       );
 
       if (response.status === 200) {
-        getReels();
+        getData(GETREELSURL, "reels");
         message.success("Reel uploaded successfully!");
       } else {
         message.error("Failed to upload Reel. Please try again.");
@@ -200,7 +240,7 @@ const AdminPage = () => {
       const response = await axios.delete(`${BASEURL}/blogs/${id}`);
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
-        getBlogs();
+        getData(GETBLOGSURL, "blogs");
       }
     } catch (error) {
       console.error(error);
@@ -227,7 +267,7 @@ const AdminPage = () => {
       );
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
-        getBlogs();
+        getData(GETBLOGSURL, "blogs");
         setIsAddBlogs(false);
         form.resetFields();
       }
@@ -242,24 +282,13 @@ const AdminPage = () => {
       const response = await axios.post(`${BASEURL}/user/create_user`, values);
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
-        getAgents();
+        getData(GETUSERURL, "agents");
         setIsAddAgents(false);
         form.resetFields();
       }
     } catch (error) {
       console.error(error);
       message.error("Unable to create Agent");
-    }
-  };
-
-  const getAgents = async () => {
-    try {
-      const response = await axios.get(`${BASEURL}:8000/user/get_all_users`);
-      const data = response.data;
-      console.log(data);
-      setAgents(data);
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -270,7 +299,7 @@ const AdminPage = () => {
       );
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
-        getAgents();
+        getData(GETUSERURL, "agents");
       }
     } catch (error) {
       console.error(error);
@@ -283,22 +312,11 @@ const AdminPage = () => {
       const response = await axios.delete(`${BASEURL}/reels/delete-reel/${id}`);
       if (response?.status === 200) {
         message.success("Reel Deleted Successfully");
-        getReels();
+        getData(GETREELSURL, "reels");
       }
     } catch (error) {
       console.error(error);
       message.error("Unable to delete the Reel");
-    }
-  };
-
-  const getTexts = async () => {
-    try {
-      const response = await axios.get(`${BASEURL}/marqueetext/statements`);
-      const data = response.data;
-      console.log(data);
-      setText(data);
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -309,7 +327,7 @@ const AdminPage = () => {
       );
       if (response?.status === 200) {
         message.success("Added Marquee SuccessFully");
-        getTexts();
+        getData(GETTEXTURL, "marqueetext");
         setMarqueeModal(false);
         form.resetFields();
       }
@@ -326,7 +344,7 @@ const AdminPage = () => {
       );
       if (response?.status === 200) {
         message.success("Text Deleted Successfully");
-        getTexts();
+        getData(GETTEXTURL, "marqueetext");
       }
     } catch (error) {
       console.error(error);
@@ -363,15 +381,6 @@ const AdminPage = () => {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    getBlogs();
-    getAgents();
-    getImages();
-    getReels();
-    getTexts();
-    getWebsites();
-  }, []);
 
   const webSiteColums = [
     {
@@ -554,7 +563,7 @@ const AdminPage = () => {
       icon: <RowingOutlined />,
       label: "Manage Clients",
     },
-    { key: "blogs", icon: <DeleteFilled />, label: "Manage Blogs" },
+    { key: "blog", icon: <DeleteFilled />, label: "Manage Blogs" },
     {
       key: "reels",
       icon: <VideoCameraOutlined />,
@@ -688,10 +697,10 @@ const AdminPage = () => {
               className={`${styles.Btn} ${
                 modalType === tab.key ? styles.active : styles.inactive
               }`}
-              xs={11} // Takes half the width on extra small screens
-              sm={7} // Takes one-third the width on small screens
-              md={5} // Takes one-fourth the width on medium screens
-              lg={3} // Takes one-fifth the width on large screens
+              xs={11}
+              sm={7}
+              md={5}
+              lg={3}
             >
               <Row justify="center">
                 <div className={styles.Icon}>{tab.icon}</div>
@@ -848,7 +857,7 @@ const AdminPage = () => {
                 </>
               )}
 
-              {modalType === "blogs" && (
+              {modalType === "blog" && (
                 <>
                   {
                     <Row
@@ -1019,7 +1028,7 @@ const AdminPage = () => {
           <Form
             style={{ color: "white", marginTop: "3vh" }}
             form={form}
-            onFinish={handleBlogSubmit}
+            onFinish={(values) => createData(values, CREATEBLOGSURL, "blogs")}
           >
             <Form.Item
               name="title"

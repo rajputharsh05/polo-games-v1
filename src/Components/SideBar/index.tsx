@@ -4,14 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 import { updateState } from "../../Redux/loginModalSlice";
+import { AuthStateType } from "../../Redux/AuthSlice";
+import { RootState } from "../../Redux/Store";
 
 const { Sider } = Layout;
 
 const SideBar = () => {
   const navigation = useNavigate();
-  const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
-  const tennis = useSelector((state: any) => state?.match?.tennis);
-  const soccer = useSelector((state: any) => state?.match?.soccer);
+  const cricket  = useSelector((state: RootState) => state?.match?.cricket);
+  const tennis = useSelector((state: RootState) => state?.match?.tennis);
+  const soccer = useSelector((state: RootState) => state?.match?.soccer);
+  const AUTH : AuthStateType = useSelector((state: RootState) => state?.auth);
   const dispatch = useDispatch();
   const menuItems: any = [
     {
@@ -178,7 +181,13 @@ const SideBar = () => {
     if (res != -1) {
       navigation(`/${data?.key}`);
     } else {
-      dispatch(updateState(true));
+
+      if(AUTH?.logIn){
+        navigation(`/pages`);
+      } else {
+        dispatch(updateState(true));
+      }
+
     }
   };
 

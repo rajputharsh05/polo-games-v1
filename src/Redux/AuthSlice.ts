@@ -1,10 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 
-const initialState = {
+export type AuthStateType = {
+    logIn: boolean,
+    user: string | null,
+    permissions: any,
+    token : string,
+} 
+
+const initialState : AuthStateType = {
     logIn : false,
     user: null,
-    permissions: {}
+    permissions: {},
+    token : "",
 }
 
 
@@ -13,15 +21,16 @@ const AuthSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            console.log(action.payload , "Heyyyyyy");
             state.logIn = true;
             state.user = action.payload.role;
             state.permissions = action.payload.permissions;
+            state.token = action.payload.token;
         },
         logout: (state) => {
             state.logIn = false;
             state.user = null;
             state.permissions = {}
+            state.token = "";
         }
     }
 })

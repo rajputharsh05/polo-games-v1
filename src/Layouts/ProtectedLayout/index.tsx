@@ -39,7 +39,7 @@ const ProtectedLayout = () => {
           }
         }
 
-        dispatch(login({ role: userRole, permissions: parsedPermissions }));
+        dispatch(login({ role: userRole, permissions: parsedPermissions , token : userToken }));
 
         if (userRole !== "Admin" && location.pathname === "/admin") {
           navigate("/");
