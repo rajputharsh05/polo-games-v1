@@ -115,11 +115,11 @@ const AdminPage = () => {
 
   const createData = async (values: any, url: string, type: string) => {
     try {
-      const response = await axios.post(url, values, { 
-        headers : {
-          Authorization : `Bearer ${AUTH?.token}`
-        }
-       });
+      const response = await axios.post(url, values, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         switch (type) {
@@ -163,7 +163,11 @@ const AdminPage = () => {
   const handleImageDelete = async (id: any) => {
     try {
       const URL = `${BASEURL}/admin/delete_image/${id}`;
-      const response = await axios.delete(URL);
+      const response = await axios.delete(URL, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
       if (response?.status === 200) {
         message.success("Banner removed Successfully");
         getData(GETADMINIMAGEURL, "images");
@@ -184,6 +188,7 @@ const AdminPage = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
           },
         }
       );
@@ -215,6 +220,7 @@ const AdminPage = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
           },
         }
       );
@@ -237,7 +243,12 @@ const AdminPage = () => {
 
   const handleBlogsDelete = async (id: any) => {
     try {
-      const response = await axios.delete(`${BASEURL}/blogs/${id}`);
+      const response = await axios.delete(`${BASEURL}/blogs/${id}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
         getData(GETBLOGSURL, "blogs");
@@ -259,27 +270,15 @@ const AdminPage = () => {
     }
   };
 
-  const handleBlogSubmit = async (values: any) => {
-    try {
-      const response = await axios.post(
-        `${BASEURL}/blogs/create_blogs`,
-        values
-      );
-      if (response?.status === 200) {
-        message.success("Added Blogs SuccessFully");
-        getData(GETBLOGSURL, "blogs");
-        setIsAddBlogs(false);
-        form.resetFields();
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to create Blog");
-    }
-  };
 
   const handleAgentSubmit = async (values: any) => {
     try {
-      const response = await axios.post(`${BASEURL}/user/create_user`, values);
+      const response = await axios.post(`${BASEURL}/user/create_user`, values, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getData(GETUSERURL, "agents");
@@ -295,7 +294,13 @@ const AdminPage = () => {
   const handleDeteleAgent = async (id: any) => {
     try {
       const response = await axios.delete(
-        `${BASEURL}/user/delete_user_by_phone_number/${id}`
+        `${BASEURL}/user/delete_user_by_phone_number/${id}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
       );
       if (response?.status === 200) {
         message.success("Blog Deleted Successfully");
@@ -309,7 +314,15 @@ const AdminPage = () => {
 
   const handleDeleteReels = async (id: any) => {
     try {
-      const response = await axios.delete(`${BASEURL}/reels/delete-reel/${id}`);
+      const response = await axios.delete(
+        `${BASEURL}/reels/delete-reel/${id}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
       if (response?.status === 200) {
         message.success("Reel Deleted Successfully");
         getData(GETREELSURL, "reels");
@@ -323,7 +336,13 @@ const AdminPage = () => {
   const handleMarqueeSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`
+        `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
       );
       if (response?.status === 200) {
         message.success("Added Marquee SuccessFully");
@@ -340,7 +359,13 @@ const AdminPage = () => {
   const handleTextDelete = async (id: any) => {
     try {
       const response = await axios.delete(
-        `${BASEURL}/marqueetext/delete-statement/${id}`
+        `${BASEURL}/marqueetext/delete-statement/${id}`,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
       );
       if (response?.status === 200) {
         message.success("Text Deleted Successfully");
@@ -371,6 +396,7 @@ const AdminPage = () => {
       const response = await axios.post(`${BASEURL}/upload`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
         },
       });
 

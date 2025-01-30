@@ -165,10 +165,10 @@ const HeaderComponent = () => {
             login({
               role: response?.data?.role,
               permissions: response?.data?.permissions,
+              token: response?.data?.access_token,
             })
           );
 
-          // ✅ Ensure permissions are stored as a valid JSON string
           Cookies.set(
             "permissions",
             JSON.stringify(response?.data?.permissions || {}),

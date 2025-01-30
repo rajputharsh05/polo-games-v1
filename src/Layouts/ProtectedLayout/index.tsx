@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login, logout } from "../../Redux/AuthSlice";
+import DynamincFooter from "../../Components/DynamicFooter";
 
 const ProtectedLayout = () => {
   const outlet = useOutlet();
@@ -27,7 +28,6 @@ const ProtectedLayout = () => {
 
     if (userRole && userToken) {
       try {
-
         let parsedPermissions = {};
 
         if (userPermissions) {
@@ -39,7 +39,13 @@ const ProtectedLayout = () => {
           }
         }
 
-        dispatch(login({ role: userRole, permissions: parsedPermissions , token : userToken }));
+        dispatch(
+          login({
+            role: userRole,
+            permissions: parsedPermissions,
+            token: userToken,
+          })
+        );
 
         if (userRole !== "Admin" && location.pathname === "/admin") {
           navigate("/");
@@ -96,13 +102,14 @@ const ProtectedLayout = () => {
       >
         <Header
           style={{
-            background: "rgba(12, 46, 55, 1)",
             position: "fixed",
             top: 0,
             width: "100vw",
             zIndex: 1000,
-            height: "10vh",
+            height: "8vh",
             padding: "0px 0px",
+            lineHeight: "17px",
+            backgroundColor: "inherit",
           }}
         >
           {isSidebarVisible ? (
@@ -114,7 +121,15 @@ const ProtectedLayout = () => {
           )}
         </Header>
         <Layout
-          style={{ marginTop: "12vh", background: "rgba(12, 46, 55, 1)" }}
+          style={
+            location.pathname !== "/auth"
+              ? {
+                  marginTop: windowWidth < 390 ? "12vh" : "10vh",
+                  background:
+                    "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+                }
+              : { background: "rgba(12, 46, 55, 1)" }
+          }
         >
           <Content
             style={{
@@ -123,7 +138,13 @@ const ProtectedLayout = () => {
             }}
             className={styles.content_wrapper}
           >
-            {outlet}
+            <div style={isSidebarVisible ? {} : { marginTop: "9dvh" }}>
+              {outlet}
+              {
+                (location?.pathname === "/admin" || location?.pathname === "/pages" ) && <DynamincFooter></DynamincFooter>
+              }
+              
+            </div>
           </Content>
         </Layout>
       </Layout>

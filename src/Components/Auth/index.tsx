@@ -1,5 +1,5 @@
 import styles from "./auth.module.scss";
-import logo from "../../assets/Polo_Logo_Png[1] 1.png"
+import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import {
   Button,
   Card,
@@ -16,11 +16,12 @@ import safe from "../../assets/100_safe.png";
 import protectedIcon from "../../assets/protected.png";
 import plue from "../../assets/18_.png";
 import { WhatsAppOutlined } from "@ant-design/icons";
-import { KeySharp } from "@mui/icons-material";
+import { Code, KeySharp } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Auth = () => {
   const footerIcons = [
@@ -37,35 +38,35 @@ const Auth = () => {
       icon: safe,
     },
   ];
-  const BASEURL = import.meta.env.VITE_BASEURL
+  const BASEURL = import.meta.env.VITE_BASEURL;
+  const AUTH = useSelector((state: any) => state?.auth);
 
   const [phoneNumber, setPhoneNumber] = useState<number>();
+  const [countryCode, setCountryCode] = useState<any>();
   const [isOtp, setIsOtp] = useState<boolean>();
+  const [otpModal, setOtpModal] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(false);
   const [isLoginPage, setIsLoginPage] = useState<boolean>(true);
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
   const [form] = Form.useForm();
+  const [Otpform] = Form.useForm();
   const navigate = useNavigate();
 
   const manageLogin = async (values: any) => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `${BASEURL}/otp/send-otp?phone_number=${values?.mobileNumber}`
+        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${values?.country_code}`
       );
-      console.log(response);
-      setPhoneNumber(values?.mobileNumber);
-      setIsOtp(true);
+      if (response?.status === 200) {
+        setPhoneNumber(values?.phone_number);
+        setCountryCode(values?.country_code);
+        message.success("OTP sent successfully");
+        setOtpModal(true);
+      }
     } catch (error: any) {
       console.error(error);
-      if (error?.status === 404) {
-        message.warning("user not registered please register before login");
-        setIsOpenModal(true);
-      } else {
-        setPhoneNumber(values?.mobileNumber);
-        setIsOtp(true);
-        message.error("Unable to send OTP please check the phone number");
-      }
+      message.error("Unable to send OTP please check the phone number");
     } finally {
       form.resetFields();
       setLoading(false);
@@ -75,9 +76,8 @@ const Auth = () => {
   const handleOtpSubmit = async (values: any) => {
     try {
       const response = await axios.post(
-        `${BASEURL}/otp/verify-otp?phone_number=${phoneNumber}&otp=${values?.mobileNumber}`
+        `${BASEURL}/otp/verify-otp?phone_number=${phoneNumber}&otp=${values?.otp}&country_code=${countryCode}`
       );
-      console.log(response);
 
       if (response?.status === 200) {
         message.success("Login Success");
@@ -95,33 +95,20 @@ const Auth = () => {
       console.error(error);
       message.error("Unable Login please check the password and username");
     }
-};
-
-
-  const onFinish = (values: any) => {
-    if(!isOtp){
-      manageLogin(values);
-    }else{
-      handleOtpSubmit(values);
-    }
-    console.log("Form Values:", values);
   };
 
-  const handleFormSubmit = async ( values : any) => {
+  const handleFormSubmit = async (values: any) => {
     try {
-          const response = await axios.post(
-            `${BASEURL}/user/create_user`,
-            values
-          );
-          if (response?.status === 200) {
-            message.success("Added user SuccessFully");
-            setIsLoginPage(!isLoginPage);
-            form.resetFields();
-          }
-        } catch (error) {
-          console.error(error);
-          message.error("Unable to create Agent");
-        }
+      const response = await axios.post(`${BASEURL}/user/create_user`, values);
+      if (response?.status === 200) {
+        message.success("Added user SuccessFully");
+        setIsLoginPage(!isLoginPage);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to create Agent");
+    }
   };
 
   return (
@@ -147,35 +134,66 @@ const Auth = () => {
             {}
             <Form
               layout="vertical"
-              onFinish={onFinish}
+              form={form}
+              onFinish={manageLogin}
               style={{ marginTop: "1vh" }}
             >
-              <Form.Item
-                name="mobileNumber"
-                label={isOtp ? "Please Enter the OTP" : "Please Enter Phone Number"}
-                rules={[
-                  {
-                    required: true,
-                    message: isOtp ? "Please Enter OTP" : "Please enter your mobile number!",
-                  },
-                ]}
-                style={{
-                  fontFamily: "Popines",
-                  fontSize: "10px",
-                  fontWeight: "600",
-                }}
-              >
-                <Input
-                  prefix={<KeySharp />}
-                  placeholder= { isOtp ? "Enter OTP" : "Enter Mobile Number"}
-                  style={{
-                    borderRadius: 24,
-                    fontSize: 16,
-                    backgroundColor: "white",
-                  }}
-                />
-              </Form.Item>
-
+              <Row justify={"space-between"}>
+                <Col span={6}>
+                  <Form.Item
+                    name="country_code"
+                    label={"code"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "country code is required",
+                      },
+                    ]}
+                    style={{
+                      fontFamily: "Popines",
+                      fontSize: "10px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    <Input
+                      prefix={<Code />}
+                      placeholder={"+91"}
+                      style={{
+                        borderRadius: 24,
+                        fontSize: 16,
+                        backgroundColor: "white",
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={16}>
+                  <Form.Item
+                    name="phone_number"
+                    label={"Please Enter Phone Number"}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please enter your mobile number!",
+                      },
+                    ]}
+                    style={{
+                      fontFamily: "Popines",
+                      fontSize: "10px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    <Input
+                      prefix={<KeySharp />}
+                      placeholder={isOtp ? "Enter OTP" : "Enter Mobile Number"}
+                      style={{
+                        borderRadius: 24,
+                        fontSize: 16,
+                        backgroundColor: "white",
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
               <Row justify={"end"}>
                 <Button
                   type="primary"
@@ -190,9 +208,7 @@ const Auth = () => {
                     boxShadow: "0 0 20px 10px rgba(255, 255, 255, 0.23)",
                   }}
                 >
-                  {
-                    isOtp ? "Verify OTP" : "Generate OTP"
-                  }
+                  {"Generate OTP"}
                 </Button>
               </Row>
 
@@ -242,7 +258,7 @@ const Auth = () => {
             </Form>
           </Row>
         ) : (
-          <Row style={{padding:"4vh"}}>
+          <Row style={{ padding: "4vh" }}>
             <Form
               style={{ color: "white" }}
               form={form}
@@ -264,11 +280,6 @@ const Auth = () => {
                       {
                         required: true,
                         message: "Country Code is required",
-                      },
-                      {
-                        pattern: /^\+\d+$/,
-                        message:
-                          "Country Code must start with '+' followed by numbers",
                       },
                     ]}
                   >
@@ -337,10 +348,32 @@ const Auth = () => {
                   Register
                 </Button>
               </Row>
-
             </Form>
           </Row>
         )}
+        <Row
+          justify={"center"}
+          style={{ color: "white", fontFamily: "Popins", marginTop: "2vh" }}
+        >
+          <p>
+            {isLoginPage
+              ? "Don't have an account ?"
+              : "Already have an account ?"}{" "}
+            <span
+              onClick={() => {
+                setIsLoginPage(!isLoginPage);
+              }}
+              style={{
+                color: "#940101",
+                fontSize: "16px",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              {isLoginPage ? "Register" : "Login"}
+            </span>
+          </p>
+        </Row>
       </Spin>
       <Row
         justify={"space-between"}
@@ -384,6 +417,57 @@ const Auth = () => {
           >
             You have not yet registered , Please confirm if you want to register
             ?
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={otpModal}
+        onClose={() => setOtpModal(false)}
+        onCancel={() => setOtpModal(false)}
+        footer={null}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo}
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row
+            style={{ fontFamily: "Popines", color: "white" }}
+            justify={"center"}
+            align={"middle"}
+          >
+            <Form
+              style={{ color: "white" }}
+              form={Otpform}
+              onFinish={handleOtpSubmit}
+            >
+              <Form.Item
+                name="otp"
+                label="Enter OTP"
+                rules={[{ required: true }]}
+              >
+                <Input placeholder="Enter your OTP" />
+              </Form.Item>
+              <Row gutter={[20, 20]} justify={"center"}>
+                <Button
+                  style={{ backgroundColor: "#73d13d", color: "white" }}
+                  type="default"
+                  htmlType="submit"
+
+                >
+                  Verify OTP
+                </Button>
+              </Row>
+            </Form>
           </Row>
         </Card>
       </Modal>

@@ -24,6 +24,7 @@ import {
   BookSharp,
   Call,
   Newspaper,
+  Pages,
   Person,
   PlayCircle,
   Telegram,
@@ -40,6 +41,7 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const AUTH = useSelector((state: any) => state?.auth);
   const ballState = useSelector((state: any) => state?.ball?.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
@@ -48,6 +50,14 @@ const TopBar = () => {
   const cricket = useSelector((state: any) => state?.match?.cricket); // Fix typo
   const tennis = useSelector((state: any) => state?.match?.tennis);
   const soccer = useSelector((state: any) => state?.match?.soccer);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(
+    window.innerWidth >= 768
+  );
+
+  const [openModal, setModalOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const [form] = Form.useForm();
   const menuItemsSideBar: any = [
     {
       key: "in-play",
@@ -217,15 +227,6 @@ const TopBar = () => {
     }
   };
 
-  const [isSidebarVisible, setIsSidebarVisible] = useState(
-    window.innerWidth >= 768
-  );
-
-  const [openModal, setModalOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [form] = Form.useForm();
-
   const supportMenu = (
     <Menu>
       <Menu.Item key="1">
@@ -368,7 +369,7 @@ const TopBar = () => {
     },
 
     {
-      key: "auth",
+      key: "demo-auth",
       label: "Demo Id",
       badge: -1,
       icon: <IdcardFilled style={IconStyle}></IdcardFilled>,
@@ -477,48 +478,85 @@ const TopBar = () => {
                   </p>
                 </div>
               )}
-              {menuItems.map(({ key, label, badge, icon }: any) => (
-                <div
-                  key={key}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
+              {menuItems?.map(({ key, label, badge, icon }: any) => {
+                if (label === "Login" && AUTH?.logIn) {
+                  if (loaction?.pathname === "/") {
+                    return <div
+                      key={key}
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <div
+                        onClick={() => handleTabClick("pages")}
+                        className={`${styles.topbar_item} ${
+                          activeTab === key ? styles.active : ""
+                        }`}
+                      >
+                        {<Pages></Pages>}
+                        
+                      </div>
+                      <p
+                        style={{
+                          whiteSpace: "nowrap",
+                          fontSize: "10px",
+                          color: "white",
+                        }}
+                      >
+                        {"Sites"}
+                      </p>
+                      
+                    </div>;
+                  }else{
+                    return null;
+                  }
+                }
+                return (
                   <div
-                    onClick={() => handleTabClick(key)}
-                    className={`${styles.topbar_item} ${
-                      activeTab === key ? styles.active : ""
-                    }`}
-                  >
-                    {icon}
-                    {badge && badge !== -1 && (
-                      <span className={styles.topbar_badge}>{badge}</span>
-                    )}
-                  </div>
-                  <p
+                    key={key}
                     style={{
-                      whiteSpace: "nowrap",
-                      fontSize: "10px",
-                      color: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {label}
-                  </p>
-                  {label === "Chat Support" && (
-                    <Dropdown
-                      key={key}
-                      overlay={supportMenu}
-                      visible={isDropdownOpen}
-                      onVisibleChange={(flag) => setIsDropdownOpen(flag)}
+                    <div
+                      onClick={() => handleTabClick(key)}
+                      className={`${styles.topbar_item} ${
+                        activeTab === key ? styles.active : ""
+                      }`}
                     >
-                      <div onClick={() => handleTabClick(key)}></div>
-                    </Dropdown>
-                  )}
-                </div>
-              ))}
+                      {icon}
+                      {badge && badge !== -1 && (
+                        <span className={styles.topbar_badge}>{badge}</span>
+                      )}
+                    </div>
+                    <p
+                      style={{
+                        whiteSpace: "nowrap",
+                        fontSize: "10px",
+                        color: "white",
+                      }}
+                    >
+                      {label}
+                    </p>
+                    {label === "Chat Support" && (
+                      <Dropdown
+                        key={key}
+                        overlay={supportMenu}
+                        visible={isDropdownOpen}
+                        onVisibleChange={(flag) => setIsDropdownOpen(flag)}
+                      >
+                        <div onClick={() => handleTabClick(key)}></div>
+                      </Dropdown>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             <button
