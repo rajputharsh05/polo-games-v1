@@ -376,7 +376,7 @@ const Auth = () => {
       <Row
         justify={"space-between"}
         align={"middle"}
-        style={{ marginTop: "3vh" }}
+        style={{ marginTop: "3vh" , marginBottom:"5vh" }}
       >
         {footerIcons?.map((icon, index) => (
           <Col key={index} span={8} className={styles.footerIcon}>
