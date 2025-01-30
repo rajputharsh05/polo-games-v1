@@ -33,6 +33,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { updateBall } from "../../Redux/ballSlice";
 import { updateState } from "../../Redux/loginModalSlice";
+import { AuthStateType } from "../../Redux/AuthSlice";
 
 const TopBar = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
@@ -41,7 +42,8 @@ const TopBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const AUTH = useSelector((state: any) => state?.auth);
+  const AUTH: AuthStateType = useSelector((state: any) => state?.auth);
+  console.log(AUTH.user);
   const ballState = useSelector((state: any) => state?.ball?.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
@@ -303,7 +305,11 @@ const TopBar = () => {
 
   const handleTabClick = (key: any) => {
     if (key === "admin") {
-      setIsOpen(true);
+      if (AUTH?.logIn) {
+        navigate(`/${key}`);
+      } else {
+        setIsOpen(true);
+      }
     } else if (key === "chat-support") {
       setIsDropdownOpen(true);
       setActiveTab(key);
@@ -481,36 +487,42 @@ const TopBar = () => {
               {menuItems?.map(({ key, label, badge, icon }: any) => {
                 if (label === "Login" && AUTH?.logIn) {
                   if (loaction?.pathname === "/") {
-                    return <div
-                      key={key}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
+                    return (
                       <div
-                        onClick={() => handleTabClick("pages")}
-                        className={`${styles.topbar_item} ${
-                          activeTab === key ? styles.active : ""
-                        }`}
-                      >
-                        {<Pages></Pages>}
-                        
-                      </div>
-                      <p
+                        key={key}
                         style={{
-                          whiteSpace: "nowrap",
-                          fontSize: "10px",
-                          color: "white",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "space-between",
                         }}
                       >
-                        {"Sites"}
-                      </p>
-                      
-                    </div>;
-                  }else{
+                        <div
+                          onClick={() => {
+                            {
+                              AUTH?.user !== "Admin"
+                                ? handleTabClick("pages")
+                                : handleTabClick("admin");
+                            }
+                          }}
+                          className={`${styles.topbar_item} ${
+                            activeTab === key ? styles.active : ""
+                          }`}
+                        >
+                          {<Pages></Pages>}
+                        </div>
+                        <p
+                          style={{
+                            whiteSpace: "nowrap",
+                            fontSize: "10px",
+                            color: "white",
+                          }}
+                        >
+                          {AUTH?.user !== "Admin" ? "Sites" : "Control Panel"}
+                        </p>
+                      </div>
+                    );
+                  } else {
                     return null;
                   }
                 }

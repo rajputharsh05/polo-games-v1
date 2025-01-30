@@ -162,7 +162,7 @@ const AdminPage = () => {
 
   const handleImageDelete = async (id: any) => {
     try {
-      const URL = `${BASEURL}/admin/delete_image/${id}`;
+      const URL = `${BASEURL}/bannerimage/delete_image/${id}`;
       const response = await axios.delete(URL, {
         headers: {
           Authorization: `Bearer ${AUTH?.token}`,
@@ -183,7 +183,7 @@ const AdminPage = () => {
 
     try {
       const response = await axios.post(
-        `${BASEURL}/admin/upload-image`,
+        `${BASEURL}/bannerimage/upload-image`,
         formData,
         {
           headers: {
@@ -339,7 +339,6 @@ const AdminPage = () => {
         `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${AUTH?.token}`,
           },
         }
@@ -674,7 +673,7 @@ const AdminPage = () => {
               marginBottom: "1rem",
             }}
           >
-            <Row>Hi Hardy!</Row>
+            <Row>Hey !!</Row>
             <Row>Manage All your Blogs, Agents, and News from here.</Row>
             <Row
               style={{
@@ -977,7 +976,7 @@ const AdminPage = () => {
                         icon={<PlusOutlined />}
                         onClick={() => setMarqueeModal(true)}
                       >
-                        Add Reels
+                        Add Marquee
                       </Button>
                     </Row>
                   }

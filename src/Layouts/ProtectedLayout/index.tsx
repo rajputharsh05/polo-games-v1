@@ -140,10 +140,10 @@ const ProtectedLayout = () => {
           >
             <div style={isSidebarVisible ? {} : { marginTop: "9dvh" }}>
               {outlet}
-              {
-                (location?.pathname === "/admin" || location?.pathname === "/pages" ) && <DynamincFooter></DynamincFooter>
-              }
-              
+              {(location?.pathname === "/admin" ||
+                location?.pathname === "/pages") && (
+                <DynamincFooter></DynamincFooter>
+              )}
             </div>
           </Content>
         </Layout>
