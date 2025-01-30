@@ -21,7 +21,6 @@ import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 
 const Auth = () => {
   const footerIcons = [
@@ -39,7 +38,6 @@ const Auth = () => {
     },
   ];
   const BASEURL = import.meta.env.VITE_BASEURL;
-  const AUTH = useSelector((state: any) => state?.auth);
 
   const [phoneNumber, setPhoneNumber] = useState<number>();
   const [countryCode, setCountryCode] = useState<any>();
