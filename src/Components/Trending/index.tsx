@@ -6,6 +6,8 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import image from "../../../public/images/evolution_gaming_banner.png";
 import { FireFilled } from "@ant-design/icons";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 export const News = () => {
   const location = useLocation();
@@ -198,62 +200,64 @@ export const Blogs = () => {
   );
 };
 
-export const Reels = ({ trackState, setTrackState }: any) => {
-  const [reels, setReels] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
 
-  const BASEURL = import.meta.env.VITE_BASEURL;
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
+export const Reels = ({ trackState, loading, reels }: any) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollThreshold = 20;
+  let touchStartY = 0;
 
-  const getReels = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
-      const data = response.data;
-      console.log(data);
-      setReels(data);
-      setTimeout(() => {
-        setTrackState(false);
-      }, 5000);
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to fetch reels");
-    } finally {
-      setLoading(false);
+  const handleScroll = (event: WheelEvent | TouchEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!containerRef.current) return;
+
+    let deltaY = 0;
+
+    if ((event as WheelEvent).deltaY !== undefined) {
+      deltaY = (event as WheelEvent).deltaY;
+    } else if ((event as TouchEvent).touches) {
+      const touchEvent = event as TouchEvent;
+      const touchY = touchEvent.touches[0].clientY;
+      deltaY = touchStartY - touchY;
     }
+
+    if (Math.abs(deltaY) < scrollThreshold) return;
+
+    event.stopPropagation();
+
+
+    if (deltaY > 0 && currentIndex < reels.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    } else if (deltaY < 0 && currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+
+    containerRef.current.style.pointerEvents = "none";
+    setTimeout(() => {
+      if (containerRef.current) containerRef.current.style.pointerEvents = "auto";
+    }, 500);
+  };
+
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartY = event.touches[0].clientY;
   };
 
   useEffect(() => {
-    getReels();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) {
-            video.play();
-          } else {
-            video.pause();
-
-            video.currentTime = 0;
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
-    });
-
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleScroll, { passive: false });
+      container.addEventListener("touchstart", handleTouchStart, { passive: false });
+      container.addEventListener("touchmove", handleScroll, { passive: false });
+    }
     return () => {
-      videoRefs.current.forEach((video) => {
-        if (video) observer.unobserve(video);
-      });
+      if (container) {
+        container.removeEventListener("wheel", handleScroll);
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleScroll);
+      }
     };
-  }, [reels]);
+  }, [currentIndex, reels.length]);
 
   return (
     <Spin spinning={loading}>
@@ -264,7 +268,7 @@ export const Reels = ({ trackState, setTrackState }: any) => {
             top: 80,
             left: 25,
             width: "10%",
-            height: "20%",
+            height: "60%",
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
@@ -297,102 +301,108 @@ export const Reels = ({ trackState, setTrackState }: any) => {
           </div>
           <style>
             {`
-        @keyframes scroll-down {
-          0% {
-            transform: translateY(100%);
-          }
-          100% {
-            transform: translateY(-200%);
-          }
-        }
-      `}
+              @keyframes scroll-down {
+                0% {
+                  transform: translateY(100%);
+                }
+                100% {
+                  transform: translateY(-200%);
+                }
+              }
+            `}
           </style>
         </div>
       )}
-
-      {location.pathname === "reels" && (
-        <h3
-          style={{
-            padding: "1vh",
-            color: "white",
-            fontSize: "16px",
-          }}
-        >
-          Reels Section
-        </h3>
-      )}
-      <div>
-        {reels?.map((ele, index) => (
-          <div
-            key={index}
-            style={{
-              padding: "1vh",
-              color: "white",
-              fontSize: "16px",
-              display: "flex",
-              justifyContent: "center",
-              position: "relative",
-            }}
-          >
-            <video
-              ref={(el) => (videoRefs.current[index] = el)}
+      <div
+        ref={containerRef}
+        style={{
+          height: "60vh",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <AnimatePresence mode="wait">
+          {reels.length > 0 && (
+            <motion.video
+              key={currentIndex}
+              src={reels[currentIndex]}
               width="100%"
-              height="360"
-              style={{
-                width: "90%",
-                objectFit: "scale-down",
-                borderRadius: "10px",
-              }}
+              height="100%"
               autoPlay
               loop
               muted
               playsInline
               controls
-            >
-              <source src={ele} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        ))}
+              style={{
+                objectFit: "contain",
+                borderRadius: "10px !important",
+              }}
+              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -30 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </Spin>
   );
 };
 
 const Trending = () => {
+  const BASEURL = import.meta.env.VITE_BASEURL;
+  const [reels, setReels] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [trackState, setTrackState] = useState<boolean>(true);
   const ignoreScrollEvent = useRef(false);
   let lastVal = 0;
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    if (ignoreScrollEvent.current) {
-      return; // Skip handling if triggered by programmatic scroll
-    }
-    const container = event.currentTarget;
-    const videoHeight = container.scrollHeight / 2;
-    const scrollPosition = container.scrollTop;
 
-    if (Math.abs(scrollPosition - lastVal) < 100) {
-      return;
+  const getReels = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
+      setReels(response.data);
+      setTimeout(() => {
+        setTrackState(false);
+      }, 5000);
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to fetch reels");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    getReels();
+  }, []);
+
+
+  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    if (ignoreScrollEvent.current) return;
+
+    const container = event.currentTarget;
+    const videoHeight = container.clientHeight;
+    const scrollPosition = container.scrollTop;
 
     const isScrollingDown = scrollPosition > lastVal;
     lastVal = scrollPosition;
 
-    const currentIndex = Math.round(scrollPosition / videoHeight);
-    let targetIndex = currentIndex;
-    ignoreScrollEvent.current = true;
+    let targetIndex = Math.round(scrollPosition / videoHeight);
+
     if (isScrollingDown) {
-      targetIndex = Math.min(
-        currentIndex + 1,
-        Math.floor(container.scrollHeight / videoHeight) - 1
-      ); // Limit to last reel
+      targetIndex = Math.min(targetIndex + 1, reels.length - 1);
     } else {
-      targetIndex = Math.max(currentIndex - 1, 0);
+      targetIndex = Math.max(targetIndex - 1, 0);
     }
-    setTimeout(() => {
-      ignoreScrollEvent.current = false;
-    }, 300);
+
+    ignoreScrollEvent.current = true;
+
 
     container.scrollTo({
       top: targetIndex * videoHeight,
@@ -402,13 +412,18 @@ const Trending = () => {
     if (trackState) {
       setTrackState(false);
     }
+
+    setTimeout(() => {
+      ignoreScrollEvent.current = false;
+    }, 300);
   };
+
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
         <div onScroll={handleScroll} className={styles.imageWrapper}>
-          <Reels trackState={trackState} setTrackState={setTrackState}></Reels>
+          <Reels trackState={trackState} loading={loading} reels={reels}></Reels>
         </div>
       </div>
       <div className={styles.trendingNews}>
