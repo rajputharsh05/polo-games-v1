@@ -13,11 +13,9 @@ export const Reels = ({ trackState, loading, reels }: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStartY, setTouchStartY] = useState(0);
-  const scrollThreshold = 15; 
+  const scrollThreshold = 15;
 
   const handleScroll = (event: WheelEvent | TouchEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
     if (!containerRef.current) return;
 
     let deltaY = 0;
@@ -28,7 +26,14 @@ export const Reels = ({ trackState, loading, reels }: any) => {
       const touchEvent = event as TouchEvent;
       const touchY = touchEvent.touches[0].clientY;
       deltaY = (touchStartY - touchY) * 0.9; // Smooth scrolling effect
+      setTouchStartY(touchY); // Update touch position
     }
+
+    // Prevent default ONLY if scrolling is actually happening
+    // if (Math.abs(deltaY) > 1) {
+      event.preventDefault(); // Important: Prevent default here
+      event.stopPropagation();
+    // }
 
     if (Math.abs(deltaY) < scrollThreshold) return;
 
@@ -37,16 +42,10 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     } else if (deltaY < 0 && currentIndex > 0) {
       setCurrentIndex((prev) => prev - 1);
     }
-
-    containerRef.current.style.pointerEvents = "none";
-    requestAnimationFrame(() => {
-      if (containerRef.current)
-        containerRef.current.style.pointerEvents = "auto";
-    });
   };
 
   const handleTouchStart = (event: TouchEvent) => {
-    if (event.touches.length > 1) return; 
+    if (event.touches.length > 1) return;
     setTouchStartY(event.touches[0].clientY);
   };
 
@@ -55,9 +54,9 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     if (container) {
       container.addEventListener("wheel", handleScroll, { passive: false });
       container.addEventListener("touchstart", handleTouchStart, {
-        passive: true,
-      }); // Passive = true for better responsiveness
-      container.addEventListener("touchmove", handleScroll, { passive: false });
+        passive: false,
+      });
+      container.addEventListener("touchmove", handleScroll, { passive: false }); // Set to false
     }
     return () => {
       if (container) {
