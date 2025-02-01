@@ -131,6 +131,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
+          touchAction: "none",
         }}
       >
         <AnimatePresence mode="wait">
@@ -348,6 +349,7 @@ const SliderComponent = () => {
               position: "relative",
               scrollbarWidth: "none",
               overflowX: "scroll",
+              zIndex:"10000"
             }}
           >
             <Reels
