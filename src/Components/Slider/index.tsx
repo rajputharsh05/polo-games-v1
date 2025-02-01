@@ -346,7 +346,11 @@ const SliderComponent = () => {
           <Col
             onScroll={handleScroll}
             span={14}
-          
+            style={{
+              position: "relative",
+              scrollbarWidth:"none",
+              overflowX:"scroll"
+            }}
           >
             <Reels
               trackState={trackState}
