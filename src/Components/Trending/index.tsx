@@ -337,6 +337,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
               muted
               playsInline
               controls
+              controlsList="nodownload"
               style={{
                 objectFit: "contain",
                 borderRadius: "10px !important",

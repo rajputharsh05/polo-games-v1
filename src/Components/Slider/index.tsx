@@ -8,61 +8,66 @@ import image3 from "../../../public/images/evolution_gaming_banner.png";
 import image4 from "../../../public/images/play_tech_gaming_banner.jpg";
 import image11 from "../../assets/01.jpg";
 import image22 from "../../assets/02.jpg";
+import { motion, AnimatePresence } from "framer-motion";
+export const Reels = ({ trackState, loading, reels }: any) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollThreshold = 20;
+  let touchStartY = 0;
 
-import { useLocation } from "react-router-dom";
+  const handleScroll = (event: WheelEvent | TouchEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!containerRef.current) return;
 
-export const Reels = ({ trackState }: any) => {
-  const BASEURL = import.meta.env.VITE_BASEURL;
-  const [reels, setReels] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const loaction = useLocation();
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]); // Define type for videoRefs
+    let deltaY = 0;
 
-  const getReels = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
-      const data = response.data;
-      console.log(data);
-      setReels(data);
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to fetch reels");
-    } finally {
-      setLoading(false);
+    if ((event as WheelEvent).deltaY !== undefined) {
+      deltaY = (event as WheelEvent).deltaY;
+    } else if ((event as TouchEvent).touches) {
+      const touchEvent = event as TouchEvent;
+      const touchY = touchEvent.touches[0].clientY;
+      deltaY = touchStartY - touchY;
     }
+
+    if (Math.abs(deltaY) < scrollThreshold) return;
+
+    event.stopPropagation();
+
+    if (deltaY > 0 && currentIndex < reels.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+    } else if (deltaY < 0 && currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+
+    containerRef.current.style.pointerEvents = "none";
+    setTimeout(() => {
+      if (containerRef.current)
+        containerRef.current.style.pointerEvents = "auto";
+    }, 500);
+  };
+
+  const handleTouchStart = (event: TouchEvent) => {
+    touchStartY = event.touches[0].clientY;
   };
 
   useEffect(() => {
-    getReels();
-  }, []);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
-          if (entry.isIntersecting) {
-            video.play();
-          } else {
-            video.pause();
-            video.currentTime = 0;
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    videoRefs.current.forEach((video) => {
-      if (video) observer.observe(video);
-    });
-
-    return () => {
-      videoRefs.current.forEach((video) => {
-        if (video) observer.unobserve(video);
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("wheel", handleScroll, { passive: false });
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
       });
+      container.addEventListener("touchmove", handleScroll, { passive: false });
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("wheel", handleScroll);
+        container.removeEventListener("touchstart", handleTouchStart);
+        container.removeEventListener("touchmove", handleScroll);
+      }
     };
-  }, [reels]);
+  }, [currentIndex, reels.length]);
 
   return (
     <Spin spinning={loading}>
@@ -72,11 +77,12 @@ export const Reels = ({ trackState }: any) => {
             position: "absolute",
             top: 80,
             left: 25,
-            width: "17%",
-            height: "20%",
+            width: "10%",
+            height: "60%",
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
+            justifyContent: "center",
             background:
               "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
             color: "white",
@@ -89,15 +95,14 @@ export const Reels = ({ trackState }: any) => {
           <div
             style={{
               display: "flex",
-              gap: "20px",
               animation: "scroll-down 2s ease-in-out infinite",
               whiteSpace: "nowrap",
             }}
           >
             <div
               style={{
-                height: "6dvw",
-                width: "6dvw",
+                height: "4dvw",
+                width: "4dvw",
                 color: "black",
                 background: "rgba(31, 31, 31, 1)",
                 borderRadius: "50%",
@@ -106,60 +111,55 @@ export const Reels = ({ trackState }: any) => {
           </div>
           <style>
             {`
-        @keyframes scroll-down {
-          0% {
-            transform: translateY(120%);
-          }
-          100% {
-            transform: translateY(-120%);
-          }
-        }
-      `}
+              @keyframes scroll-down {
+                0% {
+                  transform: translateY(100%);
+                }
+                100% {
+                  transform: translateY(-200%);
+                }
+              }
+            `}
           </style>
         </div>
       )}
-
-      {loaction.pathname !== "/" && (
-        <h3
-          style={{
-            padding: "1vh",
-            color: "white",
-            fontSize: "16px",
-          }}
-        >
-          Reels Section
-        </h3>
-      )}
-      {reels?.map((ele, index) => (
-        <div
-          key={index}
-          style={{
-            padding: "1vh",
-            color: "white",
-            fontSize: "16px",
-          }}
-        >
-          <video
-            ref={(el) => (videoRefs.current[index] = el)}
-            width="100%"
-            height="360"
-            style={{
-              height: "50vh",
-              width: "100%",
-              objectFit: "cover",
-              borderRadius: "10px",
-            }}
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
-          >
-            <source src={ele} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      ))}
+      <div
+        ref={containerRef}
+        style={{
+         
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          position: "relative",
+        }}
+      >
+        <AnimatePresence mode="wait">
+          {reels.length > 0 && (
+            <motion.video
+              key={currentIndex}
+              src={reels[currentIndex]}
+              width="100%"
+              height="100%"
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls
+              controlsList="nodownload"
+              style={{
+                objectFit: "contain",
+                borderRadius: "10px !important",
+              }}
+              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -30 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </Spin>
   );
 };
@@ -171,7 +171,30 @@ const SliderComponent = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const BASEURL = import.meta.env.VITE_BASEURL;
   const [trackState, setTrackState] = useState<boolean>(true);
+  const [reels, setReels] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const ignoreScrollEvent = useRef(false);
   let lastVal = 0;
+
+  const getReels = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${BASEURL}/reels/get-reels/`);
+      setReels(response.data);
+      setTimeout(() => {
+        setTrackState(false);
+      }, 5000);
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to fetch reels");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getReels();
+  }, []);
 
   const fetchImages = useCallback(async () => {
     try {
@@ -239,39 +262,38 @@ const SliderComponent = () => {
   }, [fetchImages]);
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+    if (ignoreScrollEvent.current) return;
+
     const container = event.currentTarget;
-    const videoHeight = container.scrollHeight / 2;
+    const videoHeight = container.clientHeight;
     const scrollPosition = container.scrollTop;
-    
-    if(Math.abs(scrollPosition - lastVal) < 100) {
-      return;
-    }
 
     const isScrollingDown = scrollPosition > lastVal;
-    lastVal = scrollPosition; 
+    lastVal = scrollPosition;
 
-    const currentIndex = Math.round(scrollPosition / videoHeight);
-    let targetIndex = currentIndex;
-  
+    let targetIndex = Math.round(scrollPosition / videoHeight);
+
     if (isScrollingDown) {
-      targetIndex = Math.min(currentIndex + 1, Math.floor(container.scrollHeight / videoHeight) - 1); // Limit to last reel
+      targetIndex = Math.min(targetIndex + 1, reels.length - 1);
     } else {
-      targetIndex = Math.max(currentIndex - 1, 0);
+      targetIndex = Math.max(targetIndex - 1, 0);
     }
-  
-   
+
+    ignoreScrollEvent.current = true;
+
     container.scrollTo({
       top: targetIndex * videoHeight,
       behavior: "smooth",
     });
-  
+
     if (trackState) {
       setTrackState(false);
     }
-  };
-  
-  
 
+    setTimeout(() => {
+      ignoreScrollEvent.current = false;
+    }, 300);
+  };
   return (
     <div>
       {isSidebarVisible ? (
@@ -281,7 +303,7 @@ const SliderComponent = () => {
               <img
                 src={images[randomIndex]?.src}
                 alt={images[randomIndex]?.alt || "Image"}
-                style={{borderRadius:"2vh"}}
+                style={{ borderRadius: "2vh" }}
                 className="game-image"
               />
             ) : (
@@ -303,30 +325,34 @@ const SliderComponent = () => {
             }}
           >
             <Row style={{ height: "60%" }}>
-              {(
+              {
                 <img
                   src={image11}
                   alt={images[0]?.alt || "Image"}
                   style={{ height: "100%", width: "100%", borderRadius: "5px" }}
                 />
-              ) }
+              }
             </Row>
             <Row style={{ height: "35%" }}>
-              {(
+              {
                 <img
                   src={image22}
                   alt={images[1]?.alt || "Image"}
                   style={{ height: "100%", width: "100%", borderRadius: "5px" }}
-                /> 
-              )}
+                />
+              }
             </Row>
           </Col>
           <Col
             onScroll={handleScroll}
             span={14}
-            style={{ height: "40vh", overflow: "scroll" }}
+          
           >
-            <Reels trackState={trackState}></Reels>
+            <Reels
+              trackState={trackState}
+              loading={loading}
+              reels={reels}
+            ></Reels>
           </Col>
         </Row>
       )}
