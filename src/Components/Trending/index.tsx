@@ -339,7 +339,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
               controls
               controlsList="nodownload"
               style={{
-                objectFit: "contain",
+                objectFit: "cover",
                 borderRadius: "10px !important",
               }}
               initial={{ opacity: 0, scale: 0.8, y: 30 }}
