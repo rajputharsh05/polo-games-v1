@@ -12,8 +12,8 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Reels = ({ trackState, loading, reels }: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollThreshold = 20;
-  let touchStartY = 0;
+  const [touchStartY, setTouchStartY] = useState(0);
+  const scrollThreshold = 15; 
 
   const handleScroll = (event: WheelEvent | TouchEvent) => {
     event.preventDefault();
@@ -27,12 +27,10 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     } else if ((event as TouchEvent).touches) {
       const touchEvent = event as TouchEvent;
       const touchY = touchEvent.touches[0].clientY;
-      deltaY = touchStartY - touchY;
+      deltaY = (touchStartY - touchY) * 0.9; // Smooth scrolling effect
     }
 
     if (Math.abs(deltaY) < scrollThreshold) return;
-
-    event.stopPropagation();
 
     if (deltaY > 0 && currentIndex < reels.length - 1) {
       setCurrentIndex((prev) => prev + 1);
@@ -41,14 +39,15 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     }
 
     containerRef.current.style.pointerEvents = "none";
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (containerRef.current)
         containerRef.current.style.pointerEvents = "auto";
-    }, 500);
+    });
   };
 
   const handleTouchStart = (event: TouchEvent) => {
-    touchStartY = event.touches[0].clientY;
+    if (event.touches.length > 1) return; 
+    setTouchStartY(event.touches[0].clientY);
   };
 
   useEffect(() => {
@@ -56,8 +55,8 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     if (container) {
       container.addEventListener("wheel", handleScroll, { passive: false });
       container.addEventListener("touchstart", handleTouchStart, {
-        passive: false,
-      });
+        passive: true,
+      }); // Passive = true for better responsiveness
       container.addEventListener("touchmove", handleScroll, { passive: false });
     }
     return () => {
@@ -126,7 +125,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
       <div
         ref={containerRef}
         style={{
-         
+          height: "40vh",
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
@@ -333,7 +332,7 @@ const SliderComponent = () => {
                 />
               }
             </Row>
-            <Row style={{ height: "35%" }}>
+            <Row style={{ height: "40%" }}>
               {
                 <img
                   src={image22}
@@ -348,8 +347,8 @@ const SliderComponent = () => {
             span={14}
             style={{
               position: "relative",
-              scrollbarWidth:"none",
-              overflowX:"scroll"
+              scrollbarWidth: "none",
+              overflowX: "scroll",
             }}
           >
             <Reels
