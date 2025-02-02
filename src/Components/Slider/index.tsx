@@ -295,7 +295,7 @@ const SliderComponent = () => {
     }, 300);
   };
   return (
-    <div>
+    <div id="hometop">
       {isSidebarVisible ? (
         <Row justify="center" align="middle" style={{ height: "100%" }}>
           <Col span={24}>

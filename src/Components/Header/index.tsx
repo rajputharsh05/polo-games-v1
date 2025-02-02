@@ -20,7 +20,7 @@ import Home from "../../assets/Home.png";
 import whatsApp from "../../assets/whatsapp.png";
 import AboutUS from "../../assets/about us.png";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import call from "../../assets/call.png";
 import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
@@ -31,20 +31,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
 import { login, logout } from "../../Redux/AuthSlice";
 import logoutIMG from "../../assets/Logout.png";
+interface CountryFlags{
+  name : string,
+  flag : string,
+  dial_code : string
+}
 
 const HeaderComponent = () => {
   const navigate = useNavigate();
   const AUTH = useSelector((state: any) => state?.auth);
   const BASEURL = import.meta.env.VITE_BASEURL;
-
   const location = useLocation();
 
   const dispatch = useDispatch();
   const loginModal = useSelector((state: any) => state?.login?.value);
 
   const [isOpen, setIsOpen] = useState(false);
-
-  // const [loginModal, setLoginModal] = useState(false);
 
   const [enterOtp, setEnterOtp] = useState(false);
 
@@ -60,7 +62,16 @@ const HeaderComponent = () => {
 
   const [logoData, setLogodata] = useState<any>([]);
 
+  const [countries, setCountries] = useState<[CountryFlags]>([
+      {
+        name: "IN",
+        flag: "https://cdn.countryflags.com/thumbs/india/flag-400.png",
+        dial_code: "+91",
+      },
+    ]);
+
   const [form] = Form.useForm();
+  const [loginForm] = Form.useForm();
 
   const AboutUsStyle = {
     marginTop: "2vh",
@@ -101,9 +112,67 @@ const HeaderComponent = () => {
     getLogos();
   }, []);
 
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const [flagsRes, codesRes] = await Promise.all([
+          axios.get(
+            "https://countriesnow.space/api/v0.1/countries/flag/images"
+          ),
+          axios.get("https://countriesnow.space/api/v0.1/countries/codes"),
+        ]);
+
+        const mergedData : [CountryFlags] = flagsRes.data.data.map((flag: any) => {
+          const codeData = codesRes.data.data.find(
+            (code: any) => code.name === flag.name
+          );
+          return {
+            name: codeData?.code,
+            flag: flag.flag,
+            dial_code: codeData ? codeData.dial_code : "",
+          };
+        });
+
+        setCountries(mergedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const options = useMemo(
+    () =>
+      countries?.map((country: CountryFlags) => ({
+        value: country.dial_code,
+        label: (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <img
+              src={country.flag}
+              alt={country.name}
+              width="20"
+              height="15"
+              style={{ borderRadius: "2px" }}
+              loading="lazy"
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+      })),
+    [countries]
+  );
+
   const manageRegistration = async (values: any) => {
     try {
-      const response = await axios.post(`${BASEURL}/user/create_user`, values);
+      const newValues = {
+        ...values,
+        country_code: values?.country_code?.replace("+", ""),
+      };
+      const response = await axios.post(
+        `${BASEURL}/user/create_user`,
+        newValues
+      );
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
         dispatch(updateState(false));
@@ -119,12 +188,13 @@ const HeaderComponent = () => {
   const manageLogin = async (values: any) => {
     try {
       setLoading(true);
+      const country_code = values?.country_code?.replace("+", "");
       const response = await axios.post(
-        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${values?.country_code}`
+        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${country_code}`
       );
       console.log(response);
       setCurrentPhoneNumber(values?.phone_number);
-      setCountryCode(values?.country_code);
+      setCountryCode(country_code);
       setEnterOtp(true);
       message.success("OTP sent successfully");
     } catch (error: any) {
@@ -176,7 +246,14 @@ const HeaderComponent = () => {
             { expires: 1 }
           );
         } else {
-          dispatch(login({ role: response?.data?.role, permissions: {}, userName: response?.data?.name, token: response?.data?.access_token }));
+          dispatch(
+            login({
+              role: response?.data?.role,
+              permissions: {},
+              userName: response?.data?.name,
+              token: response?.data?.access_token,
+            })
+          );
         }
 
         if (response?.data?.role !== "User") {
@@ -305,7 +382,11 @@ const HeaderComponent = () => {
           }}
           className={styles.Hover}
           onClick={() => {
-            AUTH?.logIn ? location?.pathname !== "/" ? navigate("/") : navigate("pages") : navigate("/")
+            AUTH?.logIn
+              ? location?.pathname !== "/"
+                ? navigate("/")
+                : navigate("pages")
+              : navigate("/");
           }}
         >
           <img
@@ -313,9 +394,11 @@ const HeaderComponent = () => {
             alt="Play Icon"
             style={{ width: "20px", marginRight: "0.5rem" }}
           />
-          {
-            AUTH?.logIn ? location?.pathname !== "/" ? "Home" : "Sites" : "Home"
-          }
+          {AUTH?.logIn
+            ? location?.pathname !== "/"
+              ? "Home"
+              : "Sites"
+            : "Home"}
         </div>
         {location.pathname !== "/admin" && (
           <div className={styles.searchBarWrapper}>
@@ -593,17 +676,37 @@ const HeaderComponent = () => {
                   <Spin spinning={loading}>
                     <Form
                       style={{ color: "white" }}
-                      form={form}
+                      form={loginForm}
                       onFinish={handleFormSubmit}
                     >
                       <Row justify={"space-around"}>
-                        <Col span={10}>
+                        <Col span={12}>
                           <Form.Item
                             name="country_code"
                             label="Country Code"
-                            rules={[{ required: true }]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please select a country code!",
+                              },
+                            ]}
                           >
-                            <Input placeholder="+ 91" />
+                            {loading ? (
+                              <Spin />
+                            ) : (
+                              <Select
+                                placeholder="Select country"
+                                showSearch
+                                optionFilterProp="label"
+                                filterOption={(input, option) =>
+                                  option?.label.props.children
+                                    .join("")
+                                    .toLowerCase()
+                                    .includes(input.toLowerCase())
+                                }
+                                options={options}
+                              />
+                            )}
                           </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -725,11 +828,26 @@ const HeaderComponent = () => {
                           rules={[
                             {
                               required: true,
-                              message: "Country Code is required",
+                              message: "Please select a country code!",
                             },
                           ]}
                         >
-                          <Input placeholder="+1" />
+                          {loading ? (
+                            <Spin />
+                          ) : (
+                            <Select
+                              placeholder="Select country"
+                              showSearch
+                              optionFilterProp="label"
+                              filterOption={(input, option) =>
+                                option?.label.props.children
+                                  .join("")
+                                  .toLowerCase()
+                                  .includes(input.toLowerCase())
+                              }
+                              options={options}
+                            />
+                          )}
                         </Form.Item>
                       </Col>
 
@@ -743,9 +861,9 @@ const HeaderComponent = () => {
                               message: "Phone Number is required",
                             },
                             {
-                              pattern: /^[0-9]{10,15}$/,
+                              pattern: /^[0-9]{8,13}$/,
                               message:
-                                "Phone Number must be 10 to 15 digits long",
+                                "Phone Number must be 8 to 13 digits long",
                             },
                           ]}
                         >
@@ -857,52 +975,6 @@ const HeaderComponent = () => {
               </>
             )}
           </Row>
-          {/* <Row justify={"center"} align={"middle"} style={{ marginTop: "2vh" }}>
-            {loginOrRegister ? (
-              <Row justify={"space-between"} align={"middle"}>
-                <Button
-                  type="primary"
-                  style={{
-                    color: "white !important",
-                    background: "rgba(12, 46, 55, 1)",
-                    border: "1px solid black",
-                    borderRadius: "1vh",
-                  }}
-                  onClick={() => setLoginOrRegister(false)}
-                >
-                  Already have an account?
-                </Button>
-                <img
-                  src={whatsApp}
-                  alt="WhatsApp"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    const phoneNumber = "7992476139";
-                    const message = "Hello, I would like to connect with you!";
-                    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                      message
-                    )}`;
-                    window.open(whatsappURL, "_blank");
-                  }}
-                />
-              </Row>
-            ) : (
-              <>
-                <Button
-                  type="primary"
-                  style={{
-                    color: "white !important",
-                    background: "rgba(12, 46, 55, 1)",
-                    border: "1px solid black",
-                    borderRadius: "1vh",
-                  }}
-                  onClick={() => setLoginOrRegister(true)}
-                >
-                  Don't have a account
-                </Button>
-              </>
-            )}
-          </Row> */}
         </Card>
       </Modal>
     </Row>

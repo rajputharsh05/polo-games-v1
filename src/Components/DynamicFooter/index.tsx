@@ -25,7 +25,7 @@ const DynamincFooter = () => {
         <span>In Play</span>
       </div>
       <div onClick={() => {
-        navigate("/")
+        navigate("/#hometop")
       }} className={`${styles.footer_item} ${styles.top_icon}`}>
         <HomeOutlined className={styles.footer_icon} />
       </div>

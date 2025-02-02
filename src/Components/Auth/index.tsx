@@ -16,12 +16,18 @@ import safe from "../../assets/100_safe.png";
 import protectedIcon from "../../assets/protected.png";
 import plue from "../../assets/18_.png";
 import { WhatsAppOutlined } from "@ant-design/icons";
-import { Code, KeySharp } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { KeySharp } from "@mui/icons-material";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+interface CountryFlags{
+  name : string,
+  flag : string,
+  dial_code : string
+}
 
 const Auth = () => {
   const footerIcons = [
@@ -51,6 +57,13 @@ const Auth = () => {
   const [Otpform] = Form.useForm();
   const navigate = useNavigate();
   const AUTH = useSelector((state: any) => state?.auth);
+  const [countries, setCountries] = useState<[CountryFlags]>([
+    {
+      name: "IN",
+      flag: "https://cdn.countryflags.com/thumbs/india/flag-400.png",
+      dial_code: "+91",
+    },
+  ]);
 
   useEffect(() => {
     if (AUTH?.logIn) {
@@ -61,12 +74,13 @@ const Auth = () => {
   const manageLogin = async (values: any) => {
     try {
       setLoading(true);
+      const country_code = values?.country_code?.replace("+", "");
       const response = await axios.post(
-        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${values?.country_code}`
+        `${BASEURL}/otp/send-otp?phone_number=${values?.phone_number}&country_code=${country_code}`
       );
       if (response?.status === 200) {
         setPhoneNumber(values?.phone_number);
-        setCountryCode(values?.country_code);
+        setCountryCode(country_code);
         message.success("OTP sent successfully");
         setOtpModal(true);
       }
@@ -90,9 +104,13 @@ const Auth = () => {
         form.resetFields();
         Cookies.set("userRole", response?.data?.role, { expires: 1 });
         Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
-        Cookies.set("permissions", JSON.stringify(response?.data?.permissions), {
-          expires: 1,
-        });
+        Cookies.set(
+          "permissions",
+          JSON.stringify(response?.data?.permissions),
+          {
+            expires: 1,
+          }
+        );
         Cookies.set("userName", response?.data?.name, { expires: 1 });
         if (response?.data?.role !== "User") {
           navigate("/admin");
@@ -109,7 +127,11 @@ const Auth = () => {
 
   const handleFormSubmit = async (values: any) => {
     try {
-      const response = await axios.post(`${BASEURL}/user/create_user`, values);
+      const newValues = {
+        ...values,
+        country_code: values?.country_code?.replace("+", ""),
+      };
+      const response = await axios.post(`${BASEURL}/user/create_user`, newValues);
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
         setIsLoginPage(!isLoginPage);
@@ -120,6 +142,59 @@ const Auth = () => {
       message.error("Unable to create Agent");
     }
   };
+
+
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const [flagsRes, codesRes] = await Promise.all([
+          axios.get(
+            "https://countriesnow.space/api/v0.1/countries/flag/images"
+          ),
+          axios.get("https://countriesnow.space/api/v0.1/countries/codes"),
+        ]);
+
+        const mergedData : [CountryFlags] = flagsRes.data.data.map((flag: any) => {
+          const codeData = codesRes.data.data.find(
+            (code: any) => code.name === flag.name
+          );
+          return {
+            name: codeData?.code,
+            flag: flag.flag,
+            dial_code: codeData ? codeData.dial_code : "",
+          };
+        });
+
+        setCountries(mergedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const options = useMemo(
+    () =>
+      countries.map((country: CountryFlags) => ({
+        value: country.dial_code,
+        label: (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <img
+              src={country?.flag}
+              alt={country?.name}
+              width="20"
+              height="15"
+              style={{ borderRadius: "2px" }}
+              loading="lazy"
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+      })),
+    [countries]
+  );
 
   return (
     <div className={styles.authWrapper}>
@@ -152,28 +227,30 @@ const Auth = () => {
                 <Col span={6}>
                   <Form.Item
                     name="country_code"
-                    label={"code"}
+                    label="Code"
                     rules={[
                       {
                         required: true,
-                        message: "country code is required",
+                        message: "Please select a country code!",
                       },
                     ]}
-                    style={{
-                      fontFamily: "Popines",
-                      fontSize: "10px",
-                      fontWeight: "600",
-                    }}
                   >
-                    <Input
-                      prefix={<Code />}
-                      placeholder={"+91"}
-                      style={{
-                        borderRadius: 24,
-                        fontSize: 16,
-                        backgroundColor: "white",
-                      }}
-                    />
+                    {loading ? (
+                      <Spin />
+                    ) : (
+                      <Select
+                        placeholder="Select country"
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                          option?.label.props.children
+                            .join("")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={options}
+                      />
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={16}>
@@ -285,15 +362,30 @@ const Auth = () => {
                 <Col span={10}>
                   <Form.Item
                     name="country_code"
-                    label="Country Code"
+                    label="Code"
                     rules={[
                       {
                         required: true,
-                        message: "Country Code is required",
+                        message: "Please select a country code!",
                       },
                     ]}
                   >
-                    <Input placeholder="+1" />
+                    {loading ? (
+                      <Spin />
+                    ) : (
+                      <Select
+                        placeholder="Select country"
+                        showSearch
+                        optionFilterProp="label"
+                        filterOption={(input, option) =>
+                          option?.label.props.children
+                            .join("")
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={options}
+                      />
+                    )}
                   </Form.Item>
                 </Col>
 
