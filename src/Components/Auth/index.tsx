@@ -17,10 +17,11 @@ import protectedIcon from "../../assets/protected.png";
 import plue from "../../assets/18_.png";
 import { WhatsAppOutlined } from "@ant-design/icons";
 import { Code, KeySharp } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Auth = () => {
   const footerIcons = [
@@ -49,6 +50,13 @@ const Auth = () => {
   const [form] = Form.useForm();
   const [Otpform] = Form.useForm();
   const navigate = useNavigate();
+  const AUTH = useSelector((state: any) => state?.auth);
+
+  useEffect(() => {
+    if (AUTH?.logIn) {
+      navigate("/pages");
+    }
+  }, []);
 
   const manageLogin = async (values: any) => {
     try {
@@ -376,7 +384,7 @@ const Auth = () => {
       <Row
         justify={"space-between"}
         align={"middle"}
-        style={{ marginTop: "3vh" , marginBottom:"5vh" }}
+        style={{ marginTop: "3vh", marginBottom: "5vh" }}
       >
         {footerIcons?.map((icon, index) => (
           <Col key={index} span={8} className={styles.footerIcon}>
@@ -460,7 +468,6 @@ const Auth = () => {
                   style={{ backgroundColor: "#73d13d", color: "white" }}
                   type="default"
                   htmlType="submit"
-
                 >
                   Verify OTP
                 </Button>

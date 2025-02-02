@@ -47,7 +47,7 @@ const ProtectedLayout = () => {
           })
         );
 
-        if (userRole !== "Admin" && location.pathname === "/admin") {
+        if (userRole !== "Admin" && userRole !== "Superadmin" && location.pathname === "/admin") {
           navigate("/");
           message.warning(
             "You don't have access to this page. Please login first with proper credentials."

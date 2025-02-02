@@ -31,8 +31,8 @@ export const Reels = ({ trackState, loading, reels }: any) => {
 
     // Prevent default ONLY if scrolling is actually happening
     // if (Math.abs(deltaY) > 1) {
-      event.preventDefault(); // Important: Prevent default here
-      event.stopPropagation();
+    event.preventDefault(); // Important: Prevent default here
+    event.stopPropagation();
     // }
 
     if (Math.abs(deltaY) < scrollThreshold) return;
@@ -47,23 +47,25 @@ export const Reels = ({ trackState, loading, reels }: any) => {
   const handleTouchStart = (event: TouchEvent) => {
     if (event.touches.length > 1) return;
     setTouchStartY(event.touches[0].clientY);
+    event.preventDefault();
   };
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container) {
-      container.addEventListener("wheel", handleScroll, { passive: false });
-      container.addEventListener("touchstart", handleTouchStart, {
-        passive: false,
-      });
-      container.addEventListener("touchmove", handleScroll, { passive: false }); // Set to false
-    }
+    if (!container) return;
+
+    container.addEventListener("wheel", handleScroll, { passive: false });
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+    container.addEventListener("touchmove", handleScroll, { passive: false });
+    container.addEventListener("touchend", handleScroll, { passive: false }); // NEW
+
     return () => {
-      if (container) {
-        container.removeEventListener("wheel", handleScroll);
-        container.removeEventListener("touchstart", handleTouchStart);
-        container.removeEventListener("touchmove", handleScroll);
-      }
+      container.removeEventListener("wheel", handleScroll);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleScroll);
+      container.removeEventListener("touchend", handleScroll);
     };
   }, [currentIndex, reels.length]);
 
@@ -86,7 +88,6 @@ export const Reels = ({ trackState, loading, reels }: any) => {
             color: "white",
             borderRadius: "10px",
             padding: "5px",
-            zIndex: 10,
             opacity: "1",
           }}
         >
@@ -342,16 +343,7 @@ const SliderComponent = () => {
               }
             </Row>
           </Col>
-          <Col
-            onScroll={handleScroll}
-            span={14}
-            style={{
-              position: "relative",
-              scrollbarWidth: "none",
-              overflowX: "scroll",
-              zIndex:"10000"
-            }}
-          >
+          <Col onScroll={handleScroll} span={14}>
             <Reels
               trackState={trackState}
               loading={loading}

@@ -32,7 +32,6 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBall } from "../../Redux/ballSlice";
-import { updateState } from "../../Redux/loginModalSlice";
 import { AuthStateType } from "../../Redux/AuthSlice";
 
 const TopBar = () => {
@@ -43,7 +42,6 @@ const TopBar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const AUTH: AuthStateType = useSelector((state: any) => state?.auth);
-  console.log(AUTH.user);
   const ballState = useSelector((state: any) => state?.ball?.value);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { Sider } = Layout;
@@ -225,7 +223,8 @@ const TopBar = () => {
     if (res != -1) {
       navigation(`/${data?.key}`);
     } else {
-      dispatch(updateState(true));
+      navigation(`/auth`);
+      dispatch(updateBall(!ballState));
     }
   };
 

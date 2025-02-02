@@ -52,22 +52,33 @@ const AdminPage = () => {
   const [webSiteModal, setWebsiteModal] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const GETREELSURL: string = `${BASEURL}/reels/get-reels/`;
-  const GETBLOGSURL: string = `${BASEURL}/blogs`;
+  const GETBLOGSURL: string = `${BASEURL.replace("http://", "https://")}/blogs`;
   const GETIMAGELINK: string = `${BASEURL}/imagelink/items/`;
   const GETTEXTURL: string = `${BASEURL}/marqueetext/statements`;
   const GETUSERURL: string = `${BASEURL}/user/get_all_users`;
   const GETADMINIMAGEURL: string = `${BASEURL}/bannerimage/images`;
   const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs`;
 
+
+
+
+
+
+
+
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
 
+  const [MarqeeForm] = Form.useForm();
+  const [ClientForm] = Form.useForm();
+  const [BlogForm] = Form.useForm();
   const [form] = Form.useForm();
 
   const validateUser = (type: string) => {
     if (
-      AUTH.permissions[type]?.read === true &&
-      AUTH.permissions[type]?.write === true &&
-      AUTH.permissions[type]?.delete === true
+      (AUTH.permissions[type]?.read === true &&
+        AUTH.permissions[type]?.write === true &&
+        AUTH.permissions[type]?.delete === true) ||
+      AUTH?.user === "Superadmin"
     ) {
       return true;
     } else {
@@ -84,29 +95,30 @@ const AdminPage = () => {
   const getData = async (url: string, type: string) => {
     try {
       const response = await axios.get(url);
-      const data = response.data;
-
-      switch (type) {
-        case "images":
-          setUploadedImages(data);
-          break;
-        case "agents":
-          setAgents(data);
-          break;
-        case "blogs":
-          setBlogs(data);
-          break;
-        case "reels":
-          setReels(data);
-          break;
-        case "marqueetext":
-          setText(data);
-          break;
-        case "imagelink":
-          setWebsites(data);
-          break;
-        default:
-          console.warn(`Unhandled type: ${type}`);
+      if (response?.status === 200) {
+        const data = response.data;
+        switch (type) {
+          case "images":
+            setUploadedImages(data);
+            break;
+          case "agents":
+            setAgents(data);
+            break;
+          case "blogs":
+            setBlogs(data);
+            break;
+          case "reels":
+            setReels(data);
+            break;
+          case "marqueetext":
+            setText(data);
+            break;
+          case "imagelink":
+            setWebsites(data);
+            break;
+          default:
+            console.warn(`Unhandled type: ${type}`);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -263,13 +275,31 @@ const AdminPage = () => {
     if (type === "images") {
       handleImageDelete(item?.id);
     } else if (type === "agents") {
-      setAgents(agents.filter((agent) => agent !== item));
       handleDeteleAgent(item?.phone_number);
     } else if (type === "blogs") {
       handleBlogsDelete(item?.id);
+    } else if (type === "websites") {
+      handleWebSiteDelete(item?.id);
     }
   };
 
+  const handleWebSiteDelete = async (id: any) => {
+    try {
+      const response = await axios.delete(`${BASEURL}/imagelink/items/${id}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response?.status === 200) {
+        message.success("Website Deleted Successfully");
+        getData(GETIMAGELINK, "imagelink");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to delete the website");
+    }
+  };
 
   const handleAgentSubmit = async (values: any) => {
     try {
@@ -392,15 +422,20 @@ const AdminPage = () => {
     formData.append("image", imageFile);
 
     try {
-      const response = await axios.post(`${BASEURL}/upload`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
+      const response = await axios.post(
+        `${BASEURL}/imagelink/create_items/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
 
-      message.success("Data uploaded successfully!");
-      console.log(response.data);
+      if (response.status === 200) {
+        getData(GETIMAGELINK, "imagelink");
+        message.success("Data uploaded successfully!");
+      }
     } catch (error) {
       message.error("Failed to upload data.");
       console.error(error);
@@ -827,7 +862,7 @@ const AdminPage = () => {
                     >
                       <Form
                         style={{ color: "white" }}
-                        form={form}
+                        form={ClientForm}
                         onFinish={handleAgentSubmit}
                       >
                         <Form.Item
@@ -1052,7 +1087,7 @@ const AdminPage = () => {
         >
           <Form
             style={{ color: "white", marginTop: "3vh" }}
-            form={form}
+            form={BlogForm}
             onFinish={(values) => createData(values, CREATEBLOGSURL, "blogs")}
           >
             <Form.Item
@@ -1201,7 +1236,7 @@ const AdminPage = () => {
           <Row justify={"center"}>
             <Form
               style={{ color: "white", marginTop: "3vh" }}
-              form={form}
+              form={MarqeeForm}
               onFinish={handleMarqueeSubmit}
             >
               <Form.Item
