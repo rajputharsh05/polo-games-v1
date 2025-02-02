@@ -9,121 +9,35 @@ import image4 from "../../../public/images/play_tech_gaming_banner.jpg";
 import image11 from "../../assets/01.jpg";
 import image22 from "../../assets/02.jpg";
 import { motion, AnimatePresence } from "framer-motion";
-export const Reels = ({ trackState, loading, reels }: any) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+
+export const Reels = ({ loading, reels }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [touchStartY, setTouchStartY] = useState(0);
-  const scrollThreshold = 15;
+  const touchStartY = useRef<number | null>(null);
+  const scrollThreshold = 50; 
 
-  const handleScroll = (event: WheelEvent | TouchEvent) => {
-    if (!containerRef.current) return;
-
-    let deltaY = 0;
-
-    if ((event as WheelEvent).deltaY !== undefined) {
-      deltaY = (event as WheelEvent).deltaY;
-    } else if ((event as TouchEvent).touches) {
-      const touchEvent = event as TouchEvent;
-      const touchY = touchEvent.touches[0].clientY;
-      deltaY = (touchStartY - touchY) * 0.9; // Smooth scrolling effect
-      setTouchStartY(touchY); // Update touch position
-    }
-
-    // Prevent default ONLY if scrolling is actually happening
-    // if (Math.abs(deltaY) > 1) {
-    event.preventDefault(); // Important: Prevent default here
-    event.stopPropagation();
-    // }
-
-    if (Math.abs(deltaY) < scrollThreshold) return;
-
-    if (deltaY > 0 && currentIndex < reels.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
-    } else if (deltaY < 0 && currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
-    }
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    touchStartY.current = event.touches[0].clientY;
   };
 
-  const handleTouchStart = (event: TouchEvent) => {
-    if (event.touches.length > 1) return;
-    setTouchStartY(event.touches[0].clientY);
-    event.preventDefault();
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStartY.current) return;
+
+    const touchY = event.touches[0].clientY;
+    const deltaY = touchStartY.current - touchY;
+
+    if (Math.abs(deltaY) > scrollThreshold) {
+      if (deltaY > 0 && currentIndex < reels.length - 1) {
+        setCurrentIndex((prev) => prev + 1);
+      } else if (deltaY < 0 && currentIndex > 0) {
+        setCurrentIndex((prev) => prev - 1);
+      }
+      touchStartY.current = null; 
+    }
   };
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    container.addEventListener("wheel", handleScroll, { passive: false });
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: false,
-    });
-    container.addEventListener("touchmove", handleScroll, { passive: false });
-    container.addEventListener("touchend", handleScroll, { passive: false }); // NEW
-
-    return () => {
-      container.removeEventListener("wheel", handleScroll);
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleScroll);
-      container.removeEventListener("touchend", handleScroll);
-    };
-  }, [currentIndex, reels.length]);
 
   return (
     <Spin spinning={loading}>
-      {trackState && !loading && (
-        <div
-          style={{
-            position: "absolute",
-            top: 80,
-            left: 25,
-            width: "10%",
-            height: "60%",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background:
-              "linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #999999 100%)",
-            color: "white",
-            borderRadius: "10px",
-            padding: "5px",
-            opacity: "1",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              animation: "scroll-down 2s ease-in-out infinite",
-              whiteSpace: "nowrap",
-            }}
-          >
-            <div
-              style={{
-                height: "4dvw",
-                width: "4dvw",
-                color: "black",
-                background: "rgba(31, 31, 31, 1)",
-                borderRadius: "50%",
-              }}
-            ></div>
-          </div>
-          <style>
-            {`
-              @keyframes scroll-down {
-                0% {
-                  transform: translateY(100%);
-                }
-                100% {
-                  transform: translateY(-200%);
-                }
-              }
-            `}
-          </style>
-        </div>
-      )}
       <div
-        ref={containerRef}
         style={{
           height: "40vh",
           overflow: "hidden",
@@ -134,6 +48,8 @@ export const Reels = ({ trackState, loading, reels }: any) => {
           position: "relative",
           touchAction: "none",
         }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
       >
         <AnimatePresence mode="wait">
           {reels.length > 0 && (
@@ -150,12 +66,13 @@ export const Reels = ({ trackState, loading, reels }: any) => {
               controlsList="nodownload"
               style={{
                 objectFit: "cover",
-                borderRadius: "10px !important",
+                borderRadius: "10px",
               }}
-              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              onCanPlayThrough={(e) => e.currentTarget.play()}
+              initial={{ opacity: 0, scale: 0.9, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: -30 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              exit={{ opacity: 0, scale: 0.9, y: -30 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
             />
           )}
         </AnimatePresence>
