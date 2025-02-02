@@ -6,6 +6,7 @@ export type AuthStateType = {
     user: string | null,
     permissions: any,
     token : string,
+    userName : string,
 } 
 
 const initialState : AuthStateType = {
@@ -13,6 +14,7 @@ const initialState : AuthStateType = {
     user: null,
     permissions: {},
     token : "",
+    userName : "",
 }
 
 
@@ -25,6 +27,7 @@ const AuthSlice = createSlice({
             state.user = action.payload.role;
             state.permissions = action.payload.permissions;
             state.token = action.payload.token;
+            state.userName = action.payload.userName;
         },
         logout: (state) => {
             state.logIn = false;

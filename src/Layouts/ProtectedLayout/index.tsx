@@ -25,6 +25,7 @@ const ProtectedLayout = () => {
     const userRole = Cookies.get("userRole");
     const userToken = Cookies.get("userToken");
     const userPermissions = Cookies.get("permissions");
+    const userName = Cookies.get("userName");
 
     if (userRole && userToken) {
       try {
@@ -35,7 +36,7 @@ const ProtectedLayout = () => {
             parsedPermissions = JSON.parse(userPermissions);
           } catch (error) {
             console.error("Error parsing permissions:", error);
-            parsedPermissions = {}; // Fallback to empty object
+            parsedPermissions = {}; 
           }
         }
 
@@ -44,6 +45,7 @@ const ProtectedLayout = () => {
             role: userRole,
             permissions: parsedPermissions,
             token: userToken,
+            userName: userName,
           })
         );
 

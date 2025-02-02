@@ -59,13 +59,6 @@ const AdminPage = () => {
   const GETADMINIMAGEURL: string = `${BASEURL}/bannerimage/images`;
   const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs`;
 
-
-
-
-
-
-
-
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
 
   const [MarqeeForm] = Form.useForm();
@@ -305,7 +298,6 @@ const AdminPage = () => {
     try {
       const response = await axios.post(`${BASEURL}/user/create_user`, values, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${AUTH?.token}`,
         },
       });
@@ -708,7 +700,7 @@ const AdminPage = () => {
               marginBottom: "1rem",
             }}
           >
-            <Row>Hey !!</Row>
+            <Row>Hey  {AUTH?.userName} !!</Row>
             <Row>Manage All your Blogs, Agents, and News from here.</Row>
             <Row
               style={{
@@ -717,7 +709,11 @@ const AdminPage = () => {
                 fontSize: "clamp(20px, 3vw, 25px)",
               }}
             >
-              ADMIN
+              {
+                AUTH?.user === "Superadmin"
+                  ? "SUPERADMIN"
+                  : "Admin"
+              }
             </Row>
           </Col>
           <Col

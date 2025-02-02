@@ -159,13 +159,14 @@ const HeaderComponent = () => {
 
         Cookies.set("userRole", response?.data?.role, { expires: 1 });
         Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
-
+        Cookies.set("userName", response?.data?.name, { expires: 1 });
         if (response?.data?.role === "Admin") {
           dispatch(
             login({
               role: response?.data?.role,
               permissions: response?.data?.permissions,
               token: response?.data?.access_token,
+              userName: response?.data?.name,
             })
           );
 
@@ -175,7 +176,7 @@ const HeaderComponent = () => {
             { expires: 1 }
           );
         } else {
-          dispatch(login({ role: response?.data?.role, permissions: {} }));
+          dispatch(login({ role: response?.data?.role, permissions: {}, userName: response?.data?.name, token: response?.data?.access_token }));
         }
 
         if (response?.data?.role !== "User") {

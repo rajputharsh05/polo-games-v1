@@ -90,6 +90,10 @@ const Auth = () => {
         form.resetFields();
         Cookies.set("userRole", response?.data?.role, { expires: 1 });
         Cookies.set("userToken", response?.data?.access_token, { expires: 1 });
+        Cookies.set("permissions", JSON.stringify(response?.data?.permissions), {
+          expires: 1,
+        });
+        Cookies.set("userName", response?.data?.name, { expires: 1 });
         if (response?.data?.role !== "User") {
           navigate("/admin");
         } else if (response?.data?.role === "User") {
