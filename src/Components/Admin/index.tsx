@@ -10,6 +10,9 @@ import {
   message,
   Card,
   Table,
+  InputNumber,
+  DatePicker,
+  Spin,
 } from "antd";
 import {
   UploadOutlined,
@@ -20,7 +23,9 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import {
+  Facebook,
   ImageAspectRatio,
+  LocalOffer,
   RowingOutlined,
   TextSnippet,
   WebStories,
@@ -34,8 +39,23 @@ import { AuthStateType } from "../../Redux/AuthSlice";
 import { RootState } from "../../Redux/Store";
 
 const AdminPage = () => {
+  type offerType = {
+    title: string;
+    description: string;
+    discount_percentage: number;
+    valid_from: string;
+    valid_until: string;
+    id: number;
+    image_base64: string;
+  };
+
+  type SocialMediaType = {
+    id: number;
+    link: string;
+    image_base64: string;
+  };
+
   const BASEURL = import.meta.env.VITE_BASEURL;
-  const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState("bannerimage");
   const [uploadedImages, setUploadedImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
@@ -51,388 +71,34 @@ const AdminPage = () => {
   const [text, setText] = useState([]);
   const [webSiteModal, setWebsiteModal] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [offers, setOffers] = useState<[offerType]>();
+  const [socialMedia, setSocialMedia] = useState<[SocialMediaType]>();
+  const [offerModal, setOfferModal] = useState<boolean>(false);
+  const [socialModal, setSocialModal] = useState<boolean>(false);
   const GETREELSURL: string = `${BASEURL}/reels/get-reels/`;
-  const GETBLOGSURL: string = `${BASEURL.replace("http://", "https://")}/blogs`;
+  const GETBLOGSURL: string = `${BASEURL}/blogs/`;
   const GETIMAGELINK: string = `${BASEURL}/imagelink/items/`;
   const GETTEXTURL: string = `${BASEURL}/marqueetext/statements`;
   const GETUSERURL: string = `${BASEURL}/user/get_all_users`;
   const GETADMINIMAGEURL: string = `${BASEURL}/bannerimage/images`;
-  const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs`;
-
+  const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs/`;
+  const GETOFFERURL: string = `${BASEURL}/offers/`;
+  const GETSOCIALMEDIAURL: string = `${BASEURL}/socialmedia/items/`;
+  const DELETEIMAGEURL: string = `${BASEURL}/bannerimage/delete_image/`;
+  const DELETEBLOGSURL: string = `${BASEURL}/blogs/`;
+  const DELETEOFFERURL: string = `${BASEURL}/offers/`;
+  const DELETESOCIALURL: string = `${BASEURL}/socialmedia/items/`;
+  const DELETEAGENTURL: string = `${BASEURL}/user/delete_user_by_phone_number/`;
+  const DELETEWEBSITEURl: string = `${BASEURL}/imagelink/items/`;
+  const DELETEREELURL: string = `${BASEURL}/reels/delete-reel/`;
+  const DELETEMARQUEEURL: string = `${BASEURL}/marqueetext/delete-statement/`;
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
-
   const [MarqeeForm] = Form.useForm();
   const [ClientForm] = Form.useForm();
   const [BlogForm] = Form.useForm();
   const [form] = Form.useForm();
-
-  const validateUser = (type: string) => {
-    if (
-      (AUTH.permissions[type]?.read === true &&
-        AUTH.permissions[type]?.write === true &&
-        AUTH.permissions[type]?.delete === true) ||
-      AUTH?.user === "Superadmin"
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const openModal = (type: any) => {
-    console.log(modalVisible);
-    setModalType(type);
-    setModalVisible(true);
-  };
-
-  const getData = async (url: string, type: string) => {
-    try {
-      const response = await axios.get(url);
-      if (response?.status === 200) {
-        const data = response.data;
-        switch (type) {
-          case "images":
-            setUploadedImages(data);
-            break;
-          case "agents":
-            setAgents(data);
-            break;
-          case "blogs":
-            setBlogs(data);
-            break;
-          case "reels":
-            setReels(data);
-            break;
-          case "marqueetext":
-            setText(data);
-            break;
-          case "imagelink":
-            setWebsites(data);
-            break;
-          default:
-            console.warn(`Unhandled type: ${type}`);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const createData = async (values: any, url: string, type: string) => {
-    try {
-      const response = await axios.post(url, values, {
-        headers: {
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
-      if (response?.status === 200) {
-        message.success("Added Blogs SuccessFully");
-        switch (type) {
-          case "images":
-            break;
-          case "agents":
-            break;
-          case "blogs":
-            getData(GETBLOGSURL, "blogs");
-            setIsAddBlogs(false);
-            break;
-          case "reels":
-            break;
-          case "marqueetext":
-            break;
-          case "imagelink":
-            break;
-          default:
-            console.warn(`Unhandled type: ${type}`);
-        }
-        getData(GETBLOGSURL, "blogs");
-        setIsAddBlogs(false);
-        form.resetFields();
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      form.resetFields();
-    }
-  };
-
-  useEffect(() => {
-    getData(GETBLOGSURL, "blogs");
-    getData(GETUSERURL, "agents");
-    getData(GETADMINIMAGEURL, "images");
-    getData(GETREELSURL, "reels");
-    getData(GETTEXTURL, "marqueetext");
-    getData(GETIMAGELINK, "imagelink");
-  }, []);
-
-  const handleImageDelete = async (id: any) => {
-    try {
-      const URL = `${BASEURL}/bannerimage/delete_image/${id}`;
-      const response = await axios.delete(URL, {
-        headers: {
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
-      if (response?.status === 200) {
-        message.success("Banner removed Successfully");
-        getData(GETADMINIMAGEURL, "images");
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleImageUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await axios.post(
-        `${BASEURL}/bannerimage/upload-image`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        getData(GETADMINIMAGEURL, "images");
-        message.success("Banner uploaded successfully!");
-      } else {
-        message.error("Failed to upload Banner. Please try again.");
-      }
-    } catch (error: any) {
-      console.error("Error uploading Banner:", error);
-    } finally {
-      setImageModal(false);
-    }
-
-    return false;
-  };
-
-  const handleReelsUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      setLoading(true);
-      const response = await axios.post(
-        `${BASEURL}/reels/upload-reel`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        getData(GETREELSURL, "reels");
-        message.success("Reel uploaded successfully!");
-      } else {
-        message.error("Failed to upload Reel. Please try again.");
-      }
-    } catch (error: any) {
-      console.error("Error uploading Reel:", error);
-      message.error("Error uploading Reel");
-    } finally {
-      setReelModal(false);
-      setLoading(false);
-    }
-    return false;
-  };
-
-  const handleBlogsDelete = async (id: any) => {
-    try {
-      const response = await axios.delete(`${BASEURL}/blogs/${id}`, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
-      if (response?.status === 200) {
-        message.success("Blog Deleted Successfully");
-        getData(GETBLOGSURL, "blogs");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to delete the blog");
-    }
-  };
-
-  const handleDelete = (item: any, type: any) => {
-    if (type === "images") {
-      handleImageDelete(item?.id);
-    } else if (type === "agents") {
-      handleDeteleAgent(item?.phone_number);
-    } else if (type === "blogs") {
-      handleBlogsDelete(item?.id);
-    } else if (type === "websites") {
-      handleWebSiteDelete(item?.id);
-    }
-  };
-
-  const handleWebSiteDelete = async (id: any) => {
-    try {
-      const response = await axios.delete(`${BASEURL}/imagelink/items/${id}`, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
-      if (response?.status === 200) {
-        message.success("Website Deleted Successfully");
-        getData(GETIMAGELINK, "imagelink");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to delete the website");
-    }
-  };
-
-  const handleAgentSubmit = async (values: any) => {
-    try {
-      const response = await axios.post(`${BASEURL}/user/create_user`, values, {
-        headers: {
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
-      if (response?.status === 200) {
-        message.success("Added Blogs SuccessFully");
-        getData(GETUSERURL, "agents");
-        setIsAddAgents(false);
-        form.resetFields();
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to create Agent");
-    }
-  };
-
-  const handleDeteleAgent = async (id: any) => {
-    try {
-      const response = await axios.delete(
-        `${BASEURL}/user/delete_user_by_phone_number/${id}`,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-      if (response?.status === 200) {
-        message.success("Blog Deleted Successfully");
-        getData(GETUSERURL, "agents");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to delete the blog");
-    }
-  };
-
-  const handleDeleteReels = async (id: any) => {
-    try {
-      const response = await axios.delete(
-        `${BASEURL}/reels/delete-reel/${id}`,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-      if (response?.status === 200) {
-        message.success("Reel Deleted Successfully");
-        getData(GETREELSURL, "reels");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to delete the Reel");
-    }
-  };
-
-  const handleMarqueeSubmit = async (values: any) => {
-    try {
-      const response = await axios.post(
-        `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`,
-        {
-          headers: {
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-      if (response?.status === 200) {
-        message.success("Added Marquee SuccessFully");
-        getData(GETTEXTURL, "marqueetext");
-        setMarqueeModal(false);
-        form.resetFields();
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to create text");
-    }
-  };
-
-  const handleTextDelete = async (id: any) => {
-    try {
-      const response = await axios.delete(
-        `${BASEURL}/marqueetext/delete-statement/${id}`,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-      if (response?.status === 200) {
-        message.success("Text Deleted Successfully");
-        getData(GETTEXTURL, "marqueetext");
-      }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to delete the Text");
-    }
-  };
-
-  const handleFileChange = (file: File) => {
-    setImageFile(file);
-    message.success(`${file.name} selected successfully.`);
-  };
-
-  const handleLinkSubmit = async (values: { link: string }) => {
-    if (!imageFile) {
-      message.error("Please upload an image.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("link", values.link);
-    formData.append("image", imageFile);
-
-    try {
-      const response = await axios.post(
-        `${BASEURL}/imagelink/create_items/`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        getData(GETIMAGELINK, "imagelink");
-        message.success("Data uploaded successfully!");
-      }
-    } catch (error) {
-      message.error("Failed to upload data.");
-      console.error(error);
-    }
-  };
+  const [offerForm] = Form.useForm();
+  const [socialForm] = Form.useForm();
 
   const webSiteColums = [
     {
@@ -598,7 +264,119 @@ const AdminPage = () => {
           style={{ color: "white" }}
           type="text"
           icon={<DeleteFilled />}
-          onClick={() => handleTextDelete(record?.id)}
+          onClick={() => handleDelete(record, "marquee")}
+        />
+      ),
+    },
+  ];
+
+  const offersColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Discount Percentage",
+      dataIndex: "discount_percentage",
+      key: "discount_percentage",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Valid From",
+      dataIndex: "valid_from",
+      key: "valid_from",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Valid Until",
+      dataIndex: "valid_until",
+      key: "valid_until",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "image_base64",
+      dataIndex: "image_base64",
+      render: (_: any, record: any) => (
+        <img
+          src={`data:image/png;base64,${record.image_base64}`}
+          alt={record.title}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "offers")}
+        />
+      ),
+    },
+  ];
+
+  const socialMediaColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Description",
+      dataIndex: "link",
+      key: "link",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "image_base64",
+      dataIndex: "image_base64",
+      render: (_: any, record: any) => (
+        <img
+          src={`data:image/png;base64,${record.image_base64}`}
+          alt={record.title}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "socialMedia")}
         />
       ),
     },
@@ -631,19 +409,17 @@ const AdminPage = () => {
       icon: <WebStories />,
       label: "Manage Websites",
     },
+    {
+      key: "offers",
+      icon: <LocalOffer />,
+      label: "Offers",
+    },
+    {
+      key: "socialMedia",
+      icon: <Facebook />,
+      label: "Social Media",
+    },
   ];
-
-  function getLastSegment(url: string) {
-    try {
-      const urlObj = new URL(url);
-      const path = urlObj?.pathname;
-      const segments = path?.split("/");
-      return segments?.pop();
-    } catch (error) {
-      console.error("Invalid URL", error);
-      return null;
-    }
-  }
 
   const ReelsColumns = [
     {
@@ -671,128 +447,704 @@ const AdminPage = () => {
           style={{ color: "white" }}
           type="text"
           icon={<DeleteFilled />}
-          onClick={() => handleDeleteReels(getLastSegment(record))}
+          onClick={() => handleDelete(getLastSegment(record), "reels")}
         />
       ),
     },
   ];
 
-  return (
-    <div className={styles.adminWrapper}>
-      <div className={styles.contentPage}>
-        <Row
-          className={styles.AdminOverView}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            padding: "1rem",
-          }}
-        >
-          <Col
-            span={20}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              fontFamily: "Poppins, sans-serif",
-              fontSize: "clamp(16px, 2vw, 22px)",
-              fontWeight: "600",
-              marginBottom: "1rem",
-            }}
-          >
-            <Row>Hey  {AUTH?.userName} !!</Row>
-            <Row>Manage All your Blogs, Agents, and News from here.</Row>
-            <Row
-              style={{
-                color: "red",
-                fontWeight: "600",
-                fontSize: "clamp(20px, 3vw, 25px)",
-              }}
-            >
-              {
-                AUTH?.user === "Superadmin"
-                  ? "SUPERADMIN"
-                  : "Admin"
-              }
-            </Row>
-          </Col>
-          <Col
-            span={4}
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%",
-            }}
-          >
-            <img
-              style={{
-                height: "auto",
-                width: "clamp(50px, 20%, 100px)", // Responsive image sizing
-                maxHeight: "100%",
-              }}
-              src={image}
-              alt="Admin Overview"
-            />
-          </Col>
-        </Row>
+  const validateUser = (type: string) => {
+    if (
+      (AUTH.permissions[type]?.read === true &&
+        AUTH.permissions[type]?.write === true &&
+        AUTH.permissions[type]?.delete === true) ||
+      AUTH?.user === "Superadmin"
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-        <Row
-          style={{ marginTop: "3vh" }}
-          justify="space-between"
-          gutter={[16, 16]}
-        >
-          {Options?.filter((item: any) => {
-            if (validateUser(item.key)) {
-              return item;
-            }
-          }).map((tab) => (
+  const openModal = (type: any) => {
+    setModalType(type);
+    switch (type) {
+      case "bannerimage":
+        getData(GETADMINIMAGEURL, "images");
+        break;
+      case "user":
+        getData(GETUSERURL, "agents");
+        break;
+      case "blogs":
+        getData(GETBLOGSURL, "blogs");
+        break;
+      case "reels":
+        getData(GETREELSURL, "reels");
+        break;
+      case "marqueetext":
+        getData(GETTEXTURL, "marqueetext");
+        break;
+      case "imagelink":
+        getData(GETIMAGELINK, "imagelink");
+        break;
+      case "offers":
+        getData(GETOFFERURL, "offers");
+        break;
+      case "socialMedia":
+        getData(GETSOCIALMEDIAURL, "socialMedia");
+        break;
+      default:
+        console.warn(`Unhandled type: ${type}`);
+    }
+  };
+
+  const getData = async (url: string, type: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response?.status === 200) {
+        const data = response.data;
+        switch (type) {
+          case "images":
+            setUploadedImages(data);
+            break;
+          case "agents":
+            setAgents(data);
+            break;
+          case "blogs":
+            setBlogs(data);
+            break;
+          case "reels":
+            setReels(data);
+            break;
+          case "marqueetext":
+            setText(data);
+            break;
+          case "imagelink":
+            setWebsites(data);
+            break;
+          case "offers":
+            setOffers(data);
+            break;
+          case "socialMedia":
+            setSocialMedia(data);
+            break;
+          default:
+            console.warn(`Unhandled type: ${type}`);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createData = async (values: any, url: string, type: string) => {
+    try {
+      const response = await axios.post(url, values, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response?.status === 200) {
+        message.success("Added Blogs SuccessFully");
+        switch (type) {
+          case "images":
+            break;
+          case "agents":
+            break;
+          case "blogs":
+            getData(GETBLOGSURL, "blogs");
+            setIsAddBlogs(false);
+            break;
+          case "reels":
+            break;
+          case "marqueetext":
+            break;
+          case "imagelink":
+            break;
+          default:
+            console.warn(`Unhandled type: ${type}`);
+        }
+        getData(GETBLOGSURL, "blogs");
+        setIsAddBlogs(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      form.resetFields();
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        `${BASEURL}/bannerimage/upload-image`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETADMINIMAGEURL, "images");
+        message.success("Banner uploaded successfully!");
+      } else {
+        message.error("Failed to upload Banner. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error uploading Banner:", error);
+    } finally {
+      setImageModal(false);
+    }
+
+    return false;
+  };
+
+  const handleReelsUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        `${BASEURL}/reels/upload-reel/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+            "Content-Type": "multipart/form-data",
+            Accept: "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETREELSURL, "reels");
+        message.success("Reel uploaded successfully!");
+      } else {
+        message.error("Failed to upload Reel. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error uploading Reel:", error);
+      message.error("Error uploading Reel");
+    } finally {
+      setReelModal(false);
+      setLoading(false);
+    }
+
+    return false;
+  };
+
+  const deleteData = async (id: any, url: string) => {
+    try {
+      const response = await axios.delete(`${url}${id}`, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response?.status === 200) {
+        message.success("item deleted");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("unable to delete the item");
+    }
+  };
+
+  const handleDelete = async (item: any, type: any) => {
+    if (type === "images") {
+      await deleteData(item?.id, DELETEIMAGEURL);
+      await getData(GETADMINIMAGEURL, "images");
+    } else if (type === "agents") {
+      await deleteData(item?.phone_number, DELETEAGENTURL);
+      await getData(GETUSERURL, "agents");
+    } else if (type === "blogs") {
+      await deleteData(item?.id, DELETEBLOGSURL);
+      await getData(GETBLOGSURL, "blogs");
+    } else if (type === "websites") {
+      await deleteData(item?.id, DELETEWEBSITEURl);
+      await getData(GETIMAGELINK, "imagelink");
+    } else if (type === "offers") {
+      await deleteData(item?.id, DELETEOFFERURL);
+      await getData(GETOFFERURL, "offers");
+    } else if (type === "socialMedia") {
+      await deleteData(item?.id, DELETESOCIALURL);
+      await getData(GETSOCIALMEDIAURL, "socialMedia");
+    } else if (type === "reels") {
+      await deleteData(item, DELETEREELURL);
+      await getData(GETREELSURL, "reels");
+    } else if (type === "marquee") {
+      await deleteData(item?.id, DELETEMARQUEEURL);
+      await getData(GETTEXTURL, "marqueetext");
+    }
+  };
+
+  const handleAgentSubmit = async (values: any) => {
+    try {
+      const response = await axios.post(`${BASEURL}/user/create_user`, values, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response?.status === 200) {
+        message.success("Added Blogs SuccessFully");
+        getData(GETUSERURL, "agents");
+        setIsAddAgents(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("Unable to create Agent");
+    }
+  };
+
+  const handleMarqueeSubmit = async (values: any) => {
+    try {
+      const response = await axios.post(
+        `${BASEURL}/marqueetext/create-statement?content=${values?.Text}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`, // This will now correctly be in headers
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, // Ensures credentials (cookies) are included
+        }
+      );
+
+      if (response?.status === 200) {
+        message.success("Added Marquee Successfully");
+        getData(GETTEXTURL, "marqueetext");
+        setMarqueeModal(false);
+        form.resetFields();
+      }
+    } catch (error) {
+      console.error("Error creating marquee:", error);
+      message.success("Added Marquee Successfully");
+      setMarqueeModal(false);
+      getData(GETTEXTURL, "marqueetext");
+    }
+  };
+
+  const handleFileChange = (file: File) => {
+    setImageFile(file);
+    message.success(`${file.name} selected successfully.`);
+  };
+
+  const handleLinkSubmit = async (values: { link: string }) => {
+    if (!imageFile) {
+      message.error("Please upload an image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("link", values.link);
+    formData.append("image", imageFile);
+
+    try {
+      const response = await axios.post(
+        `${BASEURL}/imagelink/create_items/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETIMAGELINK, "imagelink");
+        message.success("Data uploaded successfully!");
+      }
+    } catch (error) {
+      message.error("Failed to upload data.");
+      console.error(error);
+    }
+  };
+
+  const handleSocialSubmit = async (values: any) => {
+    try {
+      const link = values?.link;
+      const formData = new FormData();
+      if (values?.image_base64?.fileList?.length > 0) {
+        const imageFile = values.image_base64.fileList[0].originFileObj;
+        formData.append("image", imageFile);
+      }
+
+      formData.append("link", link);
+
+      const response = await axios.post(
+        `${BASEURL}/socialmedia/create_items/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETSOCIALMEDIAURL, "socialMedia");
+        message.success("Data uploaded successfully!");
+      }
+    } catch (error) {
+      message.error("Failed to upload data.");
+      console.error(error);
+    } finally {
+      setSocialModal(false);
+      socialForm.resetFields();
+    }
+  };
+
+  const handleOfferSubmit = async (values: any) => {
+    try {
+      const title = values?.title;
+      const description = values?.description;
+      const discount_percentage = values?.discount_percentage;
+      const valid_from = values?.valid_from?.format("YYYY-MM-DD");
+      const valid_until = values?.valid_until?.format("YYYY-MM-DD");
+      const formData = new FormData();
+      if (values?.image_base64?.fileList?.length > 0) {
+        const imageFile = values.image_base64.fileList[0].originFileObj;
+        formData.append("image", imageFile);
+      }
+
+      const response = await axios.post(
+        `${BASEURL}/offers/create?title=${title}&description=${description}&discount_percentage=${discount_percentage}&valid_from=${valid_from}&valid_until=${valid_until}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETOFFERURL, "offers");
+        message.success("Data uploaded successfully!");
+      }
+    } catch (error) {
+      message.error("Failed to upload data.");
+      console.error(error);
+    } finally {
+      setOfferModal(false);
+      offerForm.resetFields();
+    }
+  };
+
+  const beforeUpload = (file: any) => {
+    handleFileChange(file);
+    if (file) {
+    }
+    return false;
+  };
+
+  function getLastSegment(url: string) {
+    try {
+      const urlObj = new URL(url);
+      const path = urlObj?.pathname;
+      const segments = path?.split("/");
+      return segments?.pop();
+    } catch (error) {
+      console.error("Invalid URL", error);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    getData(GETADMINIMAGEURL, "images");
+  }, []);
+
+  
+  return (
+    <Spin spinning={loading}>
+      <div className={styles.adminWrapper}>
+        <div className={styles.contentPage}>
+          <Row
+            className={styles.AdminOverView}
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              padding: "1rem",
+            }}
+          >
             <Col
-              key={tab.key}
-              onClick={() => openModal(tab.key)}
-              className={`${styles.Btn} ${
-                modalType === tab.key ? styles.active : styles.inactive
-              }`}
-              xs={11}
-              sm={7}
-              md={5}
-              lg={3}
+              span={20}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "clamp(16px, 2vw, 22px)",
+                fontWeight: "600",
+                marginBottom: "1rem",
+              }}
             >
-              <Row justify="center">
-                <div className={styles.Icon}>{tab.icon}</div>
-              </Row>
-              <Row justify="center">
-                <div className={styles.Label}>{tab.label}</div>
+              <Row>Hey {AUTH?.userName} !!</Row>
+              <Row>Manage All your Blogs, Agents, and News from here.</Row>
+              <Row
+                style={{
+                  color: "red",
+                  fontWeight: "600",
+                  fontSize: "clamp(20px, 3vw, 25px)",
+                }}
+              >
+                {AUTH?.user === "Superadmin" ? "SUPERADMIN" : "Admin"}
               </Row>
             </Col>
-          ))}
-        </Row>
-
-        <Row>
-          <Card style={{ width: "100%" }}>
-            <div
+            <Col
+              span={4}
               style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
               }}
-              className="hide_scrollbar"
             >
-              {modalType === "bannerimage" && (
-                <div style={{ marginTop: "2vh" }}>
+              <img
+                style={{
+                  height: "auto",
+                  width: "clamp(50px, 20%, 100px)", // Responsive image sizing
+                  maxHeight: "100%",
+                }}
+                src={image}
+                alt="Admin Overview"
+              />
+            </Col>
+          </Row>
+
+          <Row
+            style={{ marginTop: "3vh" }}
+            justify="space-between"
+            gutter={[16, 16]}
+          >
+            {Options?.filter((item: any) => {
+              if (validateUser(item.key)) {
+                return item;
+              }
+            }).map((tab) => (
+              <Col
+                key={tab.key}
+                onClick={() => openModal(tab.key)}
+                className={`${styles.Btn} ${
+                  modalType === tab.key ? styles.active : styles.inactive
+                }`}
+                xs={10}
+                sm={6}
+                md={4}
+                lg={2}
+              >
+                <Row justify="center">
+                  <div className={styles.Icon}>{tab.icon}</div>
+                </Row>
+                <Row justify="center">
+                  <div className={styles.Label}>{tab.label}</div>
+                </Row>
+              </Col>
+            ))}
+          </Row>
+
+          <Row>
+            <Card style={{ width: "100%" }}>
+              <div
+                style={{
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                }}
+                className="hide_scrollbar"
+              >
+                {modalType === "bannerimage" && (
+                  <div style={{ marginTop: "2vh" }}>
+                    <>
+                      <Row justify={"end"} style={{ marginBottom: "2vh" }}>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setImageModal(true)}
+                        >
+                          Add Banner
+                        </Button>
+                      </Row>
+                      <Table
+                        dataSource={uploadedImages}
+                        columns={Imagecolumns}
+                        rowKey="id"
+                        style={{
+                          backgroundColor: "transparent",
+                          overflow: "scroll",
+                          msOverflowStyle: "none", // For IE and Edge
+                          scrollbarWidth: "none",
+                        }}
+                        pagination={{ pageSize: 5 }}
+                      />
+                    </>
+                  </div>
+                )}
+
+                {modalType === "user" && (
                   <>
-                    <Row justify={"end"} style={{ marginBottom: "2vh" }}>
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setImageModal(true)}
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
                       >
-                        Add Banner
-                      </Button>
-                    </Row>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setIsAddAgents(true)}
+                        >
+                          Add Agent
+                        </Button>
+                      </Row>
+                    }
                     <Table
-                      dataSource={uploadedImages}
-                      columns={Imagecolumns}
-                      rowKey="id"
+                      dataSource={agents}
+                      columns={columns}
+                      rowKey="id" // Replace 'id' with the unique key in your data
+                      pagination={{ pageSize: 10 }}
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                    />
+                    <Modal
+                      open={isAddAgents}
+                      onCancel={() => setIsAddAgents(false)}
+                      onClose={() => setIsAddAgents(false)}
+                      footer=""
+                    >
+                      <Card
+                        title={
+                          <Row
+                            justify={"center"}
+                            style={{
+                              backgroundColor: "inherit",
+                              marginBottom: "2vh",
+                            }}
+                          >
+                            <img
+                              src={logo} // Replace with the actual path to your logo
+                              alt="Polo Games Logo"
+                              style={{ height: "50px" }}
+                            />
+                          </Row>
+                        }
+                      >
+                        <Form
+                          style={{ color: "white" }}
+                          form={ClientForm}
+                          onFinish={handleAgentSubmit}
+                        >
+                          <Form.Item
+                            name="username"
+                            label="User Name"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter your username" />
+                          </Form.Item>
+                          <Form.Item
+                            name="phone_number"
+                            label="Phone Number"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter Phone Number" />
+                          </Form.Item>
+                          <Form.Item
+                            name="country_code"
+                            label="Country Code"
+                            rules={[{ required: true }]}
+                          >
+                            <Input placeholder="Enter Country Code" />
+                          </Form.Item>
+
+                          <Form.Item
+                            name="selected_site"
+                            label="Enter Site"
+                            rules={[{ required: true, type: "string" }]}
+                          >
+                            <Input placeholder="Enter Site" />
+                          </Form.Item>
+                          <Row gutter={[20, 20]} justify={"space-between"}>
+                            {isAddAgents && (
+                              <Button
+                                type="primary"
+                                onClick={() => setIsAddAgents(false)}
+                              >
+                                Cancel
+                              </Button>
+                            )}
+                            <Button
+                              style={{ backgroundColor: "#73d13d" }}
+                              type="default"
+                              htmlType="submit"
+                            >
+                              Submit
+                            </Button>
+                          </Row>
+                        </Form>
+                      </Card>
+                    </Modal>
+                  </>
+                )}
+
+                {modalType === "blog" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setIsAddBlogs(true)}
+                        >
+                          Add Blogs
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={blogs}
+                      columns={Blogscolumns}
+                      rowKey="id" // Replace with your unique key
+                      expandable={{
+                        expandedRowRender: (record) => (
+                          <p style={{ margin: 0, color: "white" }}>
+                            <strong>Content:</strong> {record.content}
+                          </p>
+                        ),
+                        rowExpandable: (record) => !!record.content,
+                        expandIcon: ({ expanded, onExpand, record }) =>
+                          expanded ? (
+                            <MinusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ) : (
+                            <PlusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ),
+                      }}
                       style={{
                         backgroundColor: "transparent",
                         overflow: "scroll",
@@ -802,458 +1154,232 @@ const AdminPage = () => {
                       pagination={{ pageSize: 5 }}
                     />
                   </>
-                </div>
-              )}
+                )}
 
-              {modalType === "user" && (
-                <>
-                  {
-                    <Row
-                      justify={"end"}
-                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                    >
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setIsAddAgents(true)}
+                {modalType === "reels" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
                       >
-                        Add Agent
-                      </Button>
-                    </Row>
-                  }
-                  <Table
-                    dataSource={agents}
-                    columns={columns}
-                    rowKey="id" // Replace 'id' with the unique key in your data
-                    pagination={{ pageSize: 10 }}
-                    style={{
-                      backgroundColor: "transparent",
-                      overflow: "scroll",
-                      msOverflowStyle: "none", // For IE and Edge
-                      scrollbarWidth: "none",
-                    }}
-                  />
-                  <Modal
-                    open={isAddAgents}
-                    onCancel={() => setIsAddAgents(false)}
-                    onClose={() => setIsAddAgents(false)}
-                    footer=""
-                  >
-                    <Card
-                      title={
-                        <Row
-                          justify={"center"}
-                          style={{
-                            backgroundColor: "inherit",
-                            marginBottom: "2vh",
-                          }}
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setReelModal(true)}
                         >
-                          <img
-                            src={logo} // Replace with the actual path to your logo
-                            alt="Polo Games Logo"
-                            style={{ height: "50px" }}
-                          />
-                        </Row>
-                      }
-                    >
-                      <Form
-                        style={{ color: "white" }}
-                        form={ClientForm}
-                        onFinish={handleAgentSubmit}
+                          Add Reels
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={reels}
+                      columns={ReelsColumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "marqueetext" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
                       >
-                        <Form.Item
-                          name="username"
-                          label="User Name"
-                          rules={[{ required: true }]}
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setMarqueeModal(true)}
                         >
-                          <Input placeholder="Enter your username" />
-                        </Form.Item>
-                        <Form.Item
-                          name="phone_number"
-                          label="Phone Number"
-                          rules={[{ required: true }]}
+                          Add Marquee
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={text}
+                      columns={Textcolumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "imagelink" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setWebsiteModal(true)}
                         >
-                          <Input placeholder="Enter Phone Number" />
-                        </Form.Item>
-                        <Form.Item
-                          name="country_code"
-                          label="Country Code"
-                          rules={[{ required: true }]}
+                          Add Websites
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={webSites}
+                      columns={webSiteColums}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "offers" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setOfferModal(true)}
                         >
-                          <Input placeholder="Enter Country Code" />
-                        </Form.Item>
+                          Add offers
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={offers}
+                      columns={offersColumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
 
-                        <Form.Item
-                          name="selected_site"
-                          label="Enter Site"
-                          rules={[{ required: true, type: "string" }]}
+                {modalType === "socialMedia" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setSocialModal(true)}
                         >
-                          <Input placeholder="Enter Site" />
-                        </Form.Item>
-                        <Row gutter={[20, 20]} justify={"space-between"}>
-                          {isAddAgents && (
-                            <Button
-                              type="primary"
-                              onClick={() => setIsAddAgents(false)}
-                            >
-                              Cancel
-                            </Button>
-                          )}
-                          <Button
-                            style={{ backgroundColor: "#73d13d" }}
-                            type="default"
-                            htmlType="submit"
-                          >
-                            Submit
-                          </Button>
-                        </Row>
-                      </Form>
-                    </Card>
-                  </Modal>
-                </>
-              )}
+                          Add Social
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={socialMedia}
+                      columns={socialMediaColumns}
+                      rowKey="id" // Replace with your unique key
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+              </div>
+            </Card>
+          </Row>
+        </div>
 
-              {modalType === "blog" && (
-                <>
-                  {
-                    <Row
-                      justify={"end"}
-                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                    >
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setIsAddBlogs(true)}
-                      >
-                        Add Blogs
-                      </Button>
-                    </Row>
-                  }
-                  <Table
-                    dataSource={blogs}
-                    columns={Blogscolumns}
-                    rowKey="id" // Replace with your unique key
-                    expandable={{
-                      expandedRowRender: (record) => (
-                        <p style={{ margin: 0, color: "white" }}>
-                          <strong>Content:</strong> {record.content}
-                        </p>
-                      ),
-                      rowExpandable: (record) => !!record.content,
-                      expandIcon: ({ expanded, onExpand, record }) =>
-                        expanded ? (
-                          <MinusCircleOutlined
-                            onClick={(e) => onExpand(record, e)}
-                            style={{ fontSize: "16px", color: "white" }}
-                          />
-                        ) : (
-                          <PlusCircleOutlined
-                            onClick={(e) => onExpand(record, e)}
-                            style={{ fontSize: "16px", color: "white" }}
-                          />
-                        ),
-                    }}
-                    style={{
-                      backgroundColor: "transparent",
-                      overflow: "scroll",
-                      msOverflowStyle: "none", // For IE and Edge
-                      scrollbarWidth: "none",
-                    }}
-                    pagination={{ pageSize: 5 }}
-                  />
-                </>
-              )}
-
-              {modalType === "reels" && (
-                <>
-                  {
-                    <Row
-                      justify={"end"}
-                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                    >
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setReelModal(true)}
-                      >
-                        Add Reels
-                      </Button>
-                    </Row>
-                  }
-                  <Table
-                    dataSource={reels}
-                    columns={ReelsColumns}
-                    rowKey="id" // Replace with your unique key
-                    style={{
-                      backgroundColor: "transparent",
-                      overflow: "scroll",
-                      msOverflowStyle: "none", // For IE and Edge
-                      scrollbarWidth: "none",
-                    }}
-                    pagination={{ pageSize: 5 }}
-                  />
-                </>
-              )}
-
-              {modalType === "marqueetext" && (
-                <>
-                  {
-                    <Row
-                      justify={"end"}
-                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                    >
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setMarqueeModal(true)}
-                      >
-                        Add Marquee
-                      </Button>
-                    </Row>
-                  }
-                  <Table
-                    dataSource={text}
-                    columns={Textcolumns}
-                    rowKey="id" // Replace with your unique key
-                    style={{
-                      backgroundColor: "transparent",
-                      overflow: "scroll",
-                      msOverflowStyle: "none", // For IE and Edge
-                      scrollbarWidth: "none",
-                    }}
-                    pagination={{ pageSize: 5 }}
-                  />
-                </>
-              )}
-
-              {modalType === "imagelink" && (
-                <>
-                  {
-                    <Row
-                      justify={"end"}
-                      style={{ marginTop: "2vh", marginBottom: "2vh" }}
-                    >
-                      <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setWebsiteModal(true)}
-                      >
-                        Add Websites
-                      </Button>
-                    </Row>
-                  }
-                  <Table
-                    dataSource={webSites}
-                    columns={webSiteColums}
-                    rowKey="id" // Replace with your unique key
-                    style={{
-                      backgroundColor: "transparent",
-                      overflow: "scroll",
-                      msOverflowStyle: "none", // For IE and Edge
-                      scrollbarWidth: "none",
-                    }}
-                    pagination={{ pageSize: 5 }}
-                  />
-                </>
-              )}
-            </div>
-          </Card>
-        </Row>
-      </div>
-
-      <Modal
-        open={isAddblogs}
-        onCancel={() => setIsAddBlogs(false)}
-        onClose={() => setIsAddBlogs(false)}
-        footer={""}
-      >
-        <Card
-          title={
-            <Row
-              justify={"center"}
-              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-            >
-              <img
-                src={logo} // Replace with the actual path to your logo
-                alt="Polo Games Logo"
-                style={{ height: "50px" }}
-              />
-            </Row>
-          }
+        <Modal
+          open={isAddblogs}
+          onCancel={() => setIsAddBlogs(false)}
+          onClose={() => setIsAddBlogs(false)}
+          footer={""}
         >
-          <Form
-            style={{ color: "white", marginTop: "3vh" }}
-            form={BlogForm}
-            onFinish={(values) => createData(values, CREATEBLOGSURL, "blogs")}
-          >
-            <Form.Item
-              name="title"
-              label="Title"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the blog title!",
-                },
-              ]}
-            >
-              <Input placeholder="Enter blog title" />
-            </Form.Item>
-            <Form.Item
-              name="author"
-              label="Author"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the author name!",
-                },
-              ]}
-            >
-              <Input placeholder="Enter blog Author Name" />
-            </Form.Item>
-            <Form.Item
-              name="content"
-              label="Content"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter the blog content!",
-                },
-              ]}
-            >
-              <Input.TextArea placeholder="Enter blog content" />
-            </Form.Item>
-            <Form.Item>
-              <Row justify={"space-between"}>
-                <Col>
-                  <Button type="primary" onClick={() => setIsAddBlogs(false)}>
-                    Cancle
-                  </Button>
-                </Col>
-                <Col>
-                  <Button
-                    style={{ backgroundColor: "#73d13d" }}
-                    type="primary"
-                    htmlType="submit"
-                  >
-                    Submit
-                  </Button>
-                </Col>
+          <Card
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
               </Row>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Modal>
-      <Modal
-        open={imageModal}
-        onCancel={() => setImageModal(false)}
-        onClose={() => setImageModal(false)}
-        footer={""}
-      >
-        <Card
-          title={
-            <Row
-              justify={"center"}
-              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-            >
-              <img
-                src={logo} // Replace with the actual path to your logo
-                alt="Polo Games Logo"
-                style={{ height: "50px" }}
-              />
-            </Row>
-          }
-        >
-          <Row justify={"center"}>
-            <Upload beforeUpload={handleImageUpload} showUploadList={false}>
-              <Button
-                style={{ color: "white", marginTop: "5vh" }}
-                icon={<UploadOutlined />}
-              >
-                Upload Banner
-              </Button>
-            </Upload>
-          </Row>
-        </Card>
-      </Modal>
-      <Modal
-        open={reelModal}
-        onCancel={() => setReelModal(false)}
-        onClose={() => setReelModal(false)}
-        footer={""}
-      >
-        <Card
-          loading={loading}
-          title={
-            <Row
-              justify={"center"}
-              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-            >
-              <img
-                src={logo} // Replace with the actual path to your logo
-                alt="Polo Games Logo"
-                style={{ height: "50px" }}
-              />
-            </Row>
-          }
-        >
-          <Row justify={"center"}>
-            <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
-              <Button
-                style={{ color: "white", marginTop: "5vh" }}
-                icon={<UploadOutlined />}
-              >
-                Upload Reels
-              </Button>
-            </Upload>
-          </Row>
-        </Card>
-      </Modal>
-      <Modal
-        open={marqueeModal}
-        onCancel={() => setMarqueeModal(false)}
-        onClose={() => setMarqueeModal(false)}
-        footer={""}
-      >
-        <Card
-          loading={loading}
-          title={
-            <Row
-              justify={"center"}
-              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-            >
-              <img
-                src={logo}
-                alt="Polo Games Logo"
-                style={{ height: "50px" }}
-              />
-            </Row>
-          }
-        >
-          <Row justify={"center"}>
+            }
+          >
             <Form
               style={{ color: "white", marginTop: "3vh" }}
-              form={MarqeeForm}
-              onFinish={handleMarqueeSubmit}
+              form={BlogForm}
+              onFinish={(values) => createData(values, CREATEBLOGSURL, "blogs")}
             >
               <Form.Item
-                name="Text"
-                label="Text"
+                name="title"
+                label="Title"
                 rules={[
                   {
                     required: true,
-                    message: "Please enter the Your text here!",
+                    message: "Please enter the blog title!",
                   },
                 ]}
               >
-                <Input placeholder="Enter Text" />
+                <Input placeholder="Enter blog title" />
+              </Form.Item>
+              <Form.Item
+                name="author"
+                label="Author"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the author name!",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter blog Author Name" />
+              </Form.Item>
+              <Form.Item
+                name="content"
+                label="Content"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the blog content!",
+                  },
+                ]}
+              >
+                <Input.TextArea placeholder="Enter blog content" />
               </Form.Item>
               <Form.Item>
                 <Row justify={"space-between"}>
                   <Col>
-                    <Button
-                      type="primary"
-                      onClick={() => setMarqueeModal(false)}
-                    >
+                    <Button type="primary" onClick={() => setIsAddBlogs(false)}>
                       Cancle
                     </Button>
                   </Col>
@@ -1269,87 +1395,414 @@ const AdminPage = () => {
                 </Row>
               </Form.Item>
             </Form>
-          </Row>
-        </Card>
-      </Modal>
-      <Modal
-        open={webSiteModal}
-        onCancel={() => setWebsiteModal(false)}
-        onClose={() => setWebsiteModal(false)}
-        footer={""}
-      >
-        <Card
-          loading={loading}
-          title={
-            <Row
-              justify={"center"}
-              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
-            >
-              <img
-                src={logo}
-                alt="Polo Games Logo"
-                style={{ height: "50px" }}
-              />
-            </Row>
-          }
+          </Card>
+        </Modal>
+        <Modal
+          open={imageModal}
+          onCancel={() => setImageModal(false)}
+          onClose={() => setImageModal(false)}
+          footer={""}
         >
-          <Row justify="center">
-            <Form
-              style={{ color: "white", marginTop: "3vh" }}
-              form={form}
-              onFinish={handleLinkSubmit}
-            >
-              <Form.Item
-                name="link"
-                label="Link"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter the Link here!",
-                  },
-                ]}
+          <Card
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
               >
-                <Input placeholder="Enter Text" />
-              </Form.Item>
-              <Row justify="center">
-                <Upload
-                  beforeUpload={(file) => {
-                    handleFileChange(file);
-                    return false; // Prevent auto-upload
-                  }}
-                  showUploadList={true}
-                >
-                  <Button
-                    style={{ color: "white", marginTop: "5vh" }}
-                    icon={<UploadOutlined />}
-                  >
-                    Upload Image
-                  </Button>
-                </Upload>
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
               </Row>
-              <Form.Item>
-                <Row justify="space-between">
-                  <Col>
-                    <Button type="primary" onClick={() => form.resetFields()}>
-                      Cancel
-                    </Button>
-                  </Col>
-                  <Col>
+            }
+          >
+            <Row justify={"center"}>
+              <Upload beforeUpload={handleImageUpload} showUploadList={false}>
+                <Button
+                  style={{ color: "white", marginTop: "5vh" }}
+                  icon={<UploadOutlined />}
+                >
+                  Upload Banner
+                </Button>
+              </Upload>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={reelModal}
+          onCancel={() => setReelModal(false)}
+          onClose={() => setReelModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo} // Replace with the actual path to your logo
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Upload beforeUpload={handleReelsUpload} showUploadList={false}>
+                <Button
+                  style={{ color: "white", marginTop: "5vh" }}
+                  icon={<UploadOutlined />}
+                >
+                  Upload Reels
+                </Button>
+              </Upload>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={marqueeModal}
+          onCancel={() => setMarqueeModal(false)}
+          onClose={() => setMarqueeModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify={"center"}>
+              <Form
+                style={{ color: "white", marginTop: "3vh" }}
+                form={MarqeeForm}
+                onFinish={handleMarqueeSubmit}
+              >
+                <Form.Item
+                  name="Text"
+                  label="Text"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the Your text here!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter Text" />
+                </Form.Item>
+                <Form.Item>
+                  <Row justify={"space-between"}>
+                    <Col>
+                      <Button
+                        type="primary"
+                        onClick={() => setMarqueeModal(false)}
+                      >
+                        Cancle
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        style={{ backgroundColor: "#73d13d" }}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={webSiteModal}
+          onCancel={() => setWebsiteModal(false)}
+          onClose={() => setWebsiteModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form
+                style={{ color: "white", marginTop: "3vh" }}
+                form={form}
+                onFinish={handleLinkSubmit}
+              >
+                <Form.Item
+                  name="link"
+                  label="Link"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter the Link here!",
+                    },
+                  ]}
+                >
+                  <Input placeholder="Enter Text" />
+                </Form.Item>
+                <Row justify="center">
+                  <Upload
+                    beforeUpload={(file) => {
+                      handleFileChange(file);
+                      return false; // Prevent auto-upload
+                    }}
+                    showUploadList={true}
+                  >
                     <Button
-                      style={{ backgroundColor: "#73d13d" }}
-                      type="primary"
-                      htmlType="submit"
+                      style={{ color: "white", marginTop: "5vh" }}
+                      icon={<UploadOutlined />}
                     >
-                      Submit
+                      Upload Image
                     </Button>
-                  </Col>
+                  </Upload>
                 </Row>
-              </Form.Item>
-            </Form>
-          </Row>
-        </Card>
-      </Modal>
-    </div>
+                <Form.Item>
+                  <Row justify="space-between">
+                    <Col>
+                      <Button type="primary" onClick={() => form.resetFields()}>
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        style={{ backgroundColor: "#73d13d" }}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={offerModal}
+          onCancel={() => setOfferModal(false)}
+          onClose={() => setOfferModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form
+                form={offerForm}
+                onFinish={handleOfferSubmit}
+                layout="vertical"
+                style={{ color: "white", marginTop: "3vh" }}
+              >
+                <Form.Item
+                  name="title"
+                  label="Title"
+                  rules={[{ required: true, message: "Please enter a title!" }]}
+                >
+                  <Input placeholder="Enter Title" />
+                </Form.Item>
+
+                <Form.Item
+                  name="description"
+                  label="Description"
+                  rules={[
+                    { required: true, message: "Please enter a description!" },
+                  ]}
+                >
+                  <Input.TextArea placeholder="Enter Description" rows={3} />
+                </Form.Item>
+
+                <Form.Item
+                  name="discount_percentage"
+                  label="Discount Percentage"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please enter a discount percentage!",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    style={{ width: "100%", color: "white" }}
+                    min={0}
+                    max={100}
+                    placeholder="Enter Discount Percentage"
+                    formatter={(value) => `${value}%`}
+                    parser={(value: any) => value.replace("%", "")}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="valid_from"
+                  label="Valid From"
+                  rules={[
+                    { required: true, message: "Please select a start date!" },
+                  ]}
+                >
+                  <DatePicker style={{ width: "100%", color: "white" }} />
+                </Form.Item>
+
+                <Form.Item
+                  name="valid_until"
+                  label="Valid Until"
+                  rules={[
+                    { required: true, message: "Please select an end date!" },
+                  ]}
+                >
+                  <DatePicker style={{ width: "100%" }} />
+                </Form.Item>
+
+                <Row justify={"center"}>
+                  <Form.Item name="image_base64">
+                    <Upload
+                      style={{ color: "white !important" }}
+                      beforeUpload={beforeUpload}
+                      showUploadList={true}
+                    >
+                      <Button>Upload image</Button>
+                    </Upload>
+                  </Form.Item>
+                </Row>
+
+                <Form.Item>
+                  <Row justify="space-between">
+                    <Col>
+                      <Button
+                        type="default"
+                        onClick={() => offerForm.resetFields()}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ backgroundColor: "#73d13d" }}
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={socialModal}
+          onCancel={() => setSocialModal(false)}
+          onClose={() => setSocialModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form
+                form={socialForm}
+                onFinish={handleSocialSubmit}
+                layout="vertical"
+                style={{ color: "white", marginTop: "3vh" }}
+              >
+                <Form.Item
+                  name="link"
+                  label="Link"
+                  rules={[
+                    { required: true, message: "Please enter the link!" },
+                  ]}
+                >
+                  <Input placeholder="Enter Link" />
+                </Form.Item>
+
+                <Row justify={"center"}>
+                  <Form.Item name="image_base64">
+                    <Upload
+                      style={{ color: "white !important" }}
+                      showUploadList={true}
+                      beforeUpload={beforeUpload}
+                    >
+                      <Button>Upload image</Button>
+                    </Upload>
+                  </Form.Item>
+                </Row>
+
+                <Form.Item>
+                  <Row justify="space-between">
+                    <Col>
+                      <Button
+                        type="default"
+                        onClick={() => socialForm.resetFields()}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ backgroundColor: "#73d13d" }}
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+      </div>
+    </Spin>
   );
 };
 

@@ -224,7 +224,7 @@ const Auth = () => {
               style={{ marginTop: "1vh" }}
             >
               <Row justify={"space-between"}>
-                <Col span={6}>
+                <Col span={8}>
                   <Form.Item
                     name="country_code"
                     label="Code"
@@ -253,10 +253,10 @@ const Auth = () => {
                     )}
                   </Form.Item>
                 </Col>
-                <Col span={16}>
+                <Col span={15}>
                   <Form.Item
                     name="phone_number"
-                    label={"Please Enter Phone Number"}
+                    label={"Phone Number"}
                     rules={[
                       {
                         required: true,

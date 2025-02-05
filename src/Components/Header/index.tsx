@@ -79,7 +79,7 @@ const HeaderComponent = () => {
 
   const getLogos = async () => {
     try {
-      const response = await axios.get(`${BASEURL}/socialmedia/items`);
+      const response = await axios.get(`${BASEURL}/socialmedia/items/`);
       console.log(response);
       setLogodata(response?.data);
     } catch (error) {
