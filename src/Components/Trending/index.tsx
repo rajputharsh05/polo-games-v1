@@ -151,7 +151,7 @@ export const Blogs = () => {
   const getBlogs = async () => {
     try {
       setloading(true);
-      const response = await axios.get(`${BASEURL}/blogs`);
+      const response = await axios.get(`${BASEURL}/blogs/`);
       const data = response.data;
       if (location.pathname !== "blogs") {
         setBlogs(data?.slice(0, 1));

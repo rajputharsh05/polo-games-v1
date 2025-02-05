@@ -13,7 +13,7 @@ const CasinoGallery = () => {
   const getLogos = async () => {
     try {
       console.log(BASEURL)
-      const response = await axios.get(`https://backend.polo.game/api/socialmedia/items`);
+      const response = await axios.get(`https://backend.polo.game/api/socialmedia/items/`);
       console.log(response, "errorTest");
       console.log(BASEURL)
       setLogodata(response?.data);

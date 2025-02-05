@@ -31,10 +31,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
 import { login, logout } from "../../Redux/AuthSlice";
 import logoutIMG from "../../assets/Logout.png";
-interface CountryFlags{
-  name : string,
-  flag : string,
-  dial_code : string
+interface CountryFlags {
+  name: string;
+  flag: string;
+  dial_code: string;
 }
 
 const HeaderComponent = () => {
@@ -63,12 +63,12 @@ const HeaderComponent = () => {
   const [logoData, setLogodata] = useState<any>([]);
 
   const [countries, setCountries] = useState<[CountryFlags]>([
-      {
-        name: "IN",
-        flag: "https://cdn.countryflags.com/thumbs/india/flag-400.png",
-        dial_code: "+91",
-      },
-    ]);
+    {
+      name: "IN",
+      flag: "https://cdn.countryflags.com/thumbs/india/flag-400.png",
+      dial_code: "+91",
+    },
+  ]);
 
   const [form] = Form.useForm();
   const [loginForm] = Form.useForm();
@@ -79,7 +79,7 @@ const HeaderComponent = () => {
 
   const getLogos = async () => {
     try {
-      const response = await axios.get(`${BASEURL}/socialmedia/items`);
+      const response = await axios.get(`${BASEURL}/socialmedia/items/`);
       console.log(response);
       setLogodata(response?.data);
     } catch (error) {
@@ -122,16 +122,18 @@ const HeaderComponent = () => {
           axios.get("https://countriesnow.space/api/v0.1/countries/codes"),
         ]);
 
-        const mergedData : [CountryFlags] = flagsRes.data.data.map((flag: any) => {
-          const codeData = codesRes.data.data.find(
-            (code: any) => code.name === flag.name
-          );
-          return {
-            name: codeData?.code,
-            flag: flag.flag,
-            dial_code: codeData ? codeData.dial_code : "",
-          };
-        });
+        const mergedData: [CountryFlags] = flagsRes.data.data.map(
+          (flag: any) => {
+            const codeData = codesRes.data.data.find(
+              (code: any) => code.name === flag.name
+            );
+            return {
+              name: codeData?.code,
+              flag: flag.flag,
+              dial_code: codeData ? codeData.dial_code : "",
+            };
+          }
+        );
 
         setCountries(mergedData);
       } catch (error) {
@@ -912,6 +914,25 @@ const HeaderComponent = () => {
                       </Button>
                     </Row>
                   </Form>
+                </Row>
+                <Row
+                  justify={"center"}
+                  style={{ color: "white", fontFamily: "Popins" }}
+                >
+                  <p>
+                    Already have an account ?{" "}
+                    <span
+                      onClick={() => setLoginOrRegister(false)}
+                      style={{
+                        color: "#940101",
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Login
+                    </span>
+                  </p>
                 </Row>
                 <Row
                   justify={"center"}

@@ -80,6 +80,16 @@
 }
 
 
+
+[class^="ant-input-number-"] {
+  color: black !important;
+  background: white !important;
+}
+
+[class^="ant-picker"] {
+  background-color: white;
+}
+
 [class^="ant-upload-list-item-name"] {
   color: white !important;
   background: inherit !important;
@@ -157,12 +167,12 @@
   }
 }
 
-// Label styles
 .Label {
-  font-size: 1rem;
+  font-size: 12px;
+  font-weight: 600;
   text-align: center;
 
   @media (max-width: 768px) {
-    font-size: 0.9rem;
+    font-size: 10px;
   }
 }

@@ -31,6 +31,15 @@ export const proctectedRoutes: RouteBase[] = [
     path: "/pages",
     element: <Pages></Pages>,
   },
+  {
+    path: "reels",
+    element: (
+      <>
+        <Reels></Reels>
+        <Footer></Footer>
+      </>
+    ),
+  },
 ];
 
 export const globalRoutes = [
