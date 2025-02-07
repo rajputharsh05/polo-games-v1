@@ -16,60 +16,28 @@ const CricketSection = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [LiveCount, setLiveCount] = useState<number>(0);
 
-  const ModifyData = (data: []) => {
-    let count = 0;
-    const ModifiedData = data?.map((ele: any) => {
-      if (ele?.inPlay === "True") {
-        count += 1;
-      }
-      const tempSplit = ele?.eventName?.split("/");
-      const obj = {
-        match: tempSplit[0],
-        status: ele?.inPlay === "True" ? "live" : "upcoming",
-        time: tempSplit[1],
-        gameId: ele?.gameId,
-        odds: [
-          {
-            key: "1",
-            value: ele?.back1,
-            extra: ele?.back11,
-            color: "rgba(50, 163, 188, 1)",
-          },
-          {
-            key: "2",
-            value: ele?.back12,
-            extra: ele?.lay1,
-            color: "rgba(200, 109, 220, 1)",
-          },
-          {
-            key: "3",
-            value: ele?.lay11,
-            extra: ele?.lay12,
-            color: "rgba(50, 163, 188, 1)",
-          },
-        ],
-      };
-      return obj;
-    });
-
-    if (location?.pathname === "/" && ModifiedData?.length > 3) {
-      setDataSource(ModifiedData.slice(0, 2));
-    } else {
-      setDataSource(ModifiedData);
-    }
-    setLiveCount(count);
-    dispatch(updateCriket(count));
-  };
-
   const getApiData = async () => {
     setLoading(true);
 
     try {
       const response = await axios.get(
-        "https://marketsarket.qnsports.live/getcricketmatches"
+        "https://backend.polo.game/api/fantasy/event/4"
       );
       const data = response.data;
-      ModifyData(data);
+      let count = 0;
+            data?.data?.map((ele: any) => {
+              console.log(ele.isMatchLive, "hey");
+              if (ele?.isMatchLive === true) {
+                count = count + 1;
+              }
+            });
+            setLiveCount(count);
+            dispatch(updateCriket(count));
+      if(location.pathname !== "/cricket"){
+        setDataSource(data?.data?.slice(0,2));
+      }else{
+        setDataSource(data?.data);
+      }
     } catch (err) {
       console.error(err);
       message.error(
@@ -87,6 +55,17 @@ const CricketSection = () => {
   const handleRowClick = (id: any, item: any) => {
     navigate(`/cricket/${id}`, { state: item });
   };
+
+  
+  function formatNumber(num: any) {
+    if (num >= 1_000_000) {
+      return (num / 1_000_000)?.toFixed(1)?.replace(/\.0$/, "") + "M";
+    } else if (num >= 10_000) {
+      return (num / 1_000)?.toFixed(1)?.replace(/\.0$/, "") + "k";
+    }
+    return num?.toString()?.split('.')?.[0];
+  }
+
 
   return (
     <Spin spinning={loading}>
@@ -107,90 +86,152 @@ const CricketSection = () => {
         </div>
 
         <div className={styles.table}>
-          {datasource?.map((item: any) => (
-            <div
-              onClick={() => handleRowClick(item?.gameId, item)}
-              key={item.key}
-              className={styles.tableHeader}
-            >
-              <div
-                style={{
-                  marginRight: "16px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <div>
-                  <div style={{ color: "white", fontWeight: "bold" }}>
-                    {item?.match?.length > 25
-                      ? `${item?.match?.substr(0, 25)}...`
-                      : item?.match}
+          {datasource?.map(
+            (item: any) =>
+              item?.runnerNames &&
+              item?.runnerNames?.length > 0 && (
+                <div
+                  onClick={() => handleRowClick(item?.event_id, item)}
+                  key={item.key}
+                  className={styles.tableHeader}
+                >
+                  <div
+                    style={{
+                      marginRight: "16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item?.match?.length > 25
+                          ? `${item?.event_name?.substr(0, 25)}...`
+                          : item?.event_name}
+                      </div>
+                      <div style={{ color: "#888", fontSize: "12px" }}>
+                        {item?.league?.length > 25
+                          ? `${item?.league_name?.substr(0, 25)}...`
+                          : item?.league_name}
+                      </div>
+                    </div>
+                    <div style={{ color: "white" }}>
+                      {item.inplay && (
+                        <Badge status="success" style={{ marginRight: 8 }} />
+                      )}
+                      {new Date(item.event_date)?.toLocaleString()}
+                    </div>
                   </div>
-                  <div style={{ color: "#888", fontSize: "12px" }}>
-                    {item?.league?.length > 25
-                      ? `${item?.league?.substr(0, 25)}...`
-                      : item?.league}
-                  </div>
-                </div>
-                <div style={{ color: "white" }}>
-                  {item.status === "live" && (
-                    <Badge status="success" style={{ marginRight: 8 }} />
-                  )}
-                  {item.time}
-                </div>
-              </div>
 
-              <Row
-                gutter={8}
-                style={{
-                  marginTop: "2vh",
-                  gap: "2vh",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                {item.odds.map((odd: any) => (
-                  <>
+                  <Row
+                    gutter={8}
+                    style={{
+                      marginTop: "2vh",
+                      gap: "2vh",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Col
                       span={3}
-                      key={odd.key}
                       style={{
-                        background: odd.color,
+                        background: "rgba(50, 163, 188, 1)",
                         padding: "8px",
-                        textAlign: "center",
                         borderRadius: "2vh",
+                        textAlign: "center",
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {odd.value}
+                        {item.runners[0]?.ex?.b[0]?.p ? item.runners[0]?.ex?.b[0]?.p : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {odd.extra}
+                        {item.runners[0]?.ex?.b[0]?.s ? formatNumber(item.runners[0]?.ex?.b[0]?.s) : ""}
                       </div>
                     </Col>
                     <Col
                       span={3}
-                      key={odd.key}
                       style={{
-                        background: odd.color,
+                        background: "rgba(50, 163, 188, 1)",
                         padding: "8px",
-                        textAlign: "center",
                         borderRadius: "2vh",
+                        textAlign: "center",
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {odd.value}
+                        {item.runners[0]?.ex?.l[0]?.p ? item.runners[0]?.ex?.l[0]?.p :"-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {odd.extra}
+                        {item.runners[0]?.ex?.l[0]?.s ? formatNumber(item.runners[0]?.ex?.l[0]?.s) : ""}
                       </div>
                     </Col>
-                  </>
-                ))}
-              </Row>
-            </div>
-          ))}
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(200, 109, 220, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[2]?.ex?.b[0]?.p ? item.runners[2]?.ex?.b[0]?.p : "-"}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[2]?.ex?.b[0]?.s ? formatNumber(item.runners[2]?.ex?.b[0]?.s) : ""}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(200, 109, 220, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[2]?.ex?.l[0]?.p ? item.runners[2]?.ex?.l[0]?.p : "-"}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[2]?.ex?.l[0]?.s ? formatNumber(item.runners[2]?.ex?.l[0]?.s) : ""}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[1]?.ex?.b[0]?.p ? item.runners[1]?.ex?.b[0]?.p : "-"}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        { item.runners[1]?.ex?.b[0]?.s ? formatNumber(item.runners[1]?.ex?.b[0]?.s) : ""}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[1]?.ex?.l[0]?.p ? item.runners[1]?.ex?.l[0]?.p : "-"}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[1]?.ex?.l[0]?.s ? formatNumber(item.runners[1]?.ex?.l[0]?.s) : ""}
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              )
+          )}
         </div>
         {location?.pathname === "/" && datasource?.length !== 0 && (
           <Row style={{ color: "white" }} justify={"center"} align={"middle"}>
@@ -201,7 +242,12 @@ const CricketSection = () => {
               className={styles.showMoreButton}
             >
               <p>view more</p>
-              <Icon className={styles.ArrowBlink} icon="hugeicons:arrow-down-double" width="24" height="24" />
+              <Icon
+                className={styles.ArrowBlink}
+                icon="hugeicons:arrow-down-double"
+                width="24"
+                height="24"
+              />
             </p>
           </Row>
         )}
