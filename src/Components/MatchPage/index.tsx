@@ -11,24 +11,37 @@ interface Props {
 const MatchPage = (data: Props) => {
   const { id } = useParams();
   const location = useLocation();
-  const BASEURL = import.meta.env.VITE_BASEURL;
 
   const [datasource, setDataSource] = useState<any>([]);
   const [matchData, setMatchData] = useState<any>();
+  const [fancyData, setFancyData] = useState<any>({});
+  const [bookMakerdata, setBookMakerData] = useState<any>([]);
 
   const [loading, setLoading] = useState(false);
 
   const getApiData = async (id: any) => {
     try {
       setLoading(true);
-      const URL = `${data?.apiurl}?eventId=${id}`;
-      const BaseURL = `${BASEURL}/match/fetch-data`;
-      const response = await axios.post(BaseURL, {
+      const URL = `${data?.apiurl}/${id}`;
+      const response = await axios.get(URL, {
         url: URL,
       });
       const ApiData = response?.data;
       if (ApiData?.success === true) {
-        setDataSource(ApiData?.data);
+        setDataSource(ApiData?.data?.match);
+        const res = ApiData?.data?.match?.fancyOddData?.ml.reduce(
+          (acc: any, obj: any) => {
+            const key = obj.cat;
+            if (!acc[key]) {
+              acc[key] = [];
+            }
+            acc[key].push(obj);
+            return acc;
+          },
+          {}
+        );
+        setFancyData(res);
+        setBookMakerData(ApiData?.data?.match?.bookmakerOddData || []);
       }
     } catch (error) {
       console.error(error);
@@ -37,20 +50,19 @@ const MatchPage = (data: Props) => {
     }
   };
 
-  const colors = [
-    "rgba(50, 163, 188, 1)",
-    "rgba(200, 109, 220, 1)",
-    "rgba(50, 163, 188, 1)",
-    "rgba(50, 163, 188, 1)",
-    "rgba(200, 109, 220, 1)",
-    "rgba(50, 163, 188, 1)",
-  ];
-
   useEffect(() => {
     getApiData(id);
-    console.log(location?.state)
     setMatchData(location?.state);
   }, []);
+
+  function formatNumber(num: any) {
+    if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "M";
+    } else if (num >= 10_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
+    }
+    return num?.toString()?.split('.')?.[0];
+  }
 
   return (
     <Spin spinning={loading}>
@@ -66,9 +78,12 @@ const MatchPage = (data: Props) => {
           <div>
             <Spin spinning={loading}>
               <div className={styles.tableWrapperHeader}>
-                <Row justify={"center"} style={{marginBottom:"2vh" , fontFamily:"Popins"}}>
+                <Row
+                  justify={"center"}
+                  style={{ marginBottom: "2vh", fontFamily: "Popins" }}
+                >
                   <Col span={24}>
-                    <h3>{!loading && matchData?.time}</h3>
+                    <h3>{!loading && matchData?.eventDate}</h3>
                   </Col>
                 </Row>
                 <Row style={{ height: "40%", width: "100%" }}>
@@ -86,7 +101,7 @@ const MatchPage = (data: Props) => {
                     span={10}
                   >
                     {" "}
-                    {datasource[0]?.section[0]?.nat}
+                    {datasource?.eventName?.split(" v ")?.[0]}
                   </Col>
                   <Col
                     style={{
@@ -114,57 +129,54 @@ const MatchPage = (data: Props) => {
                     span={10}
                   >
                     {" "}
-                    {datasource[0]?.section[1]?.nat}
+                    {datasource?.eventName?.split(" v ")?.[1]}
                   </Col>
                 </Row>
               </div>
             </Spin>
 
-            {datasource?.map((value: any) => {
+            {datasource?.matchOddData?.map((items: any) => {
               return (
                 <>
                   <div className={styles.tableWrapper}>
                     <h3 style={{ margin: 0, fontFamily: "Popins" }}>
-                      {value?.mname?.replaceAll("_", " ")}
+                      {items?.marketName}
                     </h3>
                   </div>
-                  {value?.section?.map((item: any) => (
-                    <div key={item.key} className={styles.tableHeader}>
-                      <div
-                        style={{
-                          flex: 2,
-                          marginRight: "16px",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                          color: "white",
-                        }}
-                      >
-                        <div>
-                          <div
-                            style={{
-                              fontWeight: "bold",
-                              color: "white",
-                              marginBottom: "1vh",
-                            }}
-                          >
-                            {item?.nat?.length > 25
-                              ? `${item?.nat?.substr(0, 25)}...`
-                              : item?.nat}
+                  {items?.runnerName?.map((matchs: any, idx: number) => {
+                    return (
+                      <div className={styles.tableHeader}>
+                        <div
+                          style={{
+                            flex: 2,
+                            marginRight: "16px",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            color: "white",
+                          }}
+                        >
+                          <div>
+                            <div
+                              style={{
+                                fontWeight: "bold",
+                                color: "white",
+                                marginBottom: "1vh",
+                              }}
+                            >
+                              {matchs?.RN}
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <Row
-                        gutter={8}
-                        style={{ flex: 3, justifyContent: "space-between" }}
-                      >
-                        {item.odds.map((item: any, index: number) => (
+                        <Row
+                          gutter={8}
+                          style={{ flex: 3, justifyContent: "space-around" }}
+                        >
                           <Col
-                            span={3}
-                            key={index}
+                            span={6}
                             style={{
-                              background: colors[index],
+                              background: "rgba(200, 109, 220, 1)",
                               padding: "8px",
                               textAlign: "center",
                               borderRadius: "2vh",
@@ -172,16 +184,212 @@ const MatchPage = (data: Props) => {
                             }}
                           >
                             <div style={{ fontWeight: "bold" }}>
-                              {item.odds}
+                              {" "}
+                              {items?.runners[idx]?.ex?.b[0]?.p ? items?.runners[idx]?.ex?.b[0]?.p : "-"}
                             </div>
                             <div style={{ fontSize: "10px", color: "#666" }}>
-                              {item.size}
+                              {formatNumber(items?.runners[idx]?.ex?.b[0]?.s)}
                             </div>
                           </Col>
-                        ))}
-                      </Row>
+                          {items?.marketName !== "Who Will Win The Match?" && (
+                            <Col
+                              span={6}
+                              style={{
+                                background: "rgba(50, 163, 188, 1)",
+                                padding: "8px",
+                                textAlign: "center",
+                                borderRadius: "2vh",
+                                color: "white",
+                              }}
+                            >
+                              <div style={{ fontWeight: "bold" }}>
+                                {" "}
+                                {items?.runners[idx]?.ex?.l[0]?.p ? items?.runners[idx]?.ex?.l[0]?.p : ""}
+                              </div>
+                              <div style={{ fontSize: "10px", color: "#666" }}>
+                                {formatNumber(items?.runners[idx]?.ex?.l[0]?.s)}
+                              </div>
+                            </Col>
+                          )}
+                        </Row>
+                      </div>
+                    );
+                  })}
+                </>
+              );
+            })}
+
+            {fancyData &&
+              Object.values(fancyData)?.map((bigItems: any) => {
+                return (
+                  <>
+                    <div className={styles.tableWrapper}>
+                      <h3 style={{ margin: 0, fontFamily: "Popins" }}>
+                        {bigItems[0]?.cat?.replaceAll("_", " ").toUpperCase()}
+                      </h3>
                     </div>
-                  ))}
+                    {bigItems.map((value: any) => {
+                      return (
+                        <>
+                          <div key={value.key} className={styles.tableHeader}>
+                            <div
+                              style={{
+                                flex: 2,
+                                marginRight: "16px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                color: "white",
+                              }}
+                            >
+                              <div>
+                                <div
+                                  style={{
+                                    fontWeight: "bold",
+                                    color: "white",
+                                    marginBottom: "1vh",
+                                  }}
+                                >
+                                  {value?.mn}
+                                </div>
+                              </div>
+                            </div>
+
+                            <Row
+                              gutter={8}
+                              style={{
+                                flex: 3,
+                                justifyContent: "space-around",
+                              }}
+                            >
+                              <Col
+                                span={6}
+                                style={{
+                                  background: "rgba(200, 109, 220, 1)",
+                                  padding: "8px",
+                                  textAlign: "center",
+                                  borderRadius: "2vh",
+                                  color: "white",
+                                }}
+                              >
+                                <div style={{ fontWeight: "bold" }}>
+                                  {value?.rn ? value?.rn : "-"}
+                                </div>
+                                <div
+                                  style={{ fontSize: "10px", color: "#666" }}
+                                >
+                                  {formatNumber(value?.on)}
+                                </div>
+                              </Col>
+                              <Col
+                                span={6}
+                                style={{
+                                  background: "rgba(50, 163, 188, 1)",
+                                  padding: "8px",
+                                  textAlign: "center",
+                                  borderRadius: "2vh",
+                                  color: "white",
+                                }}
+                              >
+                                <div style={{ fontWeight: "bold" }}>
+                                  {value?.ry ? value?.ry : "-"}
+                                </div>
+                                <div
+                                  style={{ fontSize: "10px", color: "#666" }}
+                                >
+                                  {formatNumber(value?.oy)}
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </>
+                );
+              })}
+
+            {bookMakerdata?.ml?.map((bigItems: any) => {
+              return (
+                <>
+                  <div className={styles.tableWrapper}>
+                    <h3 style={{ margin: 0, fontFamily: "Popins" }}>
+                      {bigItems?.mn}
+                    </h3>
+                  </div>
+                  {bigItems?.sl?.map((value: any) => {
+                    return (
+                      <>
+                        <div key={value.key} className={styles.tableHeader}>
+                          <div
+                            style={{
+                              flex: 2,
+                              marginRight: "16px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              color: "white",
+                            }}
+                          >
+                            <div>
+                              <div
+                                style={{
+                                  fontWeight: "bold",
+                                  color: "white",
+                                  marginBottom: "1vh",
+                                }}
+                              >
+                                {value?.sln}
+                              </div>
+                            </div>
+                          </div>
+
+                          <Row
+                            gutter={8}
+                            style={{
+                              flex: 3,
+                              justifyContent: "space-around",
+                            }}
+                          >
+                            <Col
+                              span={6}
+                              style={{
+                                background: "rgba(200, 109, 220, 1)",
+                                padding: "8px",
+                                textAlign: "center",
+                                borderRadius: "2vh",
+                                color: "white",
+                              }}
+                            >
+                              <div style={{ fontWeight: "bold" }}>
+                                {value?.b ? value?.b : "-"}
+                              </div>
+                              <div style={{ fontSize: "10px", color: "#666" }}>
+                                {formatNumber(bigItems?.ms)}
+                              </div>
+                            </Col>
+                            <Col
+                              span={6}
+                              style={{
+                                background: "rgba(50, 163, 188, 1)",
+                                padding: "8px",
+                                textAlign: "center",
+                                borderRadius: "2vh",
+                                color: "white",
+                              }}
+                            >
+                              <div style={{ fontWeight: "bold" }}>
+                                {value?.l ? value?.l : "-"}
+                              </div>
+                              <div style={{ fontSize: "10px", color: "#666" }}>
+                                {formatNumber(bigItems?.ms)}
+                              </div>
+                            </Col>
+                          </Row>
+                        </div>
+                      </>
+                    );
+                  })}
                 </>
               );
             })}

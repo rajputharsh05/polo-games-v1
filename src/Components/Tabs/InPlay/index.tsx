@@ -1,124 +1,203 @@
-import { Badge, Row, Col } from "antd";
+import { Badge, Row, Col, message, Spin } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import styles from "../tabs.module.scss";
-const inPlayData = [
-  // Cricket
-  {
-    key: "1",
-    match: "India vs Australia",
-    league: "Cricket World Cup",
-    status: "live",
-    date: "24 Nov",
-    time: "3:00 PM",
-    odds: [
-      { key: "1", value: "1.6", extra: "1.2", color: "#add8e6" },
-      { key: "X", value: "2.8", extra: "2.3", color: "#ffc0cb" },
-      { key: "2", value: "3.5", extra: "2.3", color: "#add8e6" },
-    ],
-  },
-  // Tennis
-  {
-    key: "2",
-    match: "Novak Djokovic vs Carlos Alcaraz",
-    league: "ATP Finals",
-    status: "live",
-    date: "24 Nov",
-    time: "5:00 PM",
-    odds: [
-      { key: "1", value: "1.7", extra: "1.3", color: "#ffc0cb" },
-      { key: "X", value: "2.5", extra: "2.3", color: "#add8e6" },
-      { key: "2", value: "2.1", extra: "2.3", color: "#add8e6" },
-    ],
-  },
-  // Horse Riding
-  {
-    key: "3",
-    match: "Royal Derby 2024",
-    league: "Equestrian Racing",
-    status: "live",
-    date: "24 Nov",
-    time: "4:00 PM",
-    odds: [
-      { key: "1", value: "2.5", extra: "1.4", color: "#add8e6" },
-      { key: "X", value: "3.1", extra: "6.1", color: "#ffc0cb" },
-      { key: "2", value: "4.2", extra: "2.3", color: "#add8e6" },
-    ],
-  },
-];
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const InPlay = () => {
+  const [datasource, setDataSource] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const getApiData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        "https://backend.polo.game/api/fantasy/inplay"
+      );
+      const data = response.data;
+      setDataSource(data?.data?.inplay);
+    } catch (err) {
+      console.error(err);
+      message.error(
+        "Something went wrong in fetching the data.. Please wait while we fix the issue"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRowClick = (id: any, item: any) => {
+    navigate(`/games/${id}`, { state: item });
+  };
+
+  useEffect(() => {
+    getApiData();
+  }, []);
+
   return (
-    <div style={{ margin: "16px" }}>
-      <div className={styles.tableWrapper}>
-        <PlayCircleOutlined style={{ fontSize: "24px", marginRight: "16px" }} />
-        <h3 style={{ margin: 0 }}>Soccer</h3>
-      </div>
+    <Spin spinning={loading}>
+      <div style={{ margin: "16px" }}>
+        <div className={styles.tableWrapper}>
+          <PlayCircleOutlined
+            style={{ fontSize: "24px", marginRight: "16px" }}
+          />
+          <h3 style={{ margin: 0 }}>In Play</h3>
+        </div>
 
-      <div className={styles.table}>
-        {inPlayData.map((item) => (
-          <div key={item.key} className={styles.tableHeader}>
-            <div
-              style={{
-                flex: 2,
-                marginRight: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: "bold" }}>{item.match}</div>
-                <div style={{ color: "#888", fontSize: "12px" }}>
-                  {item.league}
+        <div className={styles.table}>
+          {datasource.map(
+            (item: any) =>
+              item?.runnerNames &&
+              item?.runnerNames?.length > 0 && (
+                <div
+                  onClick={() => handleRowClick(item?.event_id, item)}
+                  key={item.key}
+                  className={styles.tableHeader}
+                >
+                  <div
+                    style={{
+                      marginRight: "16px",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item?.match?.length > 25
+                          ? `${item?.event_name?.substr(0, 25)}...`
+                          : item?.event_name}
+                      </div>
+                      <div style={{ color: "white", fontSize: "12px" }}>
+                        {item?.league?.length > 25
+                          ? `${item?.league_name?.substr(0, 25)}...`
+                          : item?.league_name}
+                      </div>
+                    </div>
+                    <div style={{ color: "white" }}>
+                      {item.inplay && (
+                        <Badge
+                          status="success"
+                          style={{ marginRight: 8, whiteSpace: "nowrap" }}
+                        />
+                      )}
+                      {new Date(item.event_date)?.toLocaleString()}
+                    </div>
+                  </div>
+
+                  <Row
+                    gutter={8}
+                    style={{
+                      marginTop: "2vh",
+                      gap: "2vh",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[0]?.ex?.b[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[0]?.ex?.b[0]?.s}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[0]?.ex?.l[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[0]?.ex?.l[0]?.s}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(200, 109, 220, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[2]?.ex?.b[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[2]?.ex?.b[0]?.s}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(200, 109, 220, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[2]?.ex?.l[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[2]?.ex?.l[0]?.s}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[1]?.ex?.b[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[1]?.ex?.b[0]?.s}
+                      </div>
+                    </Col>
+                    <Col
+                      span={3}
+                      style={{
+                        background: "rgba(50, 163, 188, 1)",
+                        padding: "8px",
+                        borderRadius: "2vh",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div style={{ color: "white", fontWeight: "bold" }}>
+                        {item.runners[1]?.ex?.l[0]?.p}
+                      </div>
+                      <div style={{ fontSize: "10px", color: "white" }}>
+                        {item.runners[1]?.ex?.l[0]?.s}
+                      </div>
+                    </Col>
+                  </Row>
                 </div>
-              </div>
-              <div>
-                {item.status === "live" && (
-                  <Badge status="success" style={{ marginRight: 8 }} />
-                )}
-                {item.date} - {item.time}
-              </div>
-            </div>
-
-            <Row gutter={8} style={{ flex: 3 }}>
-              {item.odds.map((odd) => (
-                <>
-                  <Col
-                    span={4}
-                    key={odd.key}
-                    style={{
-                      background: odd.color,
-                      padding: "8px",
-                      border: "1px solid white",
-                      textAlign: "center",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>
-                      {odd.extra}
-                    </div>
-                  </Col>
-                  <Col
-                    span={4}
-                    key={odd.key}
-                    style={{
-                      background: odd.color,
-                      padding: "8px",
-                      border: "1px solid white",
-                      textAlign: "center",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold" }}>{odd.value}</div>
-                    <div style={{ fontSize: "10px", color: "#666" }}>
-                      {odd.extra}
-                    </div>
-                  </Col>
-                </>
-              ))}
-            </Row>
-          </div>
-        ))}
+              )
+          )}
+        </div>
       </div>
-    </div>
+    </Spin>
   );
 };
 

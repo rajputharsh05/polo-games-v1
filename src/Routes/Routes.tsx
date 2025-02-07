@@ -16,6 +16,7 @@ import OfferGallery from "../Components/OfferGallery";
 import { Col, Row } from "antd";
 import img from "../assets/WhatsApp Image 2025-01-18 at 2.08.04 AM.jpeg";
 import img2 from "../assets/Payment Methods Icon Png.png";
+import InPlay from "../Components/Tabs/InPlay";
 
 interface RouteBase {
   path: string;
@@ -131,10 +132,7 @@ export const globalRoutes = [
     path: "in-play",
     element: (
       <>
-        <CricketSection></CricketSection>
-        <SoccerSection></SoccerSection>
-        <TennisSection></TennisSection>
-        <HorseRidding></HorseRidding>
+        <InPlay></InPlay>
         <Footer></Footer>
       </>
     ),
@@ -152,7 +150,7 @@ export const globalRoutes = [
     path: "cricket/:id",
     element: (
       <>
-        <MatchPage apiurl={"https://data.shamexch.xyz/getbm"}></MatchPage>
+        <MatchPage apiurl={"https://backend.polo.game/api/fantasy/sport"}></MatchPage>
         <Footer></Footer>
       </>
     ),
@@ -162,7 +160,7 @@ export const globalRoutes = [
     element: (
       <>
         <MatchPage
-          apiurl={"https://pro.shamexch.xyz/getdatasports"}
+          apiurl={"https://backend.polo.game/api/fantasy/sport"}
         ></MatchPage>
         <Footer></Footer>
       </>
