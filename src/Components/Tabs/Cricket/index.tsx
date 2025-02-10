@@ -8,6 +8,15 @@ import { useDispatch } from "react-redux";
 import { updateCriket } from "../../../Redux/lineMatchesSlice";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
+export function formatNumber(num: any) {
+  if (num >= 1_000_000) {
+    return (num / 1_000_000)?.toFixed(1)?.replace(/\.0$/, "") + "M";
+  } else if (num >= 10_000) {
+    return (num / 1_000)?.toFixed(1)?.replace(/\.0$/, "") + "k";
+  }
+  return num?.toString()?.split(".")?.[0];
+}
+
 const CricketSection = () => {
   const [datasource, setDataSource] = useState<any>([]);
   const navigate = useNavigate();
@@ -24,18 +33,24 @@ const CricketSection = () => {
         "https://backend.polo.game/api/fantasy/event/4"
       );
       const data = response.data;
+      
       let count = 0;
-            data?.data?.map((ele: any) => {
-              console.log(ele.isMatchLive, "hey");
-              if (ele?.isMatchLive === true) {
-                count = count + 1;
-              }
-            });
-            setLiveCount(count);
-            dispatch(updateCriket(count));
-      if(location.pathname !== "/cricket"){
-        setDataSource(data?.data?.slice(0,2));
-      }else{
+      data?.data?.map((ele: any) => {
+        console.log(ele.isMatchLive, "hey");
+        if (ele?.isMatchLive === true) {
+          count = count + 1;
+        }
+      });
+      setLiveCount(count);
+      dispatch(updateCriket(count));
+      if (location.pathname !== "/cricket") {
+        const filteredData = data?.data?.filter(
+          (item: any) => item?.runnerNames
+          && item?.runnerNames?.length > 0
+        );
+        
+        setDataSource(filteredData?.slice(0, Math.min(2, filteredData?.length)));
+      } else {
         setDataSource(data?.data);
       }
     } catch (err) {
@@ -55,17 +70,6 @@ const CricketSection = () => {
   const handleRowClick = (id: any, item: any) => {
     navigate(`/cricket/${id}`, { state: item });
   };
-
-  
-  function formatNumber(num: any) {
-    if (num >= 1_000_000) {
-      return (num / 1_000_000)?.toFixed(1)?.replace(/\.0$/, "") + "M";
-    } else if (num >= 10_000) {
-      return (num / 1_000)?.toFixed(1)?.replace(/\.0$/, "") + "k";
-    }
-    return num?.toString()?.split('.')?.[0];
-  }
-
 
   return (
     <Spin spinning={loading}>
@@ -142,10 +146,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[0]?.ex?.b[0]?.p ? item.runners[0]?.ex?.b[0]?.p : "-"}
+                        {item.runners[0]?.ex?.b[0]?.p
+                          ? item.runners[0]?.ex?.b[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[0]?.ex?.b[0]?.s ? formatNumber(item.runners[0]?.ex?.b[0]?.s) : ""}
+                        {item.runners[0]?.ex?.b[0]?.s
+                          ? formatNumber(item.runners[0]?.ex?.b[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                     <Col
@@ -158,10 +166,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[0]?.ex?.l[0]?.p ? item.runners[0]?.ex?.l[0]?.p :"-"}
+                        {item.runners[0]?.ex?.l[0]?.p
+                          ? item.runners[0]?.ex?.l[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[0]?.ex?.l[0]?.s ? formatNumber(item.runners[0]?.ex?.l[0]?.s) : ""}
+                        {item.runners[0]?.ex?.l[0]?.s
+                          ? formatNumber(item.runners[0]?.ex?.l[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                     <Col
@@ -174,10 +186,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[2]?.ex?.b[0]?.p ? item.runners[2]?.ex?.b[0]?.p : "-"}
+                        {item.runners[2]?.ex?.b[0]?.p
+                          ? item.runners[2]?.ex?.b[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[2]?.ex?.b[0]?.s ? formatNumber(item.runners[2]?.ex?.b[0]?.s) : ""}
+                        {item.runners[2]?.ex?.b[0]?.s
+                          ? formatNumber(item.runners[2]?.ex?.b[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                     <Col
@@ -190,10 +206,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[2]?.ex?.l[0]?.p ? item.runners[2]?.ex?.l[0]?.p : "-"}
+                        {item.runners[2]?.ex?.l[0]?.p
+                          ? item.runners[2]?.ex?.l[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[2]?.ex?.l[0]?.s ? formatNumber(item.runners[2]?.ex?.l[0]?.s) : ""}
+                        {item.runners[2]?.ex?.l[0]?.s
+                          ? formatNumber(item.runners[2]?.ex?.l[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                     <Col
@@ -206,10 +226,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[1]?.ex?.b[0]?.p ? item.runners[1]?.ex?.b[0]?.p : "-"}
+                        {item.runners[1]?.ex?.b[0]?.p
+                          ? item.runners[1]?.ex?.b[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        { item.runners[1]?.ex?.b[0]?.s ? formatNumber(item.runners[1]?.ex?.b[0]?.s) : ""}
+                        {item.runners[1]?.ex?.b[0]?.s
+                          ? formatNumber(item.runners[1]?.ex?.b[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                     <Col
@@ -222,10 +246,14 @@ const CricketSection = () => {
                       }}
                     >
                       <div style={{ color: "white", fontWeight: "bold" }}>
-                        {item.runners[1]?.ex?.l[0]?.p ? item.runners[1]?.ex?.l[0]?.p : "-"}
+                        {item.runners[1]?.ex?.l[0]?.p
+                          ? item.runners[1]?.ex?.l[0]?.p
+                          : "-"}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[1]?.ex?.l[0]?.s ? formatNumber(item.runners[1]?.ex?.l[0]?.s) : ""}
+                        {item.runners[1]?.ex?.l[0]?.s
+                          ? formatNumber(item.runners[1]?.ex?.l[0]?.s)
+                          : ""}
                       </div>
                     </Col>
                   </Row>

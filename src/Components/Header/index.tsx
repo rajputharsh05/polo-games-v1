@@ -697,7 +697,8 @@ const HeaderComponent = () => {
                               <Spin />
                             ) : (
                               <Select
-                                placeholder="Select country"
+                               
+                                placeholder="IN +91"
                                 showSearch
                                 optionFilterProp="label"
                                 filterOption={(input, option) =>
@@ -707,6 +708,7 @@ const HeaderComponent = () => {
                                     .includes(input.toLowerCase())
                                 }
                                 options={options}
+                                
                               />
                             )}
                           </Form.Item>

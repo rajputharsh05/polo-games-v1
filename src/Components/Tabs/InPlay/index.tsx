@@ -4,6 +4,7 @@ import styles from "../tabs.module.scss";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { formatNumber } from "../Cricket";
 
 const InPlay = () => {
   const [datasource, setDataSource] = useState<any>([]);
@@ -35,6 +36,7 @@ const InPlay = () => {
   useEffect(() => {
     getApiData();
   }, []);
+
 
   return (
     <Spin spinning={loading}>
@@ -124,7 +126,7 @@ const InPlay = () => {
                         {item.runners[0]?.ex?.l[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[0]?.ex?.l[0]?.s}
+                        {formatNumber(item.runners[0]?.ex?.l[0]?.s)}
                       </div>
                     </Col>
                     <Col
@@ -140,7 +142,7 @@ const InPlay = () => {
                         {item.runners[2]?.ex?.b[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[2]?.ex?.b[0]?.s}
+                        {formatNumber(item.runners[2]?.ex?.b[0]?.s)}
                       </div>
                     </Col>
                     <Col
@@ -156,7 +158,7 @@ const InPlay = () => {
                         {item.runners[2]?.ex?.l[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[2]?.ex?.l[0]?.s}
+                        {formatNumber(item.runners[2]?.ex?.l[0]?.s)}
                       </div>
                     </Col>
                     <Col
@@ -172,7 +174,7 @@ const InPlay = () => {
                         {item.runners[1]?.ex?.b[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[1]?.ex?.b[0]?.s}
+                        {formatNumber(item.runners[1]?.ex?.b[0]?.s)}
                       </div>
                     </Col>
                     <Col
@@ -188,7 +190,7 @@ const InPlay = () => {
                         {item.runners[1]?.ex?.l[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[1]?.ex?.l[0]?.s}
+                        {formatNumber(item.runners[1]?.ex?.l[0]?.s)}
                       </div>
                     </Col>
                   </Row>
