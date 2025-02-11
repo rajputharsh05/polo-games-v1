@@ -557,7 +557,7 @@ const AdminPage = () => {
       case "user":
         getData(GETUSERURL, "agents");
         break;
-      case "blogs":
+      case "blog":
         getData(GETBLOGSURL, "blogs");
         break;
       case "reels":
@@ -1272,18 +1272,20 @@ const AdminPage = () => {
                         </Button>
                       </Row>
                     }
-                    <Table
-                      dataSource={reels}
-                      columns={ReelsColumns}
-                      rowKey="id" // Replace with your unique key
-                      style={{
-                        backgroundColor: "transparent",
-                        overflow: "scroll",
-                        msOverflowStyle: "none", // For IE and Edge
-                        scrollbarWidth: "none",
-                      }}
-                      pagination={{ pageSize: 5 }}
-                    />
+                    {reels && reels?.length > 0 && (
+                      <Table
+                        dataSource={reels || []}
+                        columns={ReelsColumns}
+                        rowKey="id" // Replace with your unique key
+                        style={{
+                          backgroundColor: "transparent",
+                          overflow: "scroll",
+                          msOverflowStyle: "none", // For IE and Edge
+                          scrollbarWidth: "none",
+                        }}
+                        pagination={{ pageSize: 5 }}
+                      />
+                    )}
                   </>
                 )}
 
