@@ -257,7 +257,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
         container.removeEventListener("touchmove", handleScroll);
       }
     };
-  }, [currentIndex, reels.length]);
+  }, [currentIndex, reels?.length]);
 
   return (
     <Spin spinning={loading}>
@@ -326,7 +326,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
         }}
       >
         <AnimatePresence mode="wait">
-          {reels.length > 0 && (
+          {reels?.length > 0 && (
             <motion.video
               key={currentIndex}
               src={reels[currentIndex]}

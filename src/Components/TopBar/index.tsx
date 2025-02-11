@@ -316,8 +316,10 @@ const TopBar = () => {
       // Replace "1234567890" with the desired phone number
       window.location.href = "tel:9333333330";
     } else {
-      setActiveTab(key);
-      navigate(`/${key}`);
+      if (key !== "demo-auth") {
+        setActiveTab(key);
+        navigate(`/${key}`);
+      }
 
       if (window.innerWidth < 768) {
         setModalOpen(false);
