@@ -23,6 +23,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import {
+  Edit,
   Facebook,
   ImageAspectRatio,
   LocalOffer,
@@ -37,6 +38,8 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { AuthStateType } from "../../Redux/AuthSlice";
 import { RootState } from "../../Redux/Store";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const AdminPage = () => {
   type offerType = {
@@ -75,13 +78,15 @@ const AdminPage = () => {
   const [socialMedia, setSocialMedia] = useState<[SocialMediaType]>();
   const [offerModal, setOfferModal] = useState<boolean>(false);
   const [socialModal, setSocialModal] = useState<boolean>(false);
+  const [editModal, setEditMOdal] = useState<boolean>(false);
+  const [selectedRecord, setSelectedRecord] = useState<any>();
   const GETREELSURL: string = `${BASEURL}/reels/get-reels/`;
   const GETBLOGSURL: string = `${BASEURL}/blogs/`;
   const GETIMAGELINK: string = `${BASEURL}/imagelink/items/`;
   const GETTEXTURL: string = `${BASEURL}/marqueetext/statements`;
   const GETUSERURL: string = `${BASEURL}/user/get_all_users`;
   const GETADMINIMAGEURL: string = `${BASEURL}/bannerimage/images`;
-  const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs/`;
+  const CREATEBLOGSURL: string = `${BASEURL}/blogs/create_blogs`;
   const GETOFFERURL: string = `${BASEURL}/offers/`;
   const GETSOCIALMEDIAURL: string = `${BASEURL}/socialmedia/items/`;
   const DELETEIMAGEURL: string = `${BASEURL}/bannerimage/delete_image/`;
@@ -92,6 +97,7 @@ const AdminPage = () => {
   const DELETEWEBSITEURl: string = `${BASEURL}/imagelink/items/`;
   const DELETEREELURL: string = `${BASEURL}/reels/delete-reel/`;
   const DELETEMARQUEEURL: string = `${BASEURL}/marqueetext/delete-statement/`;
+  const EDITSOCIALURL: string = `${BASEURL}/socialmedia/items/`;
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
   const [MarqeeForm] = Form.useForm();
   const [ClientForm] = Form.useForm();
@@ -99,6 +105,7 @@ const AdminPage = () => {
   const [form] = Form.useForm();
   const [offerForm] = Form.useForm();
   const [socialForm] = Form.useForm();
+  const [editForm] = Form.useForm();
 
   const webSiteColums = [
     {
@@ -380,6 +387,21 @@ const AdminPage = () => {
         />
       ),
     },
+    {
+      title: "Action",
+      key: "edit_action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<Edit />}
+          onClick={() => {
+            setSelectedRecord(record);
+            setEditMOdal(true);
+          }}
+        />
+      ),
+    },
   ];
 
   const Options = [
@@ -452,6 +474,66 @@ const AdminPage = () => {
       ),
     },
   ];
+
+  const exportToExcel = (data: any[], fileName: string) => {
+    const keysToRemove = ["website_id", "website_password"];
+    const newData = data?.map((item: any) => {
+      const newObject = Object.fromEntries(
+        Object.entries(item)?.filter(([key]) => !keysToRemove?.includes(key))
+      );
+      return newObject;
+    });
+    const worksheet = XLSX.utils.json_to_sheet(newData);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    // Use FileSaver.js to trigger the file download
+    saveAs(dataBlob, `${fileName}.xlsx`);
+  };
+
+  const handleEdit = async (record: any) => {
+    try {
+      setLoading(true);
+
+      if (!selectedRecord?.id) {
+        message.error("Invalid record selected!");
+        return;
+      }
+      const formData = new FormData();
+      formData.append("link", record.link);
+
+      const response = await axios.put(
+        `${EDITSOCIALURL}${selectedRecord.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        message.success("Updated record!");
+        getData(GETSOCIALMEDIAURL, "socialMedia");
+        editForm.resetFields(); // Only reset if update is successful
+        setEditMOdal(false);
+      }
+    } catch (error: any) {
+      console.error("API Error:", error?.response?.data || error);
+      message.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validateUser = (type: string) => {
     if (
@@ -633,15 +715,18 @@ const AdminPage = () => {
         }
       );
 
+      console.log(response, "resss");
+
       if (response.status === 200) {
         getData(GETREELSURL, "reels");
         message.success("Reel uploaded successfully!");
       } else {
-        message.error("Failed to upload Reel. Please try again.");
+        getData(GETREELSURL, "reels");
       }
     } catch (error: any) {
+      console.log(error, "resss");
       console.error("Error uploading Reel:", error);
-      message.error("Error uploading Reel");
+      getData(GETREELSURL, "reels");
     } finally {
       setReelModal(false);
       setLoading(false);
@@ -697,11 +782,15 @@ const AdminPage = () => {
 
   const handleAgentSubmit = async (values: any) => {
     try {
-      const response = await axios.post(`${BASEURL}/user/create_user`, values, {
-        headers: {
-          Authorization: `Bearer ${AUTH?.token}`,
-        },
-      });
+      const response = await axios.post(
+        `${BASEURL}/user/create_user/`,
+        values,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
       if (response?.status === 200) {
         message.success("Added Blogs SuccessFully");
         getData(GETUSERURL, "agents");
@@ -871,7 +960,10 @@ const AdminPage = () => {
     getData(GETADMINIMAGEURL, "images");
   }, []);
 
-  
+  useEffect(() => {
+    editForm.setFieldsValue({ link: selectedRecord?.link || "abc" });
+  }, [selectedRecord, form]);
+
   return (
     <Spin spinning={loading}>
       <div className={styles.adminWrapper}>
@@ -1005,11 +1097,19 @@ const AdminPage = () => {
                         style={{ marginTop: "2vh", marginBottom: "2vh" }}
                       >
                         <Button
+                          style={{ marginRight: "2dvw" }}
+                          type="primary"
+                          onClick={() => exportToExcel(agents, "UserData")}
+                        >
+                          Export as excel
+                        </Button>
+
+                        <Button
                           type="primary"
                           icon={<PlusOutlined />}
                           onClick={() => setIsAddAgents(true)}
                         >
-                          Add Agent
+                          Add user
                         </Button>
                       </Row>
                     }
@@ -1676,7 +1776,7 @@ const AdminPage = () => {
                     { required: true, message: "Please select a start date!" },
                   ]}
                 >
-                  <DatePicker style={{ width: "100%", color: "white" }} />
+                  <DatePicker style={{ width: "100%" }} />
                 </Form.Item>
 
                 <Form.Item
@@ -1716,6 +1816,9 @@ const AdminPage = () => {
                         type="primary"
                         htmlType="submit"
                         style={{ backgroundColor: "#73d13d" }}
+                        onClick={() => {
+                          console.log("testtt.....");
+                        }}
                       >
                         Submit
                       </Button>
@@ -1782,6 +1885,63 @@ const AdminPage = () => {
                       <Button
                         type="default"
                         onClick={() => socialForm.resetFields()}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ backgroundColor: "#73d13d" }}
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={editModal}
+          onCancel={() => setEditMOdal(false)}
+          onClose={() => setEditMOdal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form form={editForm} onFinish={handleEdit}>
+                <Form.Item
+                  name="link"
+                  label="Link"
+                  rules={[
+                    { required: true, message: "Please enter the link!" },
+                  ]}
+                >
+                  <Input placeholder="Enter Link" />
+                </Form.Item>
+                <Form.Item>
+                  <Row justify="space-between" style={{ marginTop: "5vh" }}>
+                    <Col>
+                      <Button
+                        type="default"
+                        onClick={() => editForm.resetFields()}
                       >
                         Cancel
                       </Button>

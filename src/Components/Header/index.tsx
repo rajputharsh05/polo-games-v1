@@ -344,7 +344,12 @@ const HeaderComponent = () => {
       justify={"space-around"}
     >
       <Col span={2}>
-        <img src={logo} style={{ height: "100%", width: "100%" }} alt="Logo" />
+        <img
+          onClick={() => navigate("/")}
+          src={logo}
+          style={{ height: "100%", width: "100%", cursor: "pointer" }}
+          alt="Logo"
+        />
       </Col>
       <Col
         className={styles.Hover}
@@ -387,7 +392,9 @@ const HeaderComponent = () => {
             AUTH?.logIn
               ? location?.pathname !== "/"
                 ? navigate("/")
-                : navigate("pages")
+                : AUTH?.user === "User"
+                ? navigate("pages")
+                : navigate("/admin")
               : navigate("/");
           }}
         >
@@ -399,7 +406,9 @@ const HeaderComponent = () => {
           {AUTH?.logIn
             ? location?.pathname !== "/"
               ? "Home"
-              : "Sites"
+              : AUTH?.user === "User"
+              ? "Sites"
+              : "Admin"
             : "Home"}
         </div>
         {location.pathname !== "/admin" && (
@@ -680,6 +689,7 @@ const HeaderComponent = () => {
                       style={{ color: "white" }}
                       form={loginForm}
                       onFinish={handleFormSubmit}
+                      initialValues={{ country_code: "+91" }}
                     >
                       <Row justify={"space-around"}>
                         <Col span={12}>
@@ -697,7 +707,7 @@ const HeaderComponent = () => {
                               <Spin />
                             ) : (
                               <Select
-                               
+                                defaultValue="+91"
                                 placeholder="IN +91"
                                 showSearch
                                 optionFilterProp="label"
@@ -708,7 +718,6 @@ const HeaderComponent = () => {
                                     .includes(input.toLowerCase())
                                 }
                                 options={options}
-                                
                               />
                             )}
                           </Form.Item>
@@ -813,6 +822,7 @@ const HeaderComponent = () => {
                     style={{ color: "white" }}
                     form={form}
                     onFinish={handleFormSubmit}
+                    initialValues={{ country_code: "+91" }}
                   >
                     <Form.Item
                       name="username"
@@ -827,6 +837,7 @@ const HeaderComponent = () => {
                     <Row gutter={16}>
                       <Col span={10}>
                         <Form.Item
+                         
                           name="country_code"
                           label="Country Code"
                           rules={[
@@ -840,6 +851,7 @@ const HeaderComponent = () => {
                             <Spin />
                           ) : (
                             <Select
+                              defaultValue="+91"
                               placeholder="Select country"
                               showSearch
                               optionFilterProp="label"
