@@ -31,7 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
 import { login, logout } from "../../Redux/AuthSlice";
 import logoutIMG from "../../assets/Logout.png";
-interface CountryFlags {
+export interface CountryFlags {
   name: string;
   flag: string;
   dial_code: string;

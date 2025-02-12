@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Row,
@@ -13,6 +13,8 @@ import {
   InputNumber,
   DatePicker,
   Spin,
+  Select,
+  Checkbox,
 } from "antd";
 import {
   UploadOutlined,
@@ -23,6 +25,7 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import {
+  AdminPanelSettings,
   Edit,
   Facebook,
   ImageAspectRatio,
@@ -40,6 +43,7 @@ import { AuthStateType } from "../../Redux/AuthSlice";
 import { RootState } from "../../Redux/Store";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { CountryFlags } from "../Header";
 
 const AdminPage = () => {
   type offerType = {
@@ -50,6 +54,7 @@ const AdminPage = () => {
     valid_until: string;
     id: number;
     image_base64: string;
+    visible: boolean;
   };
 
   type SocialMediaType = {
@@ -80,6 +85,18 @@ const AdminPage = () => {
   const [socialModal, setSocialModal] = useState<boolean>(false);
   const [editModal, setEditMOdal] = useState<boolean>(false);
   const [selectedRecord, setSelectedRecord] = useState<any>();
+  const [offerVisible, setOfferVisible] = useState<boolean>();
+  const [adminData, setAdminData] = useState<any>();
+  const [adminModal, setAdminModal] = useState<boolean>();
+  const [globalStopModal, setGlobalStopModal] = useState<boolean>(false);
+  const [deleteValue, setDeletevalue] = useState<any>();
+  const [countries, setCountries] = useState<[CountryFlags]>([
+    {
+      name: "IN",
+      flag: "https://cdn.countryflags.com/thumbs/india/flag-400.png",
+      dial_code: "+91",
+    },
+  ]);
   const GETREELSURL: string = `${BASEURL}/reels/get-reels/`;
   const GETBLOGSURL: string = `${BASEURL}/blogs/`;
   const GETIMAGELINK: string = `${BASEURL}/imagelink/items/`;
@@ -98,6 +115,9 @@ const AdminPage = () => {
   const DELETEREELURL: string = `${BASEURL}/reels/delete-reel/`;
   const DELETEMARQUEEURL: string = `${BASEURL}/marqueetext/delete-statement/`;
   const EDITSOCIALURL: string = `${BASEURL}/socialmedia/items/`;
+  const GETADMINURL: string = `${BASEURL}/superadmin/`;
+  const CREATEADMINURL: string = `${BASEURL}/superadmin/create_admins`;
+  const DELETEADMINURL: string = `${BASEURL}/superadmin/`;
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
   const [MarqeeForm] = Form.useForm();
   const [ClientForm] = Form.useForm();
@@ -106,6 +126,17 @@ const AdminPage = () => {
   const [offerForm] = Form.useForm();
   const [socialForm] = Form.useForm();
   const [editForm] = Form.useForm();
+  const [adminForm] = Form.useForm();
+
+  const permissionsData = {
+    blog: { delete: false, read: true, write: false },
+    reels: { delete: false, read: true, write: false },
+    user: { delete: false, read: true, write: false },
+    bannerimage: { delete: false, read: true, write: false },
+    marqueetext: { delete: false, read: true, write: false },
+    imagelink: { delete: false, read: true, write: false },
+    offers: { delete: false, read: true, write: false },
+  };
 
   const webSiteColums = [
     {
@@ -422,6 +453,11 @@ const AdminPage = () => {
       label: "Manage Reels",
     },
     {
+      key: "admin",
+      icon: <AdminPanelSettings />,
+      label: "Manage admin",
+    },
+    {
       key: "marqueetext",
       icon: <TextSnippet />,
       label: "Manage Marquee",
@@ -472,6 +508,72 @@ const AdminPage = () => {
           onClick={() => handleDelete(getLastSegment(record), "reels")}
         />
       ),
+    },
+  ];
+
+  const AdminColums = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number, idx: number, num: number) => {
+        console.log(text, idx, num);
+        return <span style={{ color: "white" }}>{num + 1}</span>;
+      },
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phone_number",
+      key: "phone_number",
+      render: (text: string) => (
+        <span style={{ color: "white" }}>{`${text}`}</span>
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text: string) => (
+        <span style={{ color: "white" }}>{`${text}`}</span>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "admin")}
+        />
+      ),
+    },
+  ];
+
+  const AdminPanelCol = [
+    {
+      title: "Module",
+      dataIndex: "module",
+      key: "module",
+    },
+    {
+      title: "Read",
+      dataIndex: "read",
+      key: "read",
+      render: (value: boolean) => (value ? "✅" : "❌"),
+    },
+    {
+      title: "Write",
+      dataIndex: "write",
+      key: "write",
+      render: (value: boolean) => (value ? "✅" : "❌"),
+    },
+    {
+      title: "Delete",
+      dataIndex: "delete",
+      key: "delete",
+      render: (value: boolean) => (value ? "✅" : "❌"),
     },
   ];
 
@@ -542,7 +644,11 @@ const AdminPage = () => {
         AUTH.permissions[type]?.delete === true) ||
       AUTH?.user === "Superadmin"
     ) {
-      return true;
+      if (AUTH?.user !== "Superadmin" && type === "admin") {
+        return false;
+      } else {
+        return true;
+      }
     } else {
       return false;
     }
@@ -574,6 +680,9 @@ const AdminPage = () => {
         break;
       case "socialMedia":
         getData(GETSOCIALMEDIAURL, "socialMedia");
+        break;
+      case "admin":
+        getData(GETADMINURL, "admin");
         break;
       default:
         console.warn(`Unhandled type: ${type}`);
@@ -611,9 +720,16 @@ const AdminPage = () => {
             break;
           case "offers":
             setOffers(data);
+            const visibleData = data?.filter(
+              (ele: any) => ele?.visible === true
+            );
+            setOfferVisible(visibleData?.length === data?.length);
             break;
           case "socialMedia":
             setSocialMedia(data);
+            break;
+          case "admin":
+            setAdminData(data);
             break;
           default:
             console.warn(`Unhandled type: ${type}`);
@@ -753,6 +869,14 @@ const AdminPage = () => {
   };
 
   const handleDelete = async (item: any, type: any) => {
+    setDeletevalue({
+      item,
+      type,
+    });
+    setGlobalStopModal(true);
+  };
+
+  const handleDeleteModal = async (item: any, type: any) => {
     if (type === "images") {
       await deleteData(item?.id, DELETEIMAGEURL);
       await getData(GETADMINIMAGEURL, "images");
@@ -777,7 +901,11 @@ const AdminPage = () => {
     } else if (type === "marquee") {
       await deleteData(item?.id, DELETEMARQUEEURL);
       await getData(GETTEXTURL, "marqueetext");
+    } else if (type === "admin") {
+      await deleteData(item?.id, DELETEADMINURL);
+      await getData(GETADMINURL, "admin");
     }
+    setGlobalStopModal(false);
   };
 
   const handleAgentSubmit = async (values: any) => {
@@ -864,6 +992,9 @@ const AdminPage = () => {
     } catch (error) {
       message.error("Failed to upload data.");
       console.error(error);
+    } finally {
+      setWebsiteModal(false);
+      setLoading(false);
     }
   };
 
@@ -944,6 +1075,32 @@ const AdminPage = () => {
     return false;
   };
 
+  const handleAdminSubmit = async (record: any) => {
+    try {
+      setLoading(true);
+      const updatedData = {
+        ...record,
+        country_code: record?.country_code?.replace("+", ""),
+      };
+      const response = await axios.post(CREATEADMINURL, updatedData, {
+        headers: {
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
+      if (response.status === 200) {
+        message.success("created admin");
+        getData(GETADMINURL, "admin");
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("something went wrong !");
+    } finally {
+      setLoading(false);
+      adminForm.resetFields();
+      setAdminModal(false);
+    }
+  };
+
   function getLastSegment(url: string) {
     try {
       const urlObj = new URL(url);
@@ -956,6 +1113,32 @@ const AdminPage = () => {
     }
   }
 
+  const handleOfferVisibility = async () => {
+    try {
+      setLoading(true);
+      const res = await axios?.put(
+        `${BASEURL}/offers/visibility/all`,
+        {
+          visible: !offerVisible,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+      if (res?.status === 200) {
+        message.success("updated !");
+        getData(GETOFFERURL, "offers");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error("unable to change the offer state");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getData(GETADMINIMAGEURL, "images");
   }, []);
@@ -963,6 +1146,59 @@ const AdminPage = () => {
   useEffect(() => {
     editForm.setFieldsValue({ link: selectedRecord?.link || "abc" });
   }, [selectedRecord, form]);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const [flagsRes, codesRes] = await Promise.all([
+          axios.get(
+            "https://countriesnow.space/api/v0.1/countries/flag/images"
+          ),
+          axios.get("https://countriesnow.space/api/v0.1/countries/codes"),
+        ]);
+
+        const mergedData: [CountryFlags] = flagsRes.data.data.map(
+          (flag: any) => {
+            const codeData = codesRes.data.data.find(
+              (code: any) => code.name === flag.name
+            );
+            return {
+              name: codeData?.code,
+              flag: flag.flag,
+              dial_code: codeData ? codeData.dial_code : "",
+            };
+          }
+        );
+
+        setCountries(mergedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
+
+  const options = useMemo(
+    () =>
+      countries?.map((country: CountryFlags) => ({
+        value: country.dial_code,
+        label: (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <img
+              src={country.flag}
+              alt={country.name}
+              width="20"
+              height="15"
+              style={{ borderRadius: "2px" }}
+              loading="lazy"
+            />
+            {country.name} ({country.dial_code})
+          </div>
+        ),
+      })),
+    [countries]
+  );
 
   return (
     <Spin spinning={loading}>
@@ -1360,6 +1596,13 @@ const AdminPage = () => {
                       >
                         <Button
                           type="primary"
+                          style={{ marginRight: "3dvw" }}
+                          onClick={() => handleOfferVisibility()}
+                        >
+                          {`Turn ${offerVisible ? "Off" : "On"} Offers`}
+                        </Button>
+                        <Button
+                          type="primary"
                           icon={<PlusOutlined />}
                           onClick={() => setOfferModal(true)}
                         >
@@ -1406,6 +1649,70 @@ const AdminPage = () => {
                         backgroundColor: "transparent",
                         overflow: "scroll",
                         msOverflowStyle: "none", // For IE and Edge
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "admin" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setAdminModal(true)}
+                        >
+                          Add Admins
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={adminData}
+                      columns={AdminColums}
+                      rowKey="id"
+                      expandable={{
+                        expandedRowRender: (record: any) => {
+                          const permissionData = Object.entries(
+                            record.permissions || {}
+                          ).map(([key, value]: [string, any]) => ({
+                            key,
+                            module: key.charAt(0).toUpperCase() + key.slice(1),
+                            ...value,
+                          }));
+
+                          return (
+                            <Table
+                              columns={AdminPanelCol}
+                              dataSource={permissionData}
+                              pagination={false}
+                              size="small"
+                            />
+                          );
+                        },
+                        rowExpandable: (record: any) => !!record.permissions,
+                        expandIcon: ({ expanded, onExpand, record }) =>
+                          expanded ? (
+                            <MinusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ) : (
+                            <PlusCircleOutlined
+                              onClick={(e) => onExpand(record, e)}
+                              style={{ fontSize: "16px", color: "white" }}
+                            />
+                          ),
+                      }}
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none",
                         scrollbarWidth: "none",
                       }}
                       pagination={{ pageSize: 5 }}
@@ -1960,6 +2267,258 @@ const AdminPage = () => {
                   </Row>
                 </Form.Item>
               </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={adminModal}
+          onCancel={() => setAdminModal(false)}
+          onClose={() => setAdminModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form
+                form={adminForm}
+                onFinish={handleAdminSubmit}
+                initialValues={{
+                  country_code: "+91",
+                  permissions: {
+                    blog: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    reels: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    user: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    bannerimage: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    marqueetext: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    imagelink: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                    offers: {
+                      delete: false,
+                      read: true,
+                      write: false,
+                    },
+                  },
+                }}
+              >
+                <Row justify={"space-around"}>
+                  <Col span={10}>
+                    <Form.Item
+                      name="country_code"
+                      label="Code"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please select a country code!",
+                        },
+                      ]}
+                    >
+                      {loading ? (
+                        <Spin />
+                      ) : (
+                        <Select
+                          defaultValue="+91"
+                          placeholder="IN +91"
+                          showSearch
+                          optionFilterProp="label"
+                          filterOption={(input, option) =>
+                            option?.label.props.children
+                              .join("")
+                              .toLowerCase()
+                              .includes(input.toLowerCase())
+                          }
+                          options={options}
+                        />
+                      )}
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      name="phone_number"
+                      label="Phone Number"
+                      rules={[{ required: true }]}
+                    >
+                      <Input placeholder="9999999999" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row justify={"center"}>
+                  <Col span={23}>
+                    <Form.Item
+                      name="name"
+                      label="name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please enter e!",
+                        },
+                      ]}
+                    >
+                      <Input placeholder="your name" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <Col span={23}>
+                    <h3>Permissions</h3>
+                    {Object.entries(permissionsData).map(([key, value]) => (
+                      <Row
+                        key={key}
+                        gutter={16}
+                        style={{ marginBottom: "8px" }}
+                      >
+                        <Col span={6}>
+                          <strong>
+                            {key.charAt(0).toUpperCase() + key.slice(1)}
+                          </strong>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            name={["permissions", key, "read"]}
+                            valuePropName="checked"
+                          >
+                            <Checkbox
+                              defaultChecked={value.read}
+                              style={{ color: "white" }}
+                            >
+                              Read
+                            </Checkbox>
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            name={["permissions", key, "write"]}
+                            valuePropName="checked"
+                          >
+                            <Checkbox
+                              defaultChecked={value.write}
+                              style={{ color: "white" }}
+                            >
+                              Write
+                            </Checkbox>
+                          </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                          <Form.Item
+                            name={["permissions", key, "delete"]}
+                            valuePropName="checked"
+                          >
+                            <Checkbox
+                              defaultChecked={value.delete}
+                              style={{ color: "white" }}
+                            >
+                              Delete
+                            </Checkbox>
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    ))}
+                  </Col>
+                </Row>
+                <Form.Item>
+                  <Row justify="space-between" style={{ marginTop: "5vh" }}>
+                    <Col>
+                      <Button
+                        type="default"
+                        onClick={() => {
+                          adminForm.resetFields();
+                          setAdminModal(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ backgroundColor: "#73d13d" }}
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={globalStopModal}
+          onCancel={() => setGlobalStopModal(false)}
+          onClose={() => setGlobalStopModal(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <h4
+              style={{ color: "white", fontFamily: "Popins", fontWeight: 600 }}
+            >
+              You have opt to delete this record , please proceed with yes if
+              you want to delete it .
+            </h4>
+            <Row gutter={[20, 20]} justify={"space-between"}>
+              <Button type="primary" onClick={() => setGlobalStopModal(false)}>
+                Cancel
+              </Button>
+
+              <Button
+                style={{ backgroundColor: "#73d13d" }}
+                type="default"
+                onClick={() =>
+                  handleDeleteModal(deleteValue?.item, deleteValue?.type)
+                }
+              >
+                Yes
+              </Button>
             </Row>
           </Card>
         </Modal>
