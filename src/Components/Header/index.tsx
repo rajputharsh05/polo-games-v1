@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  Checkbox,
   Col,
   Dropdown,
   Form,
@@ -54,6 +55,8 @@ const HeaderComponent = () => {
 
   const [currentPHoneNumber, setCurrentPhoneNumber] = useState<number>();
 
+  const [isChecked, setIsChecked] = useState(false);
+
   const [countryCode, setCountryCode] = useState<any>();
 
   const [loading, setLoading] = useState(false);
@@ -69,6 +72,8 @@ const HeaderComponent = () => {
       dial_code: "+91",
     },
   ]);
+
+  const [callUsModal, setCallUsModal] = useState<boolean>(false);
 
   const [form] = Form.useForm();
   const [loginForm] = Form.useForm();
@@ -166,24 +171,28 @@ const HeaderComponent = () => {
   );
 
   const manageRegistration = async (values: any) => {
-    try {
-      const newValues = {
-        ...values,
-        country_code: values?.country_code?.replace("+", ""),
-      };
-      const response = await axios.post(
-        `${BASEURL}/user/create_user`,
-        newValues
-      );
-      if (response?.status === 200) {
-        message.success("Added user SuccessFully");
-        dispatch(updateState(false));
-        setLoginOrRegister(!loginOrRegister);
-        form.resetFields();
+    if (isChecked) {
+      message.warning("please select the checkbox to register !");
+    } else {
+      try {
+        const newValues = {
+          ...values,
+          country_code: values?.country_code?.replace("+", ""),
+        };
+        const response = await axios.post(
+          `${BASEURL}/user/create_user`,
+          newValues
+        );
+        if (response?.status === 200) {
+          message.success("Added user SuccessFully");
+          dispatch(updateState(false));
+          setLoginOrRegister(!loginOrRegister);
+          form.resetFields();
+        }
+      } catch (error) {
+        console.error(error);
+        message.error("Unable to create Agent");
       }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to create Agent");
     }
   };
 
@@ -288,6 +297,10 @@ const HeaderComponent = () => {
     Cookies.remove("userToken");
     navigate("/");
     message.success("Logged out successfully");
+  };
+
+  const handleCheckboxChange = (e: any) => {
+    setIsChecked(e.target.checked);
   };
 
   const supportMenu = (
@@ -486,6 +499,7 @@ const HeaderComponent = () => {
         )}{" "}
         {location.pathname !== "/admin" && (
           <div
+            onClick={() => setCallUsModal(true)}
             style={{
               display: "flex",
               alignItems: "center",
@@ -837,7 +851,6 @@ const HeaderComponent = () => {
                     <Row gutter={16}>
                       <Col span={10}>
                         <Form.Item
-                         
                           name="country_code"
                           label="Country Code"
                           rules={[
@@ -911,6 +924,27 @@ const HeaderComponent = () => {
                         </Select.Option>
                       </Select>
                     </Form.Item>
+
+                    <Row
+                      justify={"center"}
+                      align={"middle"}
+                      style={{ marginBottom: "2vh" }}
+                    >
+                      <Col span={2}>
+                        <Checkbox
+                          style={{ backgroundColor: "white" }}
+                          checked={isChecked}
+                          onChange={handleCheckboxChange}
+                        />
+                      </Col>
+                      <Col span={22}>
+                        <p>
+                          I consent to receive calls and messages from Polo.Game
+                          on my registered number. I understand that I can
+                          opt-out anytime
+                        </p>
+                      </Col>
+                    </Row>
 
                     <Row gutter={[20, 20]} justify={"space-between"}>
                       <Button
@@ -1009,6 +1043,33 @@ const HeaderComponent = () => {
                 </Row>
               </>
             )}
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={callUsModal}
+        footer=""
+        onClose={() => setCallUsModal(false)}
+        onCancel={() => setCallUsModal(false)}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"}>
+            <h2 style={{ color: "white", fontFamily: "Popins" }}>
+              Please call us on +91 9333333330{" "}
+            </h2>
           </Row>
         </Card>
       </Modal>

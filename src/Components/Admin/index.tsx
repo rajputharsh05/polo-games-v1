@@ -198,6 +198,14 @@ const AdminPage = () => {
       ),
     },
     {
+      title: "Opt on check box while registration",
+      dataIndex: "phone_number",
+      key: "phone_number",
+      render: () => (
+        <span style={{ color: "white" }}>Yes</span>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       render: (_: any, record: any) => (
