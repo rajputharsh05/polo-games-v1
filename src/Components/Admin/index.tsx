@@ -30,6 +30,7 @@ import {
   Facebook,
   ImageAspectRatio,
   LocalOffer,
+  Pool,
   RowingOutlined,
   TextSnippet,
   WebStories,
@@ -88,6 +89,8 @@ const AdminPage = () => {
   const [offerVisible, setOfferVisible] = useState<boolean>();
   const [adminData, setAdminData] = useState<any>();
   const [adminModal, setAdminModal] = useState<boolean>();
+  const [pologame_club, setPologame_club] = useState<any>();
+  const [pologameclub_add, setpologameclub_add] = useState<boolean>(false);
   const [globalStopModal, setGlobalStopModal] = useState<boolean>(false);
   const [deleteValue, setDeletevalue] = useState<any>();
   const [countries, setCountries] = useState<[CountryFlags]>([
@@ -118,6 +121,8 @@ const AdminPage = () => {
   const GETADMINURL: string = `${BASEURL}/superadmin/`;
   const CREATEADMINURL: string = `${BASEURL}/superadmin/create_admins`;
   const DELETEADMINURL: string = `${BASEURL}/superadmin/`;
+  const GETPOLOGAMECLUBURl: string = `${BASEURL}/imagelinkforbackup/items/`;
+  const DELETPOLOGAMECLUBURL: string = `${BASEURL}/imagelinkforbackup/items/`;
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
   const [MarqeeForm] = Form.useForm();
   const [ClientForm] = Form.useForm();
@@ -127,6 +132,7 @@ const AdminPage = () => {
   const [socialForm] = Form.useForm();
   const [editForm] = Form.useForm();
   const [adminForm] = Form.useForm();
+  const [poloGameClubForm] = Form.useForm();
 
   const permissionsData = {
     blog: { delete: false, read: true, write: false },
@@ -201,7 +207,7 @@ const AdminPage = () => {
       title: "Registered at",
       dataIndex: "created_at_ist",
       key: "created_at_ist",
-      render: (text : any) => (
+      render: (text: any) => (
         <span style={{ color: "white" }}>{text?.replace("T", " ")}</span>
       ),
     },
@@ -209,9 +215,7 @@ const AdminPage = () => {
       title: "Opt on check box while registration",
       dataIndex: "phone_number",
       key: "phone_number",
-      render: () => (
-        <span style={{ color: "white" }}>Yes</span>
-      ),
+      render: () => <span style={{ color: "white" }}>Yes</span>,
     },
     {
       title: "Action",
@@ -451,6 +455,65 @@ const AdminPage = () => {
     },
   ];
 
+  const PoloGameClubColumns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Link",
+      dataIndex: "link",
+      key: "link",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "image_base64",
+      dataIndex: "image_base64",
+      render: (_: any, record: any) => (
+        <img
+          src={`data:image/png;base64,${record.image_base64}`}
+          alt={record.title}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "Pologame.Club")}
+        />
+      ),
+    },
+    // {
+    //   title: "Action",
+    //   key: "edit_action",
+    //   render: (_: any, record: any) => (
+    //     <Button
+    //       style={{ color: "white" }}
+    //       type="text"
+    //       icon={<Edit />}
+    //       onClick={() => {
+    //         setSelectedRecord(record);
+    //         setEditMOdal(true);
+    //       }}
+    //     />
+    //   ),
+    // },
+  ];
+
   const Options = [
     {
       key: "bannerimage",
@@ -492,6 +555,11 @@ const AdminPage = () => {
       key: "socialMedia",
       icon: <Facebook />,
       label: "Social Media",
+    },
+    {
+      key: "Pologame.Club",
+      icon: <Pool></Pool>,
+      label: "pologame.club",
     },
   ];
 
@@ -700,6 +768,9 @@ const AdminPage = () => {
       case "admin":
         getData(GETADMINURL, "admin");
         break;
+      case "Pologame.Club":
+        getData(GETPOLOGAMECLUBURl, "Pologame.Club");
+        break;
       default:
         console.warn(`Unhandled type: ${type}`);
     }
@@ -746,6 +817,9 @@ const AdminPage = () => {
             break;
           case "admin":
             setAdminData(data);
+            break;
+          case "Pologame.Club":
+            setPologame_club(data);
             break;
           default:
             console.warn(`Unhandled type: ${type}`);
@@ -920,6 +994,9 @@ const AdminPage = () => {
     } else if (type === "admin") {
       await deleteData(item?.id, DELETEADMINURL);
       await getData(GETADMINURL, "admin");
+    } else if (type === "Pologame.Club") {
+      await deleteData(item?.id, DELETPOLOGAMECLUBURL);
+      await getData(GETPOLOGAMECLUBURl, "Pologame.Club");
     }
     setGlobalStopModal(false);
   };
@@ -1045,6 +1122,40 @@ const AdminPage = () => {
     } finally {
       setSocialModal(false);
       socialForm.resetFields();
+    }
+  };
+
+  const handlePoloGameClubSubmit = async (values: any) => {
+    try {
+      const link = values?.link;
+      const formData = new FormData();
+      if (values?.image?.fileList?.length > 0) {
+        const imageFile = values.image.fileList[0].originFileObj;
+        formData.append("image", imageFile);
+      }
+
+      formData.append("link", link);
+
+      const response = await axios.post(
+        `${BASEURL}/imagelinkforbackup/create_items/`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${AUTH?.token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        getData(GETPOLOGAMECLUBURl, "Pologame.Club");
+        message.success("Data uploaded successfully!");
+      }
+    } catch (error) {
+      message.error("Failed to upload data.");
+      console.error(error);
+    } finally {
+      setpologameclub_add(false);
+      poloGameClubForm.resetFields();
     }
   };
 
@@ -1729,6 +1840,37 @@ const AdminPage = () => {
                         backgroundColor: "transparent",
                         overflow: "scroll",
                         msOverflowStyle: "none",
+                        scrollbarWidth: "none",
+                      }}
+                      pagination={{ pageSize: 5 }}
+                    />
+                  </>
+                )}
+
+                {modalType === "Pologame.Club" && (
+                  <>
+                    {
+                      <Row
+                        justify={"end"}
+                        style={{ marginTop: "2vh", marginBottom: "2vh" }}
+                      >
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setpologameclub_add(true)}
+                        >
+                          Add Sites
+                        </Button>
+                      </Row>
+                    }
+                    <Table
+                      dataSource={pologame_club}
+                      columns={PoloGameClubColumns}
+                      rowKey="id"
+                      style={{
+                        backgroundColor: "transparent",
+                        overflow: "scroll",
+                        msOverflowStyle: "none", // For IE and Edge
                         scrollbarWidth: "none",
                       }}
                       pagination={{ pageSize: 5 }}
@@ -2535,6 +2677,81 @@ const AdminPage = () => {
               >
                 Yes
               </Button>
+            </Row>
+          </Card>
+        </Modal>
+        <Modal
+          open={pologameclub_add}
+          onCancel={() => setpologameclub_add(false)}
+          onClose={() => setpologameclub_add(false)}
+          footer={""}
+        >
+          <Card
+            loading={loading}
+            title={
+              <Row
+                justify={"center"}
+                style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+              >
+                <img
+                  src={logo}
+                  alt="Polo Games Logo"
+                  style={{ height: "50px" }}
+                />
+              </Row>
+            }
+          >
+            <Row justify="center">
+              <Form
+                form={poloGameClubForm}
+                onFinish={handlePoloGameClubSubmit}
+                layout="vertical"
+                style={{ color: "white", marginTop: "3vh" }}
+              >
+                <Form.Item
+                  name="link"
+                  label="Link"
+                  rules={[
+                    { required: true, message: "Please enter the link!" },
+                  ]}
+                >
+                  <Input placeholder="Enter Link" />
+                </Form.Item>
+
+                <Row justify={"center"}>
+                  <Form.Item name="image">
+                    <Upload
+                      style={{ color: "white !important" }}
+                      showUploadList={true}
+                      beforeUpload={beforeUpload}
+                    >
+                      <Button>Upload image</Button>
+                    </Upload>
+                  </Form.Item>
+                </Row>
+
+                <Form.Item>
+                  <Row justify="space-between">
+                    <Col>
+                      <Button
+                        type="default"
+                        onClick={() => socialForm.resetFields()}
+                      >
+                        Cancel
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        style={{ backgroundColor: "#73d13d" }}
+                      >
+                        Submit
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form.Item>
+              </Form>
             </Row>
           </Card>
         </Modal>
