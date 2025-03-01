@@ -198,6 +198,14 @@ const AdminPage = () => {
       ),
     },
     {
+      title: "Registered at",
+      dataIndex: "created_at_ist",
+      key: "created_at_ist",
+      render: (text : any) => (
+        <span style={{ color: "white" }}>{text?.replace("T", " ")}</span>
+      ),
+    },
+    {
       title: "Opt on check box while registration",
       dataIndex: "phone_number",
       key: "phone_number",

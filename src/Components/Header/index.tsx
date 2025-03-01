@@ -171,7 +171,7 @@ const HeaderComponent = () => {
   );
 
   const manageRegistration = async (values: any) => {
-    if (isChecked) {
+    if (!isChecked) {
       message.warning("please select the checkbox to register !");
     } else {
       try {
@@ -908,19 +908,13 @@ const HeaderComponent = () => {
                     >
                       <Select placeholder="Select a site">
                         <Select.Option value="bet365">
-                          https://www.realsport9.com
+                          https://247must.com/
                         </Select.Option>
                         <Select.Option value="betway">
-                          https://www.skyexch.art{" "}
+                          https://poloin999.com/{" "}
                         </Select.Option>
                         <Select.Option value="unibet">
-                          https://world77.co
-                        </Select.Option>
-                        <Select.Option value="williamhill">
-                          https://realsport247.com
-                        </Select.Option>
-                        <Select.Option value="paddypower">
-                          https://tiger365.me/login
+                          https://www.skyexch.art/
                         </Select.Option>
                       </Select>
                     </Form.Item>

@@ -110,7 +110,8 @@ const InPlay = () => {
                         {item.runners[0]?.ex?.b[0]?.p}
                       </div>
                       <div style={{ fontSize: "10px", color: "white" }}>
-                        {item.runners[0]?.ex?.b[0]?.s}
+                        {formatNumber(item.runners[0]?.ex?.b[0]?.s)
+                        }
                       </div>
                     </Col>
                     <Col
