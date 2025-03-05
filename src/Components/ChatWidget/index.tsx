@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 declare global {
   interface Window {
@@ -23,9 +24,25 @@ interface HelloConfig {
 }
 
 const ChatWidget = () => {
+  const chatState = useSelector((state: any) => state?.chat?.isOpen);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentWidth = window.innerWidth;
+      setWindowWidth(currentWidth);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const scriptId = "chat-widget-script";
-    if (document.getElementById(scriptId)) return; // Prevent multiple script injections
+    if (document.getElementById(scriptId)) return;
 
     const script = document.createElement("script");
     script.id = scriptId;
@@ -36,36 +53,27 @@ const ChatWidget = () => {
     script.onload = () => {
       const helloConfig: HelloConfig = {
         widgetToken: "973e8",
-        hide_launcher: false,
-        show_widget_form: true,
-        show_close_button: true,
-        launch_widget: true,
+        hide_launcher: true,
+        show_widget_form: chatState,
+        show_close_button: windowWidth > 768 ? true : false,
+        launch_widget: chatState,
         show_send_button: true,
-        unique_id: "user_123",
-        name: "Mitun ",
-        number: "+1234567890",
-        mail: "john.doe@example.com",
-        country: "USA",
-        city: "New York",
-        region: "NY",
       };
 
-      // Ensure function exists before calling
       if (typeof window.initChatWidget === "function") {
-        window.initChatWidget(helloConfig, 5000);
+        window.initChatWidget(helloConfig, 100);
       }
     };
 
     document.body.appendChild(script);
 
     return () => {
-    
       const existingScript = document.getElementById(scriptId);
       if (existingScript) {
         document.body.removeChild(existingScript);
       }
     };
-  }, []);
+  }, [chatState]);
 
   return null;
 };

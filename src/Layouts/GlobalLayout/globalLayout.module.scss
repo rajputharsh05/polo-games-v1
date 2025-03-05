@@ -97,7 +97,7 @@
   bottom: 2rem;
   right: 1rem;
   height: 18vh;
-  z-index: 1100;
+  z-index: 0 !important;
   border-radius: 1vh;
   border-radius: 50%;
   display: flex;
@@ -122,7 +122,6 @@
   position: fixed;
   bottom: -10px;
   left: 25vh;
-  z-index: 1100;
   height: 60%;
 
   @media (min-width: 200px) and (max-width: 700px) {
@@ -184,11 +183,39 @@
   text-shadow: 0 0 10px rgba(252, 61, 61, 0.759);
 }
 
+.chat_wrapper{
+  .chat-button{
+    background-color: aqua !important;
+  }
+}
+
 @keyframes scrollUp {
   0% {
     transform: translateY(0); 
   }
   100% {
     transform: translateY(-50%); 
+  }
+}
+
+@media (max-width: 768px) {
+  #msg91-chat-widget {
+    width: 90% !important; /* Adjust width for smaller screens */
+    height: 70vh !important; /* Set height to 70% of viewport */
+    bottom: 10px !important; /* Add some spacing from bottom */
+    right: 5% !important; /* Center it properly */
+  }
+
+  /* Adjust text input area */
+  #msg91-chat-widget input[type="text"],
+  #msg91-chat-widget textarea {
+    font-size: 14px !important;
+    padding: 10px !important;
+  }
+
+  /* Adjust buttons */
+  #msg91-chat-widget button {
+    font-size: 14px !important;
+    padding: 8px 12px !important;
   }
 }
