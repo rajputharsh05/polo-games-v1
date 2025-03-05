@@ -3,7 +3,7 @@ import counterReducer from './lineMatchesSlice';
 import ballSlice from './ballSlice';
 import loginModalSlice from './loginModalSlice';
 import AuthSlice from './AuthSlice.ts';
-import chatSlice from './WidgetSlice.ts';
+import chatSlice from './WidgetSlice';
 
 const store = configureStore({
   reducer: {
