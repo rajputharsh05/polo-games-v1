@@ -130,6 +130,7 @@ const Auth = () => {
       const newValues = {
         ...values,
         country_code: values?.country_code?.replace("+", ""),
+        username:"",
       };
       const response = await axios.post(
         `${BASEURL}/user/create_user`,
@@ -357,13 +358,13 @@ const Auth = () => {
               onFinish={handleFormSubmit}
               initialValues={{ country_code: "+91" }}
             >
-              <Form.Item
+              {/* <Form.Item
                 name="username"
                 label="User Name"
                 rules={[{ required: true, message: "User Name is required" }]}
               >
                 <Input placeholder="Enter your username" />
-              </Form.Item>
+              </Form.Item> */}
               <Row gutter={16}>
                 <Col span={10}>
                   <Form.Item
@@ -423,19 +424,13 @@ const Auth = () => {
               >
                 <Select placeholder="Select a site">
                   <Select.Option value="bet365">
-                    https://www.realsport9.com
+                    https://247must.com/
                   </Select.Option>
                   <Select.Option value="betway">
-                    https://www.skyexch.art{" "}
+                    https://poloin999.com/{" "}
                   </Select.Option>
                   <Select.Option value="unibet">
-                    https://world77.co
-                  </Select.Option>
-                  <Select.Option value="williamhill">
-                    https://realsport247.com
-                  </Select.Option>
-                  <Select.Option value="paddypower">
-                    https://tiger365.me/login
+                    https://www.skyexch.art/
                   </Select.Option>
                 </Select>
               </Form.Item>
