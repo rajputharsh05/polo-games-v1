@@ -67,6 +67,7 @@ const AdminPage = () => {
   const BASEURL = import.meta.env.VITE_BASEURL;
   const [modalType, setModalType] = useState("bannerimage");
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadedMobileImages, setUploadedMobileImages] = useState([]);
   const [isAddAgents, setIsAddAgents] = useState(false);
   const [isAddblogs, setIsAddBlogs] = useState(false);
   const [agents, setAgents] = useState([]);
@@ -123,6 +124,9 @@ const AdminPage = () => {
   const DELETEADMINURL: string = `${BASEURL}/superadmin/`;
   const GETPOLOGAMECLUBURl: string = `${BASEURL}/imagelinkforbackup/items/`;
   const DELETPOLOGAMECLUBURL: string = `${BASEURL}/imagelinkforbackup/items/`;
+  const GETMOIBILEBANNERURL: string = `${BASEURL}/bannerimagemobile/images`;
+  const CREATEMOBILEBANNERURL: string = `${BASEURL}/bannerimagemobile/upload-image`;
+  const DELETEMOBILEBANNERURL: string = `${BASEURL}/bannerimagemobile/delete_image/`;
   const AUTH: AuthStateType = useSelector((state: RootState) => state.auth);
   const [MarqeeForm] = Form.useForm();
   const [ClientForm] = Form.useForm();
@@ -296,6 +300,49 @@ const AdminPage = () => {
           type="text"
           icon={<DeleteFilled />}
           onClick={() => handleDelete(record, "images")}
+        />
+      ),
+    },
+  ];
+
+  const MobileImagesColums = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      render: (text: number) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "File Name",
+      dataIndex: "name",
+      key: "name",
+      render: (text: string) => <span style={{ color: "white" }}>{text}</span>,
+    },
+    {
+      title: "Image",
+      key: "content",
+      render: (_: any, record: any) => (
+        <img
+          src={record.content}
+          alt={record.name}
+          style={{
+            width: "100px",
+            height: "auto",
+            border: "1px solid white",
+            borderRadius: "4px",
+          }}
+        />
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button
+          style={{ color: "white" }}
+          type="text"
+          icon={<DeleteFilled />}
+          onClick={() => handleDelete(record, "mobileimages")}
         />
       ),
     },
@@ -519,6 +566,11 @@ const AdminPage = () => {
       key: "bannerimage",
       icon: <ImageAspectRatio />,
       label: "Manage Banners",
+    },
+    {
+      key: "mobilebannerimage",
+      icon: <ImageAspectRatio />,
+      label: "Manage Mobile Banners",
     },
     {
       key: "user",
@@ -771,6 +823,9 @@ const AdminPage = () => {
       case "Pologame.Club":
         getData(GETPOLOGAMECLUBURl, "Pologame.Club");
         break;
+      case "mobilebannerimage":
+        getData(GETMOIBILEBANNERURL, "mobilebannerimage");
+        break;
       default:
         console.warn(`Unhandled type: ${type}`);
     }
@@ -820,6 +875,9 @@ const AdminPage = () => {
             break;
           case "Pologame.Club":
             setPologame_club(data);
+            break;
+          case "mobilebannerimage":
+            setUploadedMobileImages(data);
             break;
           default:
             console.warn(`Unhandled type: ${type}`);
@@ -874,20 +932,23 @@ const AdminPage = () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    const URL =
+      modalType === "bannerimage" ? CREATEBLOGSURL : CREATEMOBILEBANNERURL;
+
     try {
-      const response = await axios.post(
-        `${BASEURL}/bannerimage/upload-image`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${AUTH?.token}`,
-          },
-        }
-      );
+      const response = await axios.post(URL, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${AUTH?.token}`,
+        },
+      });
 
       if (response.status === 200) {
-        getData(GETADMINIMAGEURL, "images");
+        if (modalType === "bannerimage") {
+          getData(GETADMINIMAGEURL, "images");
+        } else {
+          getData(GETMOIBILEBANNERURL, "mobilebannerimage");
+        }
         message.success("Banner uploaded successfully!");
       } else {
         message.error("Failed to upload Banner. Please try again.");
@@ -997,6 +1058,9 @@ const AdminPage = () => {
     } else if (type === "Pologame.Club") {
       await deleteData(item?.id, DELETPOLOGAMECLUBURL);
       await getData(GETPOLOGAMECLUBURl, "Pologame.Club");
+    }else if(type === "mobileimages"){
+      await deleteData(item?.id, DELETEMOBILEBANNERURL);
+      await getData(GETMOIBILEBANNERURL, "mobilebannerimage");
     }
     setGlobalStopModal(false);
   };
@@ -1439,6 +1503,34 @@ const AdminPage = () => {
                       <Table
                         dataSource={uploadedImages}
                         columns={Imagecolumns}
+                        rowKey="id"
+                        style={{
+                          backgroundColor: "transparent",
+                          overflow: "scroll",
+                          msOverflowStyle: "none", // For IE and Edge
+                          scrollbarWidth: "none",
+                        }}
+                        pagination={{ pageSize: 5 }}
+                      />
+                    </>
+                  </div>
+                )}
+
+                {modalType === "mobilebannerimage" && (
+                  <div style={{ marginTop: "2vh" }}>
+                    <>
+                      <Row justify={"end"} style={{ marginBottom: "2vh" }}>
+                        <Button
+                          type="primary"
+                          icon={<PlusOutlined />}
+                          onClick={() => setImageModal(true)}
+                        >
+                          Add Banner
+                        </Button>
+                      </Row>
+                      <Table
+                        dataSource={uploadedMobileImages}
+                        columns={MobileImagesColums}
                         rowKey="id"
                         style={{
                           backgroundColor: "transparent",

@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export const Reels = ({ loading, reels }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartY = useRef<number | null>(null);
-  const scrollThreshold = 50; 
+  const scrollThreshold = 50;
 
   const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     touchStartY.current = event.touches[0].clientY;
@@ -31,7 +31,7 @@ export const Reels = ({ loading, reels }: any) => {
       } else if (deltaY < 0 && currentIndex > 0) {
         setCurrentIndex((prev) => prev - 1);
       }
-      touchStartY.current = null; 
+      touchStartY.current = null;
     }
   };
 
@@ -83,6 +83,9 @@ export const Reels = ({ loading, reels }: any) => {
 
 const SliderComponent = () => {
   const [images, setImages] = useState<{ src: string; alt: string }[]>([]);
+  const [MobileImages, setMobileImages] = useState<
+    { src: string; alt: string }[]
+  >([]);
   const [randomIndex, setRandomIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -109,8 +112,33 @@ const SliderComponent = () => {
     }
   };
 
+  const getMobileImages = async () => {
+    try {
+      const response = await axios.get(`${BASEURL}/bannerimagemobile/images`);
+      const formattedImages = response?.data?.map((img: any) => ({
+        src: img?.content,
+        alt: img?.name,
+      }));
+      setMobileImages(formattedImages);
+    } catch (error) {
+      setMobileImages([
+        {
+          src: image11,
+          alt: "",
+        },
+        {
+          src: image22,
+          alt: "",
+        },
+      ]);
+      console.error(error);
+      message.error("Unable to fetch images");
+    }
+  };
+
   useEffect(() => {
     getReels();
+    getMobileImages();
   }, []);
 
   const fetchImages = useCallback(async () => {
@@ -150,7 +178,7 @@ const SliderComponent = () => {
         const randomNumber = Math.floor(Math.random() * images.length);
         setRandomIndex(randomNumber);
       }
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [images]);
@@ -244,7 +272,7 @@ const SliderComponent = () => {
             <Row style={{ height: "60%" }}>
               {
                 <img
-                  src={image11}
+                  src={MobileImages[0]?.src}
                   alt={images[0]?.alt || "Image"}
                   style={{ height: "100%", width: "100%", borderRadius: "5px" }}
                 />
@@ -253,7 +281,7 @@ const SliderComponent = () => {
             <Row style={{ height: "40%" }}>
               {
                 <img
-                  src={image22}
+                  src={MobileImages[1]?.src}
                   alt={images[1]?.alt || "Image"}
                   style={{ height: "100%", width: "100%", borderRadius: "5px" }}
                 />

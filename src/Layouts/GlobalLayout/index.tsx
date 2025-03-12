@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import SideBar from "../../Components/SideBar";
-import { useLocation, useNavigate, useOutlet } from "react-router-dom";
+import { useLocation, useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
 import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
@@ -18,7 +18,6 @@ const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
-  const navigate = useNavigate();
   const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
   const dispatch = useDispatch();
@@ -77,7 +76,7 @@ const GlobalLayout = () => {
             position: "fixed",
             top: 0,
             width: "100vw",
-          
+
             height: "8vh",
             padding: "0px 0px",
             lineHeight: "17px",
@@ -206,7 +205,6 @@ const GlobalLayout = () => {
 
       <div
         className={styles.animated_button}
-
         onClick={() => dispatch(toggleChat())}
       >
         <img style={{ height: "100%" }} src={icon}></img>
@@ -216,15 +214,11 @@ const GlobalLayout = () => {
         <div className={styles.animated_id}>
           <img
             onClick={() => {
-              if (isSidebarVisible) {
-                window.open(
-                  "https://api.whatsapp.com/send?phone=918889292534&text=Hi%20Polo.Game%20team!%20I%27m%20excited%20to%20get%20started%20and%20place%20my%20first%20bet.%20Could%20you%20please%20guide%20me%20through%20the%20process%20and%20let%20me%20know%20about%20the%20latest%20games%20and%20offers%3F%20Looking%20forward%20to%20an%20exciting%20experience!",
-                  "_blank",
-                  "noopener,noreferrer"
-                );
-              } else {
-                navigate("/auth");
-              }
+              window.open(
+                "https://api.whatsapp.com/send?phone=918889292534&text=Hi%20Polo.Game%20team!%20I%27m%20excited%20to%20get%20started%20and%20place%20my%20first%20bet.%20Could%20you%20please%20guide%20me%20through%20the%20process%20and%20let%20me%20know%20about%20the%20latest%20games%20and%20offers%3F%20Looking%20forward%20to%20an%20exciting%20experience!",
+                "_blank",
+                "noopener,noreferrer"
+              );
             }}
             className={styles.IphoneStyle}
             src={ballAnimation}
