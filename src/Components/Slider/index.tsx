@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export const Reels = ({ loading, reels }: any) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true); 
   const touchStartY = useRef<number | null>(null);
   const scrollThreshold = 50;
 
@@ -35,6 +36,12 @@ export const Reels = ({ loading, reels }: any) => {
     }
   };
 
+  const handleVolumeChange = (
+    event: React.SyntheticEvent<HTMLVideoElement>
+  ) => {
+    const video = event.currentTarget;
+    setIsMuted(video.muted); // Update mute state based on user action
+  };
   return (
     <Spin spinning={loading}>
       <div
@@ -60,10 +67,11 @@ export const Reels = ({ loading, reels }: any) => {
               height="100%"
               autoPlay
               loop
-              muted
+              muted={isMuted} 
               playsInline
               controls
               controlsList="nodownload"
+              onVolumeChange={handleVolumeChange} 
               style={{
                 objectFit: "cover",
                 borderRadius: "10px",

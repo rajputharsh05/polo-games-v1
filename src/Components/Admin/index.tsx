@@ -1058,7 +1058,7 @@ const AdminPage = () => {
     } else if (type === "Pologame.Club") {
       await deleteData(item?.id, DELETPOLOGAMECLUBURL);
       await getData(GETPOLOGAMECLUBURl, "Pologame.Club");
-    }else if(type === "mobileimages"){
+    } else if (type === "mobileimages") {
       await deleteData(item?.id, DELETEMOBILEBANNERURL);
       await getData(GETMOIBILEBANNERURL, "mobilebannerimage");
     }
