@@ -2,6 +2,7 @@
   color: white;
   text-align: center;
   padding: 20px;
+  width: 100vw !important;
 }
 
 .header {
@@ -30,14 +31,14 @@
   background: #002128;
   padding: 10px;
   border-radius: 10px;
+  
 
   .linkList {
     display: flex;
     flex-direction: column;
     gap: 10px;
-
     .linkCard {
-      background: #001e24;
+      background: transparent;
       border-radius: 8px;
       padding: 8px;
       display: flex;
@@ -48,7 +49,7 @@
 
       .linkContent{
         width: 100%;
-        background-color: white;
+        
         border-radius: 30px;
         display: flex;
         justify-content: center;
@@ -56,7 +57,7 @@
       }
 
       .thumbnail {
-        width: 70%;
+        width: 50%;
         height: auto;
         border-radius: 30px;
       }
