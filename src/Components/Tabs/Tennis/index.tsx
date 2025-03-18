@@ -21,7 +21,7 @@ const TennisSection = () => {
 
     try {
       const response = await axios.get(
-        "https://backend.polo.game/api/fantasy/event/2"
+        "https://tinyurl.com/sportsapis/event/2"
       );
       const data = response.data;
       let count = 0;

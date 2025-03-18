@@ -30,7 +30,7 @@ const CricketSection = () => {
 
     try {
       const response = await axios.get(
-        "https://backend.polo.game/api/fantasy/event/4"
+        "https://tinyurl.com/sportsapis/event/4"
       );
       const data = response.data;
       

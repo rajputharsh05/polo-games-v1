@@ -15,7 +15,7 @@ const InPlay = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://backend.polo.game/api/fantasy/inplay"
+        "https://tinyurl.com/sportsapis/inplay"
       );
       const data = response.data;
       setDataSource(data?.data?.inplay);

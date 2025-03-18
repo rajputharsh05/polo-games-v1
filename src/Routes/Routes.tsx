@@ -150,7 +150,7 @@ export const globalRoutes = [
     path: "cricket/:id",
     element: (
       <>
-        <MatchPage apiurl={"https://backend.polo.game/api/fantasy/sport"}></MatchPage>
+        <MatchPage apiurl={"https://tinyurl.com/sportsapis/sport"}></MatchPage>
         <Footer></Footer>
       </>
     ),
@@ -160,7 +160,7 @@ export const globalRoutes = [
     element: (
       <>
         <MatchPage
-          apiurl={"https://backend.polo.game/api/fantasy/sport"}
+          apiurl={"https://tinyurl.com/sportsapis/sport"}
         ></MatchPage>
         <Footer></Footer>
       </>
