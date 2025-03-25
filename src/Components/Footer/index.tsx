@@ -266,6 +266,15 @@ const Footer = () => {
 
         <Col span={24}>
           <p style={sectionStyle}>
+            By signing up, you agree to receive calls and messages from
+            Polo.Game for updates and service notifications. You may opt out
+            anytime by replying ‘STOP’ or updating your preferences in your
+            account settings
+          </p>
+        </Col>
+
+        <Col span={24}>
+          <p style={sectionStyle}>
             These Terms are the terms on which the Polo.Game.bet Website (which
             is owned, operated, and managed by Own Based), the Products, and
             your Account is made available to you, the Customer by Polo.Game.
@@ -1128,108 +1137,143 @@ const Footer = () => {
   );
 
   const Betting = (
-    <Row justify={"center"}  style={{color:"white" , fontFamily:"Popins"}}>
+    <Row justify={"center"} style={{ color: "white", fontFamily: "Popins" }}>
       <h1>General Sports Betting Rules</h1>
 
       <section>
         <h2>Abandoned Matches and Changes to Scheduled Play</h2>
         <p>
-          In the case of abandoned matches, or matches where the original scheduled amount of play is changed (e.g., a reduction in the number of overs in a cricket match), except where specifically stated otherwise, bets will be settled on the current result if further play could not affect that result. For example, if a football match has been abandoned but the number of corners has already exceeded the maximum number specified, then further play could not affect that result.
+          In the case of abandoned matches, or matches where the original
+          scheduled amount of play is changed (e.g., a reduction in the number
+          of overs in a cricket match), except where specifically stated
+          otherwise, bets will be settled on the current result if further play
+          could not affect that result. For example, if a football match has
+          been abandoned but the number of corners has already exceeded the
+          maximum number specified, then further play could not affect that
+          result.
         </p>
       </section>
 
       <section>
         <h2>Multiple Bets</h2>
         <p>
-          Any multiple bet reduced by a void, abandoned, or postponed match will stand for the remaining selections, irrespective of the minimum number of selections required.
+          Any multiple bet reduced by a void, abandoned, or postponed match will
+          stand for the remaining selections, irrespective of the minimum number
+          of selections required.
         </p>
       </section>
 
       <section>
         <h2>Place Terms</h2>
         <p>
-          Place terms on sports betting are those that were relevant at the time that the bet was placed. If you place an each-way bet and are uncertain about the current place terms, confirm them at the time. Place terms on horse and greyhound racing, with the exception of ante-post, are those that were relevant at the start of the race.
+          Place terms on sports betting are those that were relevant at the time
+          that the bet was placed. If you place an each-way bet and are
+          uncertain about the current place terms, confirm them at the time.
+          Place terms on horse and greyhound racing, with the exception of
+          ante-post, are those that were relevant at the start of the race.
         </p>
       </section>
 
       <section>
         <h2>Changes in Scheduled Sets or Legs</h2>
         <p>
-          In the event that the number of scheduled sets/legs to be played is changed (e.g., a match originally scheduled for five sets is reduced to three), match bets will stand, but set betting will be void.
+          In the event that the number of scheduled sets/legs to be played is
+          changed (e.g., a match originally scheduled for five sets is reduced
+          to three), match bets will stand, but set betting will be void.
         </p>
       </section>
 
       <section>
         <h2>Ties, Draws, and Dead Heats</h2>
         <p>
-          Unless specifically stated otherwise, bets on any two-runner market that ends in a tie, draw, or exact number of points quoted, where no price was offered for that outcome, will be void and stakes returned. Dead heat rules apply for markets with three or more runners unless stated otherwise.
+          Unless specifically stated otherwise, bets on any two-runner market
+          that ends in a tie, draw, or exact number of points quoted, where no
+          price was offered for that outcome, will be void and stakes returned.
+          Dead heat rules apply for markets with three or more runners unless
+          stated otherwise.
         </p>
       </section>
 
       <section>
         <h2>Abandoned or Postponed Matches</h2>
         <p>
-          With the exception of ante-post markets, unless stated otherwise, bets on abandoned or postponed matches or races will be void unless rescheduled for the next day. Bets on postponed events or tournaments will stand for one full week from the original start date, after which they will be void.
+          With the exception of ante-post markets, unless stated otherwise, bets
+          on abandoned or postponed matches or races will be void unless
+          rescheduled for the next day. Bets on postponed events or tournaments
+          will stand for one full week from the original start date, after which
+          they will be void.
         </p>
       </section>
 
       <section>
         <h2>Set, Frame, and Leg Markets</h2>
         <p>
-          The full number of sets, frames, or legs required to win must be achieved. If the match is awarded before this is achieved, then set/frame/leg betting will be void.
+          The full number of sets, frames, or legs required to win must be
+          achieved. If the match is awarded before this is achieved, then
+          set/frame/leg betting will be void.
         </p>
       </section>
 
       <section>
         <h2>Handicaps</h2>
-        <p>
-          The handicap is added to the team after the final result.
-        </p>
+        <p>The handicap is added to the team after the final result.</p>
       </section>
 
       <section>
         <h2>Change of Opponent</h2>
-        <p>
-          In the event of a change of opponent, all bets are void.
-        </p>
+        <p>In the event of a change of opponent, all bets are void.</p>
       </section>
 
       <section>
         <h2>Betting Suspension and Ambiguities</h2>
         <p>
-          We reserve the right to refuse or void ambiguous bets and to suspend betting on a market at any time without notice.
+          We reserve the right to refuse or void ambiguous bets and to suspend
+          betting on a market at any time without notice.
         </p>
       </section>
 
       <section>
         <h2>In-Play Betting</h2>
         <p>
-          If a match is not completed, all bets will be void unless further play could not affect the result.
+          If a match is not completed, all bets will be void unless further play
+          could not affect the result.
         </p>
       </section>
 
       <section>
         <h2>Errors and Corrections</h2>
         <p>
-          Polo.Game strives to avoid errors in prices, handicaps, lines, or terms. However, if an error occurs, bets will be settled at the correct terms. If settlement has occurred, adjustments will be made to the account. Erroneous bets indicating unachievable results will be void.
+          Polo.Game strives to avoid errors in prices, handicaps, lines, or
+          terms. However, if an error occurs, bets will be settled at the
+          correct terms. If settlement has occurred, adjustments will be made to
+          the account. Erroneous bets indicating unachievable results will be
+          void.
         </p>
       </section>
 
       <section>
         <h2>Bets on Ongoing Events</h2>
         <p>
-          Bets placed on events that have already started will be void unless In-Play betting is offered. If no significant action has occurred, bets may stand.
+          Bets placed on events that have already started will be void unless
+          In-Play betting is offered. If no significant action has occurred,
+          bets may stand.
         </p>
       </section>
 
       <section>
         <h2>Polo.Game Rights</h2>
         <ul>
-          <li>Polo.Game reserves the right to void bets placed after the event outcome is known or after significant events affecting the chances of winning.</li>
-          <li>Polo.Game reserves the right to recover any overpaid returns, including Cash Out payments.</li>
+          <li>
+            Polo.Game reserves the right to void bets placed after the event
+            outcome is known or after significant events affecting the chances
+            of winning.
+          </li>
+          <li>
+            Polo.Game reserves the right to recover any overpaid returns,
+            including Cash Out payments.
+          </li>
         </ul>
       </section>
-
     </Row>
   );
 
@@ -1327,7 +1371,7 @@ const Footer = () => {
       case "Betting":
         return Betting;
       case "FeedBack":
-        return FeedBack;  
+        return FeedBack;
       default:
         return AboutUs;
     }

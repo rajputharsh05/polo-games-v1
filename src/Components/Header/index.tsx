@@ -1,6 +1,7 @@
 import {
   Button,
   Card,
+  Checkbox,
   Col,
   Dropdown,
   Form,
@@ -31,7 +32,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
 import { login, logout } from "../../Redux/AuthSlice";
 import logoutIMG from "../../assets/Logout.png";
-interface CountryFlags {
+import { toggleChat } from "../../Redux/WidgetSlice";
+export interface CountryFlags {
   name: string;
   flag: string;
   dial_code: string;
@@ -54,6 +56,8 @@ const HeaderComponent = () => {
 
   const [currentPHoneNumber, setCurrentPhoneNumber] = useState<number>();
 
+  const [isChecked, setIsChecked] = useState(false);
+
   const [countryCode, setCountryCode] = useState<any>();
 
   const [loading, setLoading] = useState(false);
@@ -69,6 +73,8 @@ const HeaderComponent = () => {
       dial_code: "+91",
     },
   ]);
+
+  const [callUsModal, setCallUsModal] = useState<boolean>(false);
 
   const [form] = Form.useForm();
   const [loginForm] = Form.useForm();
@@ -166,24 +172,28 @@ const HeaderComponent = () => {
   );
 
   const manageRegistration = async (values: any) => {
-    try {
-      const newValues = {
-        ...values,
-        country_code: values?.country_code?.replace("+", ""),
-      };
-      const response = await axios.post(
-        `${BASEURL}/user/create_user`,
-        newValues
-      );
-      if (response?.status === 200) {
-        message.success("Added user SuccessFully");
-        dispatch(updateState(false));
-        setLoginOrRegister(!loginOrRegister);
-        form.resetFields();
+    if (!isChecked) {
+      message.warning("please select the checkbox to register !");
+    } else {
+      try {
+        const newValues = {
+          ...values,
+          country_code: values?.country_code?.replace("+", ""),
+        };
+        const response = await axios.post(
+          `${BASEURL}/user/create_user`,
+          newValues
+        );
+        if (response?.status === 200) {
+          message.success("Added user SuccessFully");
+          dispatch(updateState(false));
+          setLoginOrRegister(!loginOrRegister);
+          form.resetFields();
+        }
+      } catch (error) {
+        console.error(error);
+        message.error("Unable to create Agent");
       }
-    } catch (error) {
-      console.error(error);
-      message.error("Unable to create Agent");
     }
   };
 
@@ -270,7 +280,7 @@ const HeaderComponent = () => {
       if (
         error?.status === 404 &&
         error?.response?.data?.detail ===
-          "Phone number not found in any user tables"
+        "Phone number not found in any user tables"
       ) {
         message.warning("user not registered");
         form.resetFields();
@@ -288,6 +298,10 @@ const HeaderComponent = () => {
     Cookies.remove("userToken");
     navigate("/");
     message.success("Logged out successfully");
+  };
+
+  const handleCheckboxChange = (e: any) => {
+    setIsChecked(e.target.checked);
   };
 
   const supportMenu = (
@@ -309,6 +323,7 @@ const HeaderComponent = () => {
             borderRadius: "3vh",
             justifyContent: "space-between",
           }}
+          onClick={() => dispatch(toggleChat())}
         >
           <p>Online Chat</p>
           <img src={onlineChatImg} height={"20%"} width={"20%"}></img>
@@ -327,6 +342,9 @@ const HeaderComponent = () => {
             borderRadius: "3vh",
             justifyContent: "space-between",
           }}
+          onClick={() =>{
+            window.open("https://wa.link/pologames","_blank")
+          }}
         >
           <p>Whatsapp Chat</p>
           <img src={whatsAppChatImg} height={"20%"} width={"20%"}></img>
@@ -344,7 +362,12 @@ const HeaderComponent = () => {
       justify={"space-around"}
     >
       <Col span={2}>
-        <img src={logo} style={{ height: "100%", width: "100%" }} alt="Logo" />
+        <img
+          onClick={() => navigate("/")}
+          src={logo}
+          style={{ height: "100%", width: "100%", cursor: "pointer" }}
+          alt="Logo"
+        />
       </Col>
       <Col
         className={styles.Hover}
@@ -387,7 +410,9 @@ const HeaderComponent = () => {
             AUTH?.logIn
               ? location?.pathname !== "/"
                 ? navigate("/")
-                : navigate("pages")
+                : AUTH?.user === "User"
+                  ? navigate("pages")
+                  : navigate("/admin")
               : navigate("/");
           }}
         >
@@ -399,7 +424,9 @@ const HeaderComponent = () => {
           {AUTH?.logIn
             ? location?.pathname !== "/"
               ? "Home"
-              : "Sites"
+              : AUTH?.user === "User"
+                ? "Sites"
+                : "Admin"
             : "Home"}
         </div>
         {location.pathname !== "/admin" && (
@@ -477,6 +504,7 @@ const HeaderComponent = () => {
         )}{" "}
         {location.pathname !== "/admin" && (
           <div
+            onClick={() => setCallUsModal(true)}
             style={{
               display: "flex",
               alignItems: "center",
@@ -680,6 +708,7 @@ const HeaderComponent = () => {
                       style={{ color: "white" }}
                       form={loginForm}
                       onFinish={handleFormSubmit}
+                      initialValues={{ country_code: "+91" }}
                     >
                       <Row justify={"space-around"}>
                         <Col span={12}>
@@ -697,7 +726,8 @@ const HeaderComponent = () => {
                               <Spin />
                             ) : (
                               <Select
-                                placeholder="Select country"
+                                defaultValue="+91"
+                                placeholder="IN +91"
                                 showSearch
                                 optionFilterProp="label"
                                 filterOption={(input, option) =>
@@ -734,12 +764,7 @@ const HeaderComponent = () => {
                     <Row style={{ marginTop: "3vh", marginBottom: "3vh" }}>
                       <Button
                         onClick={() => {
-                          const phoneNumber = "9333333330";
-                          const message =
-                            "Hello, I would like to connect with you!";
-                          const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                            message
-                          )}`;
+                          const whatsappURL = `https://wa.link/pologames`;
                           window.open(whatsappURL, "_blank");
                         }}
                         style={{
@@ -811,6 +836,7 @@ const HeaderComponent = () => {
                     style={{ color: "white" }}
                     form={form}
                     onFinish={handleFormSubmit}
+                    initialValues={{ country_code: "+91" }}
                   >
                     <Form.Item
                       name="username"
@@ -838,6 +864,7 @@ const HeaderComponent = () => {
                             <Spin />
                           ) : (
                             <Select
+                              defaultValue="+91"
                               placeholder="Select country"
                               showSearch
                               optionFilterProp="label"
@@ -881,22 +908,37 @@ const HeaderComponent = () => {
                     >
                       <Select placeholder="Select a site">
                         <Select.Option value="bet365">
-                          https://www.realsport9.com
+                          https://247must.com/
                         </Select.Option>
                         <Select.Option value="betway">
-                          https://www.skyexch.art{" "}
+                          https://poloin999.com/{" "}
                         </Select.Option>
                         <Select.Option value="unibet">
-                          https://world77.co
-                        </Select.Option>
-                        <Select.Option value="williamhill">
-                          https://realsport247.com
-                        </Select.Option>
-                        <Select.Option value="paddypower">
-                          https://tiger365.me/login
+                          https://www.skyexch.art/
                         </Select.Option>
                       </Select>
                     </Form.Item>
+
+                    <Row
+                      justify={"center"}
+                      align={"middle"}
+                      style={{ marginBottom: "2vh" }}
+                    >
+                      <Col span={2}>
+                        <Checkbox
+                          style={{ backgroundColor: "white" }}
+                          checked={isChecked}
+                          onChange={handleCheckboxChange}
+                        />
+                      </Col>
+                      <Col span={22}>
+                        <p>
+                          I consent to receive calls and messages from Polo.Game
+                          on my registered number. I understand that I can
+                          opt-out anytime
+                        </p>
+                      </Col>
+                    </Row>
 
                     <Row gutter={[20, 20]} justify={"space-between"}>
                       <Button
@@ -995,6 +1037,33 @@ const HeaderComponent = () => {
                 </Row>
               </>
             )}
+          </Row>
+        </Card>
+      </Modal>
+      <Modal
+        open={callUsModal}
+        footer=""
+        onClose={() => setCallUsModal(false)}
+        onCancel={() => setCallUsModal(false)}
+      >
+        <Card
+          title={
+            <Row
+              justify={"center"}
+              style={{ backgroundColor: "inherit", marginBottom: "2vh" }}
+            >
+              <img
+                src={logo} // Replace with the actual path to your logo
+                alt="Polo Games Logo"
+                style={{ height: "50px" }}
+              />
+            </Row>
+          }
+        >
+          <Row justify={"center"}>
+            <h2 style={{ color: "white", fontFamily: "Popins" }}>
+              Please call us on +91 9333333330{" "}
+            </h2>
           </Row>
         </Card>
       </Modal>

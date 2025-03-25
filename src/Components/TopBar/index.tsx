@@ -316,8 +316,10 @@ const TopBar = () => {
       // Replace "1234567890" with the desired phone number
       window.location.href = "tel:9333333330";
     } else {
-      setActiveTab(key);
-      navigate(`/${key}`);
+      if (key !== "demo-auth") {
+        setActiveTab(key);
+        navigate(`/${key}`);
+      }
 
       if (window.innerWidth < 768) {
         setModalOpen(false);
@@ -494,6 +496,7 @@ const TopBar = () => {
                           flexDirection: "column",
                           alignItems: "center",
                           justifyContent: "space-between",
+                        
                         }}
                       >
                         <div
@@ -504,9 +507,8 @@ const TopBar = () => {
                                 : handleTabClick("admin");
                             }
                           }}
-                          className={`${styles.topbar_item} ${
-                            activeTab === key ? styles.active : ""
-                          }`}
+                          className={`${styles.topbar_item} ${activeTab === key ? styles.active : ""
+                            }`}
                         >
                           {<Pages></Pages>}
                         </div>
@@ -537,9 +539,8 @@ const TopBar = () => {
                   >
                     <div
                       onClick={() => handleTabClick(key)}
-                      className={`${styles.topbar_item} ${
-                        activeTab === key ? styles.active : ""
-                      }`}
+                      className={`${styles.topbar_item} ${activeTab === key ? styles.active : ""
+                        }`}
                     >
                       {icon}
                       {badge && badge !== -1 && (

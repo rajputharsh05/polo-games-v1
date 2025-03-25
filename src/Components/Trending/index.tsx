@@ -8,7 +8,6 @@ import image from "../../../public/images/evolution_gaming_banner.png";
 import { FireFilled } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 
-
 export const News = () => {
   const location = useLocation();
   const [data, setData] = useState<any[]>([]);
@@ -200,10 +199,10 @@ export const Blogs = () => {
   );
 };
 
-
 export const Reels = ({ trackState, loading, reels }: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true); 
   const scrollThreshold = 20;
   let touchStartY = 0;
 
@@ -226,7 +225,6 @@ export const Reels = ({ trackState, loading, reels }: any) => {
 
     event.stopPropagation();
 
-
     if (deltaY > 0 && currentIndex < reels.length - 1) {
       setCurrentIndex((prev) => prev + 1);
     } else if (deltaY < 0 && currentIndex > 0) {
@@ -235,7 +233,8 @@ export const Reels = ({ trackState, loading, reels }: any) => {
 
     containerRef.current.style.pointerEvents = "none";
     setTimeout(() => {
-      if (containerRef.current) containerRef.current.style.pointerEvents = "auto";
+      if (containerRef.current)
+        containerRef.current.style.pointerEvents = "auto";
     }, 500);
   };
 
@@ -247,7 +246,9 @@ export const Reels = ({ trackState, loading, reels }: any) => {
     const container = containerRef.current;
     if (container) {
       container.addEventListener("wheel", handleScroll, { passive: false });
-      container.addEventListener("touchstart", handleTouchStart, { passive: false });
+      container.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
       container.addEventListener("touchmove", handleScroll, { passive: false });
     }
     return () => {
@@ -257,7 +258,14 @@ export const Reels = ({ trackState, loading, reels }: any) => {
         container.removeEventListener("touchmove", handleScroll);
       }
     };
-  }, [currentIndex, reels.length]);
+  }, [currentIndex, reels?.length]);
+
+  const handleVolumeChange = (
+    event: React.SyntheticEvent<HTMLVideoElement>
+  ) => {
+    const video = event.currentTarget;
+    setIsMuted(video.muted); // Update mute state based on user action
+  };
 
   return (
     <Spin spinning={loading}>
@@ -326,7 +334,7 @@ export const Reels = ({ trackState, loading, reels }: any) => {
         }}
       >
         <AnimatePresence mode="wait">
-          {reels.length > 0 && (
+          {reels?.length > 0 && (
             <motion.video
               key={currentIndex}
               src={reels[currentIndex]}
@@ -334,10 +342,11 @@ export const Reels = ({ trackState, loading, reels }: any) => {
               height="100%"
               autoPlay
               loop
-              muted
+              muted={isMuted} 
               playsInline
               controls
               controlsList="nodownload"
+              onVolumeChange={handleVolumeChange} 
               style={{
                 objectFit: "cover",
                 borderRadius: "10px !important",
@@ -383,7 +392,6 @@ const Trending = () => {
     getReels();
   }, []);
 
-
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     if (ignoreScrollEvent.current) return;
 
@@ -404,7 +412,6 @@ const Trending = () => {
 
     ignoreScrollEvent.current = true;
 
-
     container.scrollTo({
       top: targetIndex * videoHeight,
       behavior: "smooth",
@@ -419,12 +426,15 @@ const Trending = () => {
     }, 300);
   };
 
-
   return (
     <div className={styles.sidebar}>
       <div className={styles.header}>
         <div onScroll={handleScroll} className={styles.imageWrapper}>
-          <Reels trackState={trackState} loading={loading} reels={reels}></Reels>
+          <Reels
+            trackState={trackState}
+            loading={loading}
+            reels={reels}
+          ></Reels>
         </div>
       </div>
       <div className={styles.trendingNews}>

@@ -25,7 +25,7 @@ const MobileHeader = () => {
   return (
     <div style={{ lineHeight: "0px !important" }}>
       <div className={styles.headerWrapper}>
-        <img className={styles.img} src={img} alt="Center Logo" />
+        <img onClick={() =>  navigate("/")} className={styles.img} src={img} alt="Center Logo" />
         {AUTH?.logIn ? (
           <img
             src={logoutIMG}

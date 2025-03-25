@@ -57,16 +57,16 @@ const Pages = () => {
                     className={styles.thumbnail}
                   />
                   {/* <button className={styles.loginButton}>LOGIN</button> */}
-                  <img
+                  {/* <img
                     src="/images_for_redirection_page/login.png"
                     alt="Login Button"
                     className={styles.loginButton}
-                  />
-                  <img
+                  /> */}
+                  {/* <img
                     src="/images_for_redirection_page/pointer.png"
                     alt="Arrow"
                     className={styles.arrow}
-                  />
+                  /> */}
                 </div>
               </div>
             ))}

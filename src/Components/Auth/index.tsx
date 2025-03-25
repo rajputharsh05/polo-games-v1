@@ -23,10 +23,10 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-interface CountryFlags{
-  name : string,
-  flag : string,
-  dial_code : string
+interface CountryFlags {
+  name: string;
+  flag: string;
+  dial_code: string;
 }
 
 const Auth = () => {
@@ -130,8 +130,12 @@ const Auth = () => {
       const newValues = {
         ...values,
         country_code: values?.country_code?.replace("+", ""),
+        username:"",
       };
-      const response = await axios.post(`${BASEURL}/user/create_user`, newValues);
+      const response = await axios.post(
+        `${BASEURL}/user/create_user`,
+        newValues
+      );
       if (response?.status === 200) {
         message.success("Added user SuccessFully");
         setIsLoginPage(!isLoginPage);
@@ -143,8 +147,6 @@ const Auth = () => {
     }
   };
 
-
-
   useEffect(() => {
     const fetchCountries = async () => {
       try {
@@ -155,16 +157,18 @@ const Auth = () => {
           axios.get("https://countriesnow.space/api/v0.1/countries/codes"),
         ]);
 
-        const mergedData : [CountryFlags] = flagsRes.data.data.map((flag: any) => {
-          const codeData = codesRes.data.data.find(
-            (code: any) => code.name === flag.name
-          );
-          return {
-            name: codeData?.code,
-            flag: flag.flag,
-            dial_code: codeData ? codeData.dial_code : "",
-          };
-        });
+        const mergedData: [CountryFlags] = flagsRes.data.data.map(
+          (flag: any) => {
+            const codeData = codesRes.data.data.find(
+              (code: any) => code.name === flag.name
+            );
+            return {
+              name: codeData?.code,
+              flag: flag.flag,
+              dial_code: codeData ? codeData.dial_code : "",
+            };
+          }
+        );
 
         setCountries(mergedData);
       } catch (error) {
@@ -199,7 +203,7 @@ const Auth = () => {
   return (
     <div className={styles.authWrapper}>
       <div className={styles.logoWrapper}>
-        <img src={logo}></img>
+        <img onClick={() => navigate("/")} src={logo}></img>
       </div>
 
       <Row className={styles.textWrapper}>
@@ -222,6 +226,7 @@ const Auth = () => {
               form={form}
               onFinish={manageLogin}
               style={{ marginTop: "1vh" }}
+              initialValues={{ country_code: "+91" }}
             >
               <Row justify={"space-between"}>
                 <Col span={8}>
@@ -241,6 +246,7 @@ const Auth = () => {
                       <Select
                         placeholder="Select country"
                         showSearch
+                        defaultValue="+91"
                         optionFilterProp="label"
                         filterOption={(input, option) =>
                           option?.label.props.children
@@ -350,14 +356,15 @@ const Auth = () => {
               style={{ color: "white" }}
               form={form}
               onFinish={handleFormSubmit}
+              initialValues={{ country_code: "+91" }}
             >
-              <Form.Item
+              {/* <Form.Item
                 name="username"
                 label="User Name"
                 rules={[{ required: true, message: "User Name is required" }]}
               >
                 <Input placeholder="Enter your username" />
-              </Form.Item>
+              </Form.Item> */}
               <Row gutter={16}>
                 <Col span={10}>
                   <Form.Item
@@ -376,6 +383,7 @@ const Auth = () => {
                       <Select
                         placeholder="Select country"
                         showSearch
+                        defaultValue="+91"
                         optionFilterProp="label"
                         filterOption={(input, option) =>
                           option?.label.props.children
@@ -416,19 +424,13 @@ const Auth = () => {
               >
                 <Select placeholder="Select a site">
                   <Select.Option value="bet365">
-                    https://www.realsport9.com
+                    https://247must.com/
                   </Select.Option>
                   <Select.Option value="betway">
-                    https://www.skyexch.art{" "}
+                    https://poloin999.com/{" "}
                   </Select.Option>
                   <Select.Option value="unibet">
-                    https://world77.co
-                  </Select.Option>
-                  <Select.Option value="williamhill">
-                    https://realsport247.com
-                  </Select.Option>
-                  <Select.Option value="paddypower">
-                    https://tiger365.me/login
+                    https://www.skyexch.art/
                   </Select.Option>
                 </Select>
               </Form.Item>

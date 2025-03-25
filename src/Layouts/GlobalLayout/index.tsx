@@ -1,27 +1,27 @@
 import { Layout } from "antd";
 import SideBar from "../../Components/SideBar";
-import { useLocation, useNavigate, useOutlet } from "react-router-dom";
+import { useLocation, useOutlet } from "react-router-dom";
 import styles from "./globalLayout.module.scss";
 import HeaderComponent from "../../Components/Header";
 import { useEffect, useState } from "react";
 import DynamincFooter from "../../Components/DynamicFooter";
 import Trending from "../../Components/Trending";
-import icon from "../../assets/POLO clogo.png";
+import icon from "../../assets/premium support button copy.png";
 import MobileHeader from "../../Components/MobileHeader";
 import axios from "axios";
-import onlineChatImg from "../../assets/cryptocurrency-color_chat.png";
-import whatsAppChatImg from "../../assets/logos_whatsapp-icon.png";
 import ballAnimation from "../../assets/Ball animation.gif";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import ChatWidget from "../../Components/ChatWidget";
+import { toggleChat } from "../../Redux/WidgetSlice";
 
 const { Sider, Content, Header } = Layout;
 
 const GlobalLayout = () => {
   const outlet = useOutlet();
-  const navigate = useNavigate();
   const location = useLocation();
   const BASEURL = import.meta.env.VITE_BASEURL;
-  const ballState = useSelector((state:any) => state?.ball?.value)
+  const dispatch = useDispatch();
+  const ballState = useSelector((state: any) => state?.ball?.value);
   const [text, setText] = useState<any>([]);
 
   const getTexts = async () => {
@@ -30,7 +30,7 @@ const GlobalLayout = () => {
       const data = response.data;
       console.log(data);
       setText(data);
-      console.log(text)
+      console.log(text);
     } catch (error) {
       console.error(error);
     }
@@ -38,7 +38,6 @@ const GlobalLayout = () => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const [isChatVisible, setIsChatVisible] = useState(false); // Chat menu visibility
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,7 +76,7 @@ const GlobalLayout = () => {
             position: "fixed",
             top: 0,
             width: "100vw",
-            zIndex: 1000,
+            zIndex:1000,
             height: "8vh",
             padding: "0px 0px",
             lineHeight: "17px",
@@ -98,10 +97,10 @@ const GlobalLayout = () => {
         style={
           location.pathname !== "/auth"
             ? {
-              marginTop: windowWidth < 390 ? "12vh" : "10vh",
-              background:
-                "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
-            }
+                marginTop: windowWidth < 390 ? "12vh" : "10vh",
+                background:
+                  "linear-gradient(90.23deg, #0C2E37 0.2%, #000000 129.15%)",
+              }
             : { background: "rgba(12, 46, 55, 1)" }
         }
       >
@@ -143,21 +142,22 @@ const GlobalLayout = () => {
             {
               <div className={styles["marquee-wrapper"]}>
                 <div className={styles["marquee-content"]}>
-                  {text.map((item : any, index : number) => (
+                  {text.map((item: any, index: number) => (
                     <h4 key={index} className={styles["marquee-text"]}>
                       {item.content}
                       {/* <div style={{margin: "0 20px 0 0"}} className={styles["marquee-text"]}>{"|"}</div> */}
                     </h4>
                   ))}
-                  {text.map((item : any, index : number) => (
-                    <h4 key={`duplicate-${index}`} className={styles["marquee-text"]}>
+                  {text.map((item: any, index: number) => (
+                    <h4
+                      key={`duplicate-${index}`}
+                      className={styles["marquee-text"]}
+                    >
                       {item.content}
                     </h4>
                   ))}
                 </div>
               </div>
-
-
             }
             <Sider
               style={{
@@ -177,15 +177,21 @@ const GlobalLayout = () => {
           <>
             {(location?.pathname === "/" || location?.pathname === "/home") && (
               <Sider width={"5dvw"}>
-                <div style={{marginTop:"6dvh"}} className={styles["marquee-wrapper"]}>
+                <div
+                  style={{ marginTop: "6dvh" }}
+                  className={styles["marquee-wrapper"]}
+                >
                   <div className={styles["marquee-content"]}>
-                    {text.map((item : any, index : number) => (
+                    {text.map((item: any, index: number) => (
                       <h4 key={index} className={styles["marquee-text"]}>
                         {item.content}
                       </h4>
                     ))}
-                    {text.map((item : any, index : number) => (
-                      <h4 key={`duplicate-${index}`} className={styles["marquee-text"]}>
+                    {text.map((item: any, index: number) => (
+                      <h4
+                        key={`duplicate-${index}`}
+                        className={styles["marquee-text"]}
+                      >
                         {item.content}
                       </h4>
                     ))}
@@ -199,7 +205,7 @@ const GlobalLayout = () => {
 
       <div
         className={styles.animated_button}
-        onClick={() => setIsChatVisible(!isChatVisible)}
+        onClick={() => dispatch(toggleChat())}
       >
         <img style={{ height: "100%" }} src={icon}></img>
       </div>
@@ -208,10 +214,11 @@ const GlobalLayout = () => {
         <div className={styles.animated_id}>
           <img
             onClick={() => {
-              if (isSidebarVisible) {
-              } else {
-                navigate("/auth");
-              }
+              window.open(
+                "https://api.whatsapp.com/send?phone=918889292534&text=Hi%20Polo.Game%20team!%20I%27m%20excited%20to%20get%20started%20and%20place%20my%20first%20bet.%20Could%20you%20please%20guide%20me%20through%20the%20process%20and%20let%20me%20know%20about%20the%20latest%20games%20and%20offers%3F%20Looking%20forward%20to%20an%20exciting%20experience!",
+                "_blank",
+                "noopener,noreferrer"
+              );
             }}
             className={styles.IphoneStyle}
             src={ballAnimation}
@@ -219,7 +226,7 @@ const GlobalLayout = () => {
         </div>
       )}
 
-      {isChatVisible && (
+      {/* {isChatVisible && (
         <div
           onClick={() => {
             window.location.href = "tel:9333333330";
@@ -237,9 +244,9 @@ const GlobalLayout = () => {
         >
           <img src={onlineChatImg} alt="Online Chat" style={{ width: "70%" }} />
         </div>
-      )}
+      )} */}
 
-      {isChatVisible && (
+      {/* {isChatVisible && (
         <div
           onClick={() => {
             const phoneNumber = "9333333330";
@@ -267,7 +274,9 @@ const GlobalLayout = () => {
             style={{ width: "70%" }}
           />
         </div>
-      )}
+      )} */}
+
+      {<ChatWidget></ChatWidget>}
     </Layout>
   );
 };
