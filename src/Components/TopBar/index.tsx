@@ -496,6 +496,7 @@ const TopBar = () => {
                           flexDirection: "column",
                           alignItems: "center",
                           justifyContent: "space-between",
+                        
                         }}
                       >
                         <div
@@ -506,9 +507,8 @@ const TopBar = () => {
                                 : handleTabClick("admin");
                             }
                           }}
-                          className={`${styles.topbar_item} ${
-                            activeTab === key ? styles.active : ""
-                          }`}
+                          className={`${styles.topbar_item} ${activeTab === key ? styles.active : ""
+                            }`}
                         >
                           {<Pages></Pages>}
                         </div>
@@ -539,9 +539,8 @@ const TopBar = () => {
                   >
                     <div
                       onClick={() => handleTabClick(key)}
-                      className={`${styles.topbar_item} ${
-                        activeTab === key ? styles.active : ""
-                      }`}
+                      className={`${styles.topbar_item} ${activeTab === key ? styles.active : ""
+                        }`}
                     >
                       {icon}
                       {badge && badge !== -1 && (

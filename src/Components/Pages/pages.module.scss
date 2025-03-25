@@ -119,6 +119,9 @@
     .linkList {
       .linkContent {
         padding: 2%;
+        .thumbnail{
+          width: 90%;
+        }
       }
       .loginButton{
         height: 20px !important;

@@ -32,6 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateState } from "../../Redux/loginModalSlice";
 import { login, logout } from "../../Redux/AuthSlice";
 import logoutIMG from "../../assets/Logout.png";
+import { toggleChat } from "../../Redux/WidgetSlice";
 export interface CountryFlags {
   name: string;
   flag: string;
@@ -279,7 +280,7 @@ const HeaderComponent = () => {
       if (
         error?.status === 404 &&
         error?.response?.data?.detail ===
-          "Phone number not found in any user tables"
+        "Phone number not found in any user tables"
       ) {
         message.warning("user not registered");
         form.resetFields();
@@ -322,6 +323,7 @@ const HeaderComponent = () => {
             borderRadius: "3vh",
             justifyContent: "space-between",
           }}
+          onClick={() => dispatch(toggleChat())}
         >
           <p>Online Chat</p>
           <img src={onlineChatImg} height={"20%"} width={"20%"}></img>
@@ -339,6 +341,9 @@ const HeaderComponent = () => {
             padding: "1vh",
             borderRadius: "3vh",
             justifyContent: "space-between",
+          }}
+          onClick={() =>{
+            window.open("https://wa.link/pologames","_blank")
           }}
         >
           <p>Whatsapp Chat</p>
@@ -406,8 +411,8 @@ const HeaderComponent = () => {
               ? location?.pathname !== "/"
                 ? navigate("/")
                 : AUTH?.user === "User"
-                ? navigate("pages")
-                : navigate("/admin")
+                  ? navigate("pages")
+                  : navigate("/admin")
               : navigate("/");
           }}
         >
@@ -420,8 +425,8 @@ const HeaderComponent = () => {
             ? location?.pathname !== "/"
               ? "Home"
               : AUTH?.user === "User"
-              ? "Sites"
-              : "Admin"
+                ? "Sites"
+                : "Admin"
             : "Home"}
         </div>
         {location.pathname !== "/admin" && (
@@ -759,12 +764,7 @@ const HeaderComponent = () => {
                     <Row style={{ marginTop: "3vh", marginBottom: "3vh" }}>
                       <Button
                         onClick={() => {
-                          const phoneNumber = "9333333330";
-                          const message =
-                            "Hello, I would like to connect with you!";
-                          const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-                            message
-                          )}`;
+                          const whatsappURL = `https://wa.link/pologames`;
                           window.open(whatsappURL, "_blank");
                         }}
                         style={{

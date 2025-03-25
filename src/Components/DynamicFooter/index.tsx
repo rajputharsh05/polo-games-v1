@@ -1,7 +1,8 @@
-import { HomeOutlined, PlayCircleOutlined, TrophyOutlined, SmileOutlined } from "@ant-design/icons";
+import { HomeOutlined, PlayCircleOutlined, TrophyOutlined } from "@ant-design/icons";
 import styles from "./footer.module.scss"
 import { useNavigate } from "react-router-dom";
 import offers from "../../assets/offers.png"
+import { Casino } from "@mui/icons-material";
 
 const DynamincFooter = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const DynamincFooter = () => {
         <span>Aviator</span>
       </div>
       <div className={styles.footer_item} onClick={handleNavigation}>
-        <SmileOutlined className={styles.footer_icon} />
+        <Casino className={styles.footer_icon}></Casino>
         <span>Casino</span>
       </div>
     </div>

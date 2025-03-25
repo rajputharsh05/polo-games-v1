@@ -76,7 +76,7 @@ const GlobalLayout = () => {
             position: "fixed",
             top: 0,
             width: "100vw",
-
+            zIndex:1000,
             height: "8vh",
             padding: "0px 0px",
             lineHeight: "17px",
