@@ -33,8 +33,6 @@ const MobileHeader = () => {
             onClick={handleLogout}
             style={{
               height: "30px",
-              boxShadow:
-                "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
               borderRadius: "1rem",
             }}
             className={styles.rightImage}
@@ -46,8 +44,6 @@ const MobileHeader = () => {
             onClick={() => navigate("/auth")}
             style={{
               height: "30px",
-              boxShadow:
-                "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
               borderRadius: "1rem",
             }}
             className={styles.rightImage}

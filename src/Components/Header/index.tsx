@@ -280,7 +280,7 @@ const HeaderComponent = () => {
       if (
         error?.status === 404 &&
         error?.response?.data?.detail ===
-        "Phone number not found in any user tables"
+          "Phone number not found in any user tables"
       ) {
         message.warning("user not registered");
         form.resetFields();
@@ -342,8 +342,8 @@ const HeaderComponent = () => {
             borderRadius: "3vh",
             justifyContent: "space-between",
           }}
-          onClick={() =>{
-            window.open("https://wa.link/pologames","_blank")
+          onClick={() => {
+            window.open("https://wa.link/pologameindia", "_blank");
           }}
         >
           <p>Whatsapp Chat</p>
@@ -411,8 +411,8 @@ const HeaderComponent = () => {
               ? location?.pathname !== "/"
                 ? navigate("/")
                 : AUTH?.user === "User"
-                  ? navigate("pages")
-                  : navigate("/admin")
+                ? navigate("pages")
+                : navigate("/admin")
               : navigate("/");
           }}
         >
@@ -425,8 +425,8 @@ const HeaderComponent = () => {
             ? location?.pathname !== "/"
               ? "Home"
               : AUTH?.user === "User"
-                ? "Sites"
-                : "Admin"
+              ? "Sites"
+              : "Admin"
             : "Home"}
         </div>
         {location.pathname !== "/admin" && (
@@ -548,8 +548,7 @@ const HeaderComponent = () => {
               onClick={handleLogout}
               style={{
                 height: "30px",
-                boxShadow:
-                  "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
+
                 borderRadius: "1rem",
               }}
             />
@@ -560,8 +559,6 @@ const HeaderComponent = () => {
               onClick={() => dispatch(updateState(true))}
               style={{
                 height: "30px",
-                boxShadow:
-                  "0 4px 6px rgba(255, 255, 255, 0.4), 0 1px 3px rgba(255, 255, 255, 0.3)",
                 borderRadius: "1rem",
               }}
             />

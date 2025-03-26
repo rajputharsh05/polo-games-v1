@@ -76,7 +76,7 @@ const GlobalLayout = () => {
             position: "fixed",
             top: 0,
             width: "100vw",
-            zIndex:1000,
+            zIndex: 1000,
             height: "8vh",
             padding: "0px 0px",
             lineHeight: "17px",
@@ -214,11 +214,7 @@ const GlobalLayout = () => {
         <div className={styles.animated_id}>
           <img
             onClick={() => {
-              window.open(
-                "https://api.whatsapp.com/send?phone=918889292534&text=Hi%20Polo.Game%20team!%20I%27m%20excited%20to%20get%20started%20and%20place%20my%20first%20bet.%20Could%20you%20please%20guide%20me%20through%20the%20process%20and%20let%20me%20know%20about%20the%20latest%20games%20and%20offers%3F%20Looking%20forward%20to%20an%20exciting%20experience!",
-                "_blank",
-                "noopener,noreferrer"
-              );
+              window.open("https://wa.link/pologames", "_blank");
             }}
             className={styles.IphoneStyle}
             src={ballAnimation}
