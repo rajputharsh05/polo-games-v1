@@ -904,13 +904,13 @@ const HeaderComponent = () => {
                       rules={[{ required: true, message: "Site is required" }]}
                     >
                       <Select placeholder="Select a site">
-                        <Select.Option value="bet365">
+                        <Select.Option value="247must.com">
                           https://247must.com/
                         </Select.Option>
-                        <Select.Option value="betway">
+                        <Select.Option value="poloin999.com">
                           https://poloin999.com/{" "}
                         </Select.Option>
-                        <Select.Option value="unibet">
+                        <Select.Option value="skyexch.art">
                           https://www.skyexch.art/
                         </Select.Option>
                       </Select>
