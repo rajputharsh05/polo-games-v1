@@ -325,9 +325,8 @@ const Auth = () => {
                   htmlType="button"
                   icon={<WhatsAppOutlined />}
                   onClick={() => {
-                    const phoneNumber = "9333333330";
                     const message = "Hello, I would like to connect with you!";
-                    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+                    const whatsappURL = `https://wa.link/pologames?text=${encodeURIComponent(
                       message
                     )}`;
                     window.open(whatsappURL, "_blank");
