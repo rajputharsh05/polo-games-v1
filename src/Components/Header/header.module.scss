@@ -145,3 +145,64 @@
   color: white !important;
 }
 
+/* WhatsApp ripple button styles - scoped to header module */
+.whatsappButton {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.iconWrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whatsAppIcon {
+  z-index: 3;
+  color: #25d366; /* WhatsApp green */
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.ripple {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.28);
+  z-index: 1;
+  animation: ripple 2000ms infinite cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.iconWrapper .ripple:nth-of-type(1) {
+  animation-delay: 0s;
+}
+.iconWrapper .ripple:nth-of-type(2) {
+  animation-delay: 600ms;
+}
+.iconWrapper .ripple:nth-of-type(3) {
+  animation-delay: 1200ms;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.8);
+    opacity: 0;
+  }
+}
+

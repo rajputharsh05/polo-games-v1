@@ -18,7 +18,7 @@ import logo from "../../assets/Polo_Logo_Png[1] 1.png";
 import { SearchOutlined } from "@ant-design/icons";
 import inplay from "../../assets/inplay.png";
 import Home from "../../assets/Home.png";
-import whatsApp from "../../assets/whatsapp.png";
+// replaced image with MUI icon + CSS ripple, removed png import
 import AboutUS from "../../assets/about us.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
@@ -280,7 +280,7 @@ const HeaderComponent = () => {
       if (
         error?.status === 404 &&
         error?.response?.data?.detail ===
-          "Phone number not found in any user tables"
+        "Phone number not found in any user tables"
       ) {
         message.warning("user not registered");
         form.resetFields();
@@ -411,8 +411,8 @@ const HeaderComponent = () => {
               ? location?.pathname !== "/"
                 ? navigate("/")
                 : AUTH?.user === "User"
-                ? navigate("pages")
-                : navigate("/admin")
+                  ? navigate("pages")
+                  : navigate("/admin")
               : navigate("/");
           }}
         >
@@ -425,8 +425,8 @@ const HeaderComponent = () => {
             ? location?.pathname !== "/"
               ? "Home"
               : AUTH?.user === "User"
-              ? "Sites"
-              : "Admin"
+                ? "Sites"
+                : "Admin"
             : "Home"}
         </div>
         {location.pathname !== "/admin" && (
@@ -483,7 +483,6 @@ const HeaderComponent = () => {
             style={{
               display: "flex",
               alignItems: "center",
-
               color: "white",
               fontSize: "16px",
               fontWeight: "500",
@@ -491,13 +490,14 @@ const HeaderComponent = () => {
             }}
           >
             <Dropdown overlay={supportMenu} trigger={["click"]}>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <img
-                  src={whatsApp}
-                  alt="Play Icon"
-                  style={{ width: "20px", marginRight: "0.5rem" }}
-                />
-                Chat Support
+              <div className={styles.whatsappButton}>
+                <div className={styles.iconWrapper}>
+                  <span className={styles.ripple} />
+                  <span className={styles.ripple} />
+                  <span className={styles.ripple} />
+                  <WhatsApp className={styles.whatsAppIcon} />
+                </div>
+                <span>Chat Support</span>
               </div>
             </Dropdown>
           </div>
